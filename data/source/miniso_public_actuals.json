@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "company": "MINISO Group Holding Limited",
+  "tickers": {"NYSE": "MNSO", "HKEX": "9896"},
+  "currency": "RMB",
+  "unit": "RMB millions",
+  "accounting_standard": "IFRS",
+  "snapshot_as_of": "2026-08-28",
+  "periods": {
+    "FY2025": {
+      "period_end": "2025-12-31",
+      "source_url": "https://ir.miniso.com/2026-03-31-MINISO-Group-Announces-December-Quarter-and-Full-Year-of-2025-Unaudited-Financial-Results",
+      "source_date": "2026-03-31",
+      "provenance": "public_reported",
+      "metrics": {"Revenue": 21443.827, "Cost of Sales": 11795.7, "Gross Profit": 9648.1, "Operating Profit": 3303.123, "Adjusted EBITDA": 4959.949, "Operating Cash Flow": 2577.891, "CAPEX": 997.7, "FCF": 1580.2},
+      "revenue_split": {"MINISO Mainland": 10896.147, "MINISO Overseas": 8628.754, "TOP TOY": 1915.618, "Others": 3.308}
+    },
+    "2025 H1": {
+      "period_end": "2025-06-30",
+      "source_url": "https://ir.miniso.com/2025-08-21-MINISO-Group-Announces-2025-June-Quarter-and-Interim-Unaudited-Financial-Results",
+      "source_date": "2025-08-21",
+      "provenance": "public_reported",
+      "metrics": {"Revenue": 9393.112, "Cost of Sales": 5236.194, "Gross Profit": 4156.918, "Operating Profit": 1545.949, "Adjusted EBITDA": 2186.8, "Operating Cash Flow": 1014.2, "CAPEX": 434.8, "FCF": 579.4},
+      "revenue_split": {"MINISO Mainland": 5114.987, "MINISO Overseas": 3534.017, "TOP TOY": 742.058, "Others": 2.05}
+    },
+    "2026 Q1": {
+      "period_end": "2026-03-31",
+      "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0526/2026052600560.pdf",
+      "source_date": "2026-05-26",
+      "provenance": "public_reported",
+      "metrics": {"Revenue": 5688.388, "Cost of Sales": 3224.4, "Gross Profit": 2464.0, "Operating Profit": 1521.4, "Adjusted EBITDA": 1105.7, "Operating Cash Flow": 365.2, "CAPEX": 270.6, "FCF": 94.6},
+      "revenue_split": {"MINISO Mainland": 3232.254, "MINISO Overseas": 1941.148, "TOP TOY": 514.485, "Others": 0.501}
+    },
+    "2026 Q2": {
+      "period_end": "2026-06-30",
+      "source_url": "https://ir.miniso.com/2026-08-28-MINISO-Group-Announces-2026-June-Quarter-and-Interim-Unaudited-Financial-Results",
+      "source_date": "2026-08-28",
+      "provenance": "public_reported",
+      "metrics": {"Revenue": 5810.513, "Cost of Sales": 3180.868, "Gross Profit": 2629.645, "Operating Profit": 118.501, "Adjusted EBITDA": 1149.8, "Operating Cash Flow": 1110.2, "CAPEX": 454.0, "FCF": 656.2},
+      "revenue_split": {"MINISO Mainland": 3222.258, "MINISO Overseas": 2118.122, "TOP TOY": 470.133, "Others": 0.557}
+    },
+    "2026 H1": {
+      "period_end": "2026-06-30",
+      "source_url": "https://ir.miniso.com/2026-08-28-MINISO-Group-Announces-2026-June-Quarter-and-Interim-Unaudited-Financial-Results",
+      "source_date": "2026-08-28",
+      "provenance": "public_reported",
+      "metrics": {"Revenue": 11498.901, "Cost of Sales": 6405.225, "Gross Profit": 5093.676, "Operating Profit": 1639.91, "Adjusted EBITDA": 2255.529, "Operating Cash Flow": 1475.4, "CAPEX": 724.6, "FCF": 750.8},
+      "revenue_split": {"MINISO Mainland": 6453.955, "MINISO Overseas": 4059.27, "TOP TOY": 984.618, "Others": 1.058}
+    }
+  }
+}

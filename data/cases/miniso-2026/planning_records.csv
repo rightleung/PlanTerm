@@ -1,0 +1,883 @@
+period,scenario,brand,market,business_unit,metric,value,unit,provenance
+2026-01,actual,MINISO,mainland,MINISO - Chinese Mainland,revenue,1008.595781,RMB millions,synthetic_allocation
+2026-01,actual,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,446.778359,RMB millions,synthetic_allocation
+2026-01,actual,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,561.817422,RMB millions,synthetic_allocation
+2026-01,actual,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,302.937978,RMB millions,synthetic_allocation
+2026-01,actual,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,143.840382,RMB millions,synthetic_allocation
+2026-01,actual,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,91.960000,RMB per transaction,synthetic_allocation
+2026-01,actual,MINISO,mainland,MINISO - Chinese Mainland,volume,10.967766,million transactions,calculated
+2026-02,actual,MINISO,mainland,MINISO - Chinese Mainland,revenue,874.116344,RMB millions,synthetic_allocation
+2026-02,actual,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,387.207912,RMB millions,synthetic_allocation
+2026-02,actual,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,486.908432,RMB millions,synthetic_allocation
+2026-02,actual,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,262.546248,RMB millions,synthetic_allocation
+2026-02,actual,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,124.661664,RMB millions,synthetic_allocation
+2026-02,actual,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,91.960000,RMB per transaction,synthetic_allocation
+2026-02,actual,MINISO,mainland,MINISO - Chinese Mainland,volume,9.505397,million transactions,calculated
+2026-03,actual,MINISO,mainland,MINISO - Chinese Mainland,revenue,1075.835500,RMB millions,synthetic_allocation
+2026-03,actual,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,476.563583,RMB millions,synthetic_allocation
+2026-03,actual,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,599.271917,RMB millions,synthetic_allocation
+2026-03,actual,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,323.133843,RMB millions,synthetic_allocation
+2026-03,actual,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,153.429740,RMB millions,synthetic_allocation
+2026-03,actual,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,91.960000,RMB per transaction,synthetic_allocation
+2026-03,actual,MINISO,mainland,MINISO - Chinese Mainland,volume,11.698951,million transactions,calculated
+2026-04,actual,MINISO,mainland,MINISO - Chinese Mainland,revenue,1075.835500,RMB millions,synthetic_allocation
+2026-04,actual,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,476.563583,RMB millions,synthetic_allocation
+2026-04,actual,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,599.271917,RMB millions,synthetic_allocation
+2026-04,actual,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,323.133843,RMB millions,synthetic_allocation
+2026-04,actual,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,153.429740,RMB millions,synthetic_allocation
+2026-04,actual,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,91.960000,RMB per transaction,synthetic_allocation
+2026-04,actual,MINISO,mainland,MINISO - Chinese Mainland,volume,11.698951,million transactions,calculated
+2026-05,actual,MINISO,mainland,MINISO - Chinese Mainland,revenue,1143.075219,RMB millions,synthetic_allocation
+2026-05,actual,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,506.348807,RMB millions,synthetic_allocation
+2026-05,actual,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,636.726411,RMB millions,synthetic_allocation
+2026-05,actual,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,343.329708,RMB millions,synthetic_allocation
+2026-05,actual,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,163.019099,RMB millions,synthetic_allocation
+2026-05,actual,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,91.960000,RMB per transaction,synthetic_allocation
+2026-05,actual,MINISO,mainland,MINISO - Chinese Mainland,volume,12.430135,million transactions,calculated
+2026-06,actual,MINISO,mainland,MINISO - Chinese Mainland,revenue,1277.554656,RMB millions,synthetic_allocation
+2026-06,actual,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,565.919255,RMB millions,synthetic_allocation
+2026-06,actual,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,711.635401,RMB millions,synthetic_allocation
+2026-06,actual,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,383.721439,RMB millions,synthetic_allocation
+2026-06,actual,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,182.197817,RMB millions,synthetic_allocation
+2026-06,actual,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,91.960000,RMB per transaction,synthetic_allocation
+2026-06,actual,MINISO,mainland,MINISO - Chinese Mainland,volume,13.892504,million transactions,calculated
+2026-01,budget,MINISO,mainland,MINISO - Chinese Mainland,revenue,964.601768,RMB millions,synthetic_plan
+2026-01,budget,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,419.601769,RMB millions,synthetic_plan
+2026-01,budget,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,544.999999,RMB millions,synthetic_plan
+2026-01,budget,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,284.557521,RMB millions,synthetic_plan
+2026-01,budget,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,135.044247,RMB millions,synthetic_plan
+2026-01,budget,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,95.000000,RMB per transaction,synthetic_plan
+2026-01,budget,MINISO,mainland,MINISO - Chinese Mainland,volume,10.153703,million transactions,calculated
+2026-02,budget,MINISO,mainland,MINISO - Chinese Mainland,revenue,835.988199,RMB millions,synthetic_plan
+2026-02,budget,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,363.654866,RMB millions,synthetic_plan
+2026-02,budget,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,472.333332,RMB millions,synthetic_plan
+2026-02,budget,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,246.616519,RMB millions,synthetic_plan
+2026-02,budget,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,117.038348,RMB millions,synthetic_plan
+2026-02,budget,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,95.000000,RMB per transaction,synthetic_plan
+2026-02,budget,MINISO,mainland,MINISO - Chinese Mainland,volume,8.799876,million transactions,calculated
+2026-03,budget,MINISO,mainland,MINISO - Chinese Mainland,revenue,1028.908552,RMB millions,synthetic_plan
+2026-03,budget,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,447.575220,RMB millions,synthetic_plan
+2026-03,budget,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,581.333332,RMB millions,synthetic_plan
+2026-03,budget,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,303.528023,RMB millions,synthetic_plan
+2026-03,budget,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,144.047197,RMB millions,synthetic_plan
+2026-03,budget,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,95.000000,RMB per transaction,synthetic_plan
+2026-03,budget,MINISO,mainland,MINISO - Chinese Mainland,volume,10.830616,million transactions,calculated
+2026-04,budget,MINISO,mainland,MINISO - Chinese Mainland,revenue,1028.908552,RMB millions,synthetic_plan
+2026-04,budget,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,447.575220,RMB millions,synthetic_plan
+2026-04,budget,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,581.333332,RMB millions,synthetic_plan
+2026-04,budget,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,303.528023,RMB millions,synthetic_plan
+2026-04,budget,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,144.047197,RMB millions,synthetic_plan
+2026-04,budget,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,95.000000,RMB per transaction,synthetic_plan
+2026-04,budget,MINISO,mainland,MINISO - Chinese Mainland,volume,10.830616,million transactions,calculated
+2026-05,budget,MINISO,mainland,MINISO - Chinese Mainland,revenue,1093.215337,RMB millions,synthetic_plan
+2026-05,budget,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,475.548671,RMB millions,synthetic_plan
+2026-05,budget,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,617.666665,RMB millions,synthetic_plan
+2026-05,budget,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,322.498524,RMB millions,synthetic_plan
+2026-05,budget,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,153.050147,RMB millions,synthetic_plan
+2026-05,budget,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,95.000000,RMB per transaction,synthetic_plan
+2026-05,budget,MINISO,mainland,MINISO - Chinese Mainland,volume,11.507530,million transactions,calculated
+2026-06,budget,MINISO,mainland,MINISO - Chinese Mainland,revenue,1221.828906,RMB millions,synthetic_plan
+2026-06,budget,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,531.495574,RMB millions,synthetic_plan
+2026-06,budget,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,690.333332,RMB millions,synthetic_plan
+2026-06,budget,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,360.439527,RMB millions,synthetic_plan
+2026-06,budget,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,171.056047,RMB millions,synthetic_plan
+2026-06,budget,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,95.000000,RMB per transaction,synthetic_plan
+2026-06,budget,MINISO,mainland,MINISO - Chinese Mainland,volume,12.861357,million transactions,calculated
+2026-07,budget,MINISO,mainland,MINISO - Chinese Mainland,revenue,1028.908552,RMB millions,synthetic_plan
+2026-07,budget,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,447.575220,RMB millions,synthetic_plan
+2026-07,budget,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,581.333332,RMB millions,synthetic_plan
+2026-07,budget,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,303.528023,RMB millions,synthetic_plan
+2026-07,budget,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,144.047197,RMB millions,synthetic_plan
+2026-07,budget,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,95.000000,RMB per transaction,synthetic_plan
+2026-07,budget,MINISO,mainland,MINISO - Chinese Mainland,volume,10.830616,million transactions,calculated
+2026-08,budget,MINISO,mainland,MINISO - Chinese Mainland,revenue,1028.908552,RMB millions,synthetic_plan
+2026-08,budget,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,447.575220,RMB millions,synthetic_plan
+2026-08,budget,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,581.333332,RMB millions,synthetic_plan
+2026-08,budget,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,303.528023,RMB millions,synthetic_plan
+2026-08,budget,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,144.047197,RMB millions,synthetic_plan
+2026-08,budget,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,95.000000,RMB per transaction,synthetic_plan
+2026-08,budget,MINISO,mainland,MINISO - Chinese Mainland,volume,10.830616,million transactions,calculated
+2026-09,budget,MINISO,mainland,MINISO - Chinese Mainland,revenue,1221.828906,RMB millions,synthetic_plan
+2026-09,budget,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,531.495574,RMB millions,synthetic_plan
+2026-09,budget,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,690.333332,RMB millions,synthetic_plan
+2026-09,budget,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,360.439527,RMB millions,synthetic_plan
+2026-09,budget,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,171.056047,RMB millions,synthetic_plan
+2026-09,budget,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,95.000000,RMB per transaction,synthetic_plan
+2026-09,budget,MINISO,mainland,MINISO - Chinese Mainland,volume,12.861357,million transactions,calculated
+2026-10,budget,MINISO,mainland,MINISO - Chinese Mainland,revenue,1028.908552,RMB millions,synthetic_plan
+2026-10,budget,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,447.575220,RMB millions,synthetic_plan
+2026-10,budget,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,581.333332,RMB millions,synthetic_plan
+2026-10,budget,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,303.528023,RMB millions,synthetic_plan
+2026-10,budget,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,144.047197,RMB millions,synthetic_plan
+2026-10,budget,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,95.000000,RMB per transaction,synthetic_plan
+2026-10,budget,MINISO,mainland,MINISO - Chinese Mainland,volume,10.830616,million transactions,calculated
+2026-11,budget,MINISO,mainland,MINISO - Chinese Mainland,revenue,1093.215337,RMB millions,synthetic_plan
+2026-11,budget,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,475.548671,RMB millions,synthetic_plan
+2026-11,budget,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,617.666665,RMB millions,synthetic_plan
+2026-11,budget,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,322.498524,RMB millions,synthetic_plan
+2026-11,budget,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,153.050147,RMB millions,synthetic_plan
+2026-11,budget,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,95.000000,RMB per transaction,synthetic_plan
+2026-11,budget,MINISO,mainland,MINISO - Chinese Mainland,volume,11.507530,million transactions,calculated
+2026-12,budget,MINISO,mainland,MINISO - Chinese Mainland,revenue,1286.135690,RMB millions,synthetic_plan
+2026-12,budget,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,559.469025,RMB millions,synthetic_plan
+2026-12,budget,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,726.666665,RMB millions,synthetic_plan
+2026-12,budget,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,379.410029,RMB millions,synthetic_plan
+2026-12,budget,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,180.058997,RMB millions,synthetic_plan
+2026-12,budget,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,95.000000,RMB per transaction,synthetic_plan
+2026-12,budget,MINISO,mainland,MINISO - Chinese Mainland,volume,13.538270,million transactions,calculated
+2026-01,forecast,MINISO,mainland,MINISO - Chinese Mainland,revenue,1008.595781,RMB millions,calculated
+2026-01,forecast,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,446.778359,RMB millions,calculated
+2026-01,forecast,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,561.817422,RMB millions,calculated
+2026-01,forecast,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,302.937978,RMB millions,calculated
+2026-01,forecast,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,143.840382,RMB millions,calculated
+2026-01,forecast,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,91.960000,RMB per transaction,calculated
+2026-01,forecast,MINISO,mainland,MINISO - Chinese Mainland,volume,10.967766,million transactions,calculated
+2026-02,forecast,MINISO,mainland,MINISO - Chinese Mainland,revenue,874.116344,RMB millions,calculated
+2026-02,forecast,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,387.207912,RMB millions,calculated
+2026-02,forecast,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,486.908432,RMB millions,calculated
+2026-02,forecast,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,262.546248,RMB millions,calculated
+2026-02,forecast,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,124.661664,RMB millions,calculated
+2026-02,forecast,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,91.960000,RMB per transaction,calculated
+2026-02,forecast,MINISO,mainland,MINISO - Chinese Mainland,volume,9.505397,million transactions,calculated
+2026-03,forecast,MINISO,mainland,MINISO - Chinese Mainland,revenue,1075.835500,RMB millions,calculated
+2026-03,forecast,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,476.563583,RMB millions,calculated
+2026-03,forecast,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,599.271917,RMB millions,calculated
+2026-03,forecast,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,323.133843,RMB millions,calculated
+2026-03,forecast,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,153.429740,RMB millions,calculated
+2026-03,forecast,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,91.960000,RMB per transaction,calculated
+2026-03,forecast,MINISO,mainland,MINISO - Chinese Mainland,volume,11.698951,million transactions,calculated
+2026-04,forecast,MINISO,mainland,MINISO - Chinese Mainland,revenue,1075.835500,RMB millions,calculated
+2026-04,forecast,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,476.563583,RMB millions,calculated
+2026-04,forecast,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,599.271917,RMB millions,calculated
+2026-04,forecast,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,323.133843,RMB millions,calculated
+2026-04,forecast,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,153.429740,RMB millions,calculated
+2026-04,forecast,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,91.960000,RMB per transaction,calculated
+2026-04,forecast,MINISO,mainland,MINISO - Chinese Mainland,volume,11.698951,million transactions,calculated
+2026-05,forecast,MINISO,mainland,MINISO - Chinese Mainland,revenue,1143.075219,RMB millions,calculated
+2026-05,forecast,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,506.348807,RMB millions,calculated
+2026-05,forecast,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,636.726411,RMB millions,calculated
+2026-05,forecast,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,343.329708,RMB millions,calculated
+2026-05,forecast,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,163.019099,RMB millions,calculated
+2026-05,forecast,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,91.960000,RMB per transaction,calculated
+2026-05,forecast,MINISO,mainland,MINISO - Chinese Mainland,volume,12.430135,million transactions,calculated
+2026-06,forecast,MINISO,mainland,MINISO - Chinese Mainland,revenue,1277.554656,RMB millions,calculated
+2026-06,forecast,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,565.919255,RMB millions,calculated
+2026-06,forecast,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,711.635401,RMB millions,calculated
+2026-06,forecast,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,383.721439,RMB millions,calculated
+2026-06,forecast,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,182.197817,RMB millions,calculated
+2026-06,forecast,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,91.960000,RMB per transaction,calculated
+2026-06,forecast,MINISO,mainland,MINISO - Chinese Mainland,volume,13.892504,million transactions,calculated
+2026-07,forecast,MINISO,mainland,MINISO - Chinese Mainland,revenue,1059.775809,RMB millions,synthetic_plan
+2026-07,forecast,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,461.002477,RMB millions,synthetic_plan
+2026-07,forecast,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,598.773332,RMB millions,synthetic_plan
+2026-07,forecast,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,312.633864,RMB millions,synthetic_plan
+2026-07,forecast,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,148.368613,RMB millions,synthetic_plan
+2026-07,forecast,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,95.000000,RMB per transaction,synthetic_plan
+2026-07,forecast,MINISO,mainland,MINISO - Chinese Mainland,volume,11.155535,million transactions,calculated
+2026-08,forecast,MINISO,mainland,MINISO - Chinese Mainland,revenue,1059.775809,RMB millions,synthetic_plan
+2026-08,forecast,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,461.002477,RMB millions,synthetic_plan
+2026-08,forecast,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,598.773332,RMB millions,synthetic_plan
+2026-08,forecast,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,312.633864,RMB millions,synthetic_plan
+2026-08,forecast,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,148.368613,RMB millions,synthetic_plan
+2026-08,forecast,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,95.000000,RMB per transaction,synthetic_plan
+2026-08,forecast,MINISO,mainland,MINISO - Chinese Mainland,volume,11.155535,million transactions,calculated
+2026-09,forecast,MINISO,mainland,MINISO - Chinese Mainland,revenue,1258.483773,RMB millions,synthetic_plan
+2026-09,forecast,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,547.440441,RMB millions,synthetic_plan
+2026-09,forecast,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,711.043332,RMB millions,synthetic_plan
+2026-09,forecast,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,371.252713,RMB millions,synthetic_plan
+2026-09,forecast,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,176.187728,RMB millions,synthetic_plan
+2026-09,forecast,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,95.000000,RMB per transaction,synthetic_plan
+2026-09,forecast,MINISO,mainland,MINISO - Chinese Mainland,volume,13.247198,million transactions,calculated
+2026-10,forecast,MINISO,mainland,MINISO - Chinese Mainland,revenue,1059.775809,RMB millions,synthetic_plan
+2026-10,forecast,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,461.002477,RMB millions,synthetic_plan
+2026-10,forecast,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,598.773332,RMB millions,synthetic_plan
+2026-10,forecast,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,312.633864,RMB millions,synthetic_plan
+2026-10,forecast,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,148.368613,RMB millions,synthetic_plan
+2026-10,forecast,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,95.000000,RMB per transaction,synthetic_plan
+2026-10,forecast,MINISO,mainland,MINISO - Chinese Mainland,volume,11.155535,million transactions,calculated
+2026-11,forecast,MINISO,mainland,MINISO - Chinese Mainland,revenue,1126.011797,RMB millions,synthetic_plan
+2026-11,forecast,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,489.815132,RMB millions,synthetic_plan
+2026-11,forecast,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,636.196665,RMB millions,synthetic_plan
+2026-11,forecast,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,332.173480,RMB millions,synthetic_plan
+2026-11,forecast,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,157.641652,RMB millions,synthetic_plan
+2026-11,forecast,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,95.000000,RMB per transaction,synthetic_plan
+2026-11,forecast,MINISO,mainland,MINISO - Chinese Mainland,volume,11.852756,million transactions,calculated
+2026-12,forecast,MINISO,mainland,MINISO - Chinese Mainland,revenue,1324.719761,RMB millions,synthetic_plan
+2026-12,forecast,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,576.253096,RMB millions,synthetic_plan
+2026-12,forecast,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,748.466665,RMB millions,synthetic_plan
+2026-12,forecast,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,390.792329,RMB millions,synthetic_plan
+2026-12,forecast,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,185.460766,RMB millions,synthetic_plan
+2026-12,forecast,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,95.000000,RMB per transaction,synthetic_plan
+2026-12,forecast,MINISO,mainland,MINISO - Chinese Mainland,volume,13.944419,million transactions,calculated
+2026-01,prior_year,MINISO,mainland,MINISO - Chinese Mainland,revenue,799.537031,RMB millions,synthetic_allocation
+2026-01,prior_year,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,353.834797,RMB millions,synthetic_allocation
+2026-01,prior_year,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,445.702234,RMB millions,synthetic_allocation
+2026-01,prior_year,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,222.244385,RMB millions,synthetic_allocation
+2026-01,prior_year,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,131.590412,RMB millions,synthetic_allocation
+2026-01,prior_year,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,91.200000,RMB per transaction,synthetic_allocation
+2026-01,prior_year,MINISO,mainland,MINISO - Chinese Mainland,volume,8.766853,million transactions,calculated
+2026-02,prior_year,MINISO,mainland,MINISO - Chinese Mainland,revenue,692.932094,RMB millions,synthetic_allocation
+2026-02,prior_year,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,306.656824,RMB millions,synthetic_allocation
+2026-02,prior_year,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,386.275270,RMB millions,synthetic_allocation
+2026-02,prior_year,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,192.611801,RMB millions,synthetic_allocation
+2026-02,prior_year,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,114.045023,RMB millions,synthetic_allocation
+2026-02,prior_year,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,91.200000,RMB per transaction,synthetic_allocation
+2026-02,prior_year,MINISO,mainland,MINISO - Chinese Mainland,volume,7.597940,million transactions,calculated
+2026-03,prior_year,MINISO,mainland,MINISO - Chinese Mainland,revenue,852.839500,RMB millions,synthetic_allocation
+2026-03,prior_year,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,377.423783,RMB millions,synthetic_allocation
+2026-03,prior_year,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,475.415717,RMB millions,synthetic_allocation
+2026-03,prior_year,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,237.060678,RMB millions,synthetic_allocation
+2026-03,prior_year,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,140.363106,RMB millions,synthetic_allocation
+2026-03,prior_year,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,91.200000,RMB per transaction,synthetic_allocation
+2026-03,prior_year,MINISO,mainland,MINISO - Chinese Mainland,volume,9.351310,million transactions,calculated
+2026-04,prior_year,MINISO,mainland,MINISO - Chinese Mainland,revenue,852.839500,RMB millions,synthetic_allocation
+2026-04,prior_year,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,377.423783,RMB millions,synthetic_allocation
+2026-04,prior_year,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,475.415717,RMB millions,synthetic_allocation
+2026-04,prior_year,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,237.060678,RMB millions,synthetic_allocation
+2026-04,prior_year,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,140.363106,RMB millions,synthetic_allocation
+2026-04,prior_year,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,91.200000,RMB per transaction,synthetic_allocation
+2026-04,prior_year,MINISO,mainland,MINISO - Chinese Mainland,volume,9.351310,million transactions,calculated
+2026-05,prior_year,MINISO,mainland,MINISO - Chinese Mainland,revenue,906.141969,RMB millions,synthetic_allocation
+2026-05,prior_year,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,401.012770,RMB millions,synthetic_allocation
+2026-05,prior_year,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,505.129199,RMB millions,synthetic_allocation
+2026-05,prior_year,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,251.876970,RMB millions,synthetic_allocation
+2026-05,prior_year,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,149.135800,RMB millions,synthetic_allocation
+2026-05,prior_year,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,91.200000,RMB per transaction,synthetic_allocation
+2026-05,prior_year,MINISO,mainland,MINISO - Chinese Mainland,volume,9.935767,million transactions,calculated
+2026-06,prior_year,MINISO,mainland,MINISO - Chinese Mainland,revenue,1012.746906,RMB millions,synthetic_allocation
+2026-06,prior_year,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,448.190743,RMB millions,synthetic_allocation
+2026-06,prior_year,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,564.556163,RMB millions,synthetic_allocation
+2026-06,prior_year,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,281.509555,RMB millions,synthetic_allocation
+2026-06,prior_year,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,166.681188,RMB millions,synthetic_allocation
+2026-06,prior_year,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,91.200000,RMB per transaction,synthetic_allocation
+2026-06,prior_year,MINISO,mainland,MINISO - Chinese Mainland,volume,11.104681,million transactions,calculated
+2026-07,prior_year,MINISO,mainland,MINISO - Chinese Mainland,revenue,889.602769,RMB millions,synthetic_allocation
+2026-07,prior_year,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,406.059622,RMB millions,synthetic_allocation
+2026-07,prior_year,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,483.543147,RMB millions,synthetic_allocation
+2026-07,prior_year,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,277.331828,RMB millions,synthetic_allocation
+2026-07,prior_year,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,128.727794,RMB millions,synthetic_allocation
+2026-07,prior_year,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,91.200000,RMB per transaction,synthetic_allocation
+2026-07,prior_year,MINISO,mainland,MINISO - Chinese Mainland,volume,9.754416,million transactions,calculated
+2026-08,prior_year,MINISO,mainland,MINISO - Chinese Mainland,revenue,889.602769,RMB millions,synthetic_allocation
+2026-08,prior_year,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,406.059622,RMB millions,synthetic_allocation
+2026-08,prior_year,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,483.543147,RMB millions,synthetic_allocation
+2026-08,prior_year,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,277.331828,RMB millions,synthetic_allocation
+2026-08,prior_year,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,128.727794,RMB millions,synthetic_allocation
+2026-08,prior_year,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,91.200000,RMB per transaction,synthetic_allocation
+2026-08,prior_year,MINISO,mainland,MINISO - Chinese Mainland,volume,9.754416,million transactions,calculated
+2026-09,prior_year,MINISO,mainland,MINISO - Chinese Mainland,revenue,1056.403288,RMB millions,synthetic_allocation
+2026-09,prior_year,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,482.195801,RMB millions,synthetic_allocation
+2026-09,prior_year,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,574.207487,RMB millions,synthetic_allocation
+2026-09,prior_year,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,329.331546,RMB millions,synthetic_allocation
+2026-09,prior_year,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,152.864256,RMB millions,synthetic_allocation
+2026-09,prior_year,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,91.200000,RMB per transaction,synthetic_allocation
+2026-09,prior_year,MINISO,mainland,MINISO - Chinese Mainland,volume,11.583369,million transactions,calculated
+2026-10,prior_year,MINISO,mainland,MINISO - Chinese Mainland,revenue,889.602769,RMB millions,synthetic_allocation
+2026-10,prior_year,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,406.059622,RMB millions,synthetic_allocation
+2026-10,prior_year,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,483.543147,RMB millions,synthetic_allocation
+2026-10,prior_year,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,277.331828,RMB millions,synthetic_allocation
+2026-10,prior_year,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,128.727794,RMB millions,synthetic_allocation
+2026-10,prior_year,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,91.200000,RMB per transaction,synthetic_allocation
+2026-10,prior_year,MINISO,mainland,MINISO - Chinese Mainland,volume,9.754416,million transactions,calculated
+2026-11,prior_year,MINISO,mainland,MINISO - Chinese Mainland,revenue,945.202942,RMB millions,synthetic_allocation
+2026-11,prior_year,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,431.438349,RMB millions,synthetic_allocation
+2026-11,prior_year,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,513.764594,RMB millions,synthetic_allocation
+2026-11,prior_year,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,294.665067,RMB millions,synthetic_allocation
+2026-11,prior_year,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,136.773281,RMB millions,synthetic_allocation
+2026-11,prior_year,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,91.200000,RMB per transaction,synthetic_allocation
+2026-11,prior_year,MINISO,mainland,MINISO - Chinese Mainland,volume,10.364067,million transactions,calculated
+2026-12,prior_year,MINISO,mainland,MINISO - Chinese Mainland,revenue,1112.003462,RMB millions,synthetic_allocation
+2026-12,prior_year,MINISO,mainland,MINISO - Chinese Mainland,gross_profit,507.574528,RMB millions,synthetic_allocation
+2026-12,prior_year,MINISO,mainland,MINISO - Chinese Mainland,cost_of_sales,604.428934,RMB millions,synthetic_allocation
+2026-12,prior_year,MINISO,mainland,MINISO - Chinese Mainland,operating_expense,346.664785,RMB millions,synthetic_allocation
+2026-12,prior_year,MINISO,mainland,MINISO - Chinese Mainland,operating_profit,160.909743,RMB millions,synthetic_allocation
+2026-12,prior_year,MINISO,mainland,MINISO - Chinese Mainland,average_ticket,91.200000,RMB per transaction,synthetic_allocation
+2026-12,prior_year,MINISO,mainland,MINISO - Chinese Mainland,volume,12.193020,million transactions,calculated
+2026-01,actual,MINISO,overseas,MINISO - Overseas,revenue,634.260937,RMB millions,synthetic_allocation
+2026-01,actual,MINISO,overseas,MINISO - Overseas,gross_profit,280.958999,RMB millions,synthetic_allocation
+2026-01,actual,MINISO,overseas,MINISO - Overseas,cost_of_sales,353.301938,RMB millions,synthetic_allocation
+2026-01,actual,MINISO,overseas,MINISO - Overseas,operating_expense,190.504193,RMB millions,synthetic_allocation
+2026-01,actual,MINISO,overseas,MINISO - Overseas,operating_profit,90.454806,RMB millions,synthetic_allocation
+2026-01,actual,MINISO,overseas,MINISO - Overseas,average_ticket,149.930000,RMB per transaction,synthetic_allocation
+2026-01,actual,MINISO,overseas,MINISO - Overseas,volume,4.230380,million transactions,calculated
+2026-02,actual,MINISO,overseas,MINISO - Overseas,revenue,549.692813,RMB millions,synthetic_allocation
+2026-02,actual,MINISO,overseas,MINISO - Overseas,gross_profit,243.497799,RMB millions,synthetic_allocation
+2026-02,actual,MINISO,overseas,MINISO - Overseas,cost_of_sales,306.195013,RMB millions,synthetic_allocation
+2026-02,actual,MINISO,overseas,MINISO - Overseas,operating_expense,165.103634,RMB millions,synthetic_allocation
+2026-02,actual,MINISO,overseas,MINISO - Overseas,operating_profit,78.394165,RMB millions,synthetic_allocation
+2026-02,actual,MINISO,overseas,MINISO - Overseas,average_ticket,149.930000,RMB per transaction,synthetic_allocation
+2026-02,actual,MINISO,overseas,MINISO - Overseas,volume,3.666330,million transactions,calculated
+2026-03,actual,MINISO,overseas,MINISO - Overseas,revenue,676.545000,RMB millions,synthetic_allocation
+2026-03,actual,MINISO,overseas,MINISO - Overseas,gross_profit,299.689599,RMB millions,synthetic_allocation
+2026-03,actual,MINISO,overseas,MINISO - Overseas,cost_of_sales,376.855401,RMB millions,synthetic_allocation
+2026-03,actual,MINISO,overseas,MINISO - Overseas,operating_expense,203.204473,RMB millions,synthetic_allocation
+2026-03,actual,MINISO,overseas,MINISO - Overseas,operating_profit,96.485126,RMB millions,synthetic_allocation
+2026-03,actual,MINISO,overseas,MINISO - Overseas,average_ticket,149.930000,RMB per transaction,synthetic_allocation
+2026-03,actual,MINISO,overseas,MINISO - Overseas,volume,4.512406,million transactions,calculated
+2026-04,actual,MINISO,overseas,MINISO - Overseas,revenue,676.545000,RMB millions,synthetic_allocation
+2026-04,actual,MINISO,overseas,MINISO - Overseas,gross_profit,299.689599,RMB millions,synthetic_allocation
+2026-04,actual,MINISO,overseas,MINISO - Overseas,cost_of_sales,376.855401,RMB millions,synthetic_allocation
+2026-04,actual,MINISO,overseas,MINISO - Overseas,operating_expense,203.204473,RMB millions,synthetic_allocation
+2026-04,actual,MINISO,overseas,MINISO - Overseas,operating_profit,96.485126,RMB millions,synthetic_allocation
+2026-04,actual,MINISO,overseas,MINISO - Overseas,average_ticket,149.930000,RMB per transaction,synthetic_allocation
+2026-04,actual,MINISO,overseas,MINISO - Overseas,volume,4.512406,million transactions,calculated
+2026-05,actual,MINISO,overseas,MINISO - Overseas,revenue,718.829063,RMB millions,synthetic_allocation
+2026-05,actual,MINISO,overseas,MINISO - Overseas,gross_profit,318.420199,RMB millions,synthetic_allocation
+2026-05,actual,MINISO,overseas,MINISO - Overseas,cost_of_sales,400.408864,RMB millions,synthetic_allocation
+2026-05,actual,MINISO,overseas,MINISO - Overseas,operating_expense,215.904753,RMB millions,synthetic_allocation
+2026-05,actual,MINISO,overseas,MINISO - Overseas,operating_profit,102.515446,RMB millions,synthetic_allocation
+2026-05,actual,MINISO,overseas,MINISO - Overseas,average_ticket,149.930000,RMB per transaction,synthetic_allocation
+2026-05,actual,MINISO,overseas,MINISO - Overseas,volume,4.794431,million transactions,calculated
+2026-06,actual,MINISO,overseas,MINISO - Overseas,revenue,803.397187,RMB millions,synthetic_allocation
+2026-06,actual,MINISO,overseas,MINISO - Overseas,gross_profit,355.881399,RMB millions,synthetic_allocation
+2026-06,actual,MINISO,overseas,MINISO - Overseas,cost_of_sales,447.515789,RMB millions,synthetic_allocation
+2026-06,actual,MINISO,overseas,MINISO - Overseas,operating_expense,241.305312,RMB millions,synthetic_allocation
+2026-06,actual,MINISO,overseas,MINISO - Overseas,operating_profit,114.576087,RMB millions,synthetic_allocation
+2026-06,actual,MINISO,overseas,MINISO - Overseas,average_ticket,149.930000,RMB per transaction,synthetic_allocation
+2026-06,actual,MINISO,overseas,MINISO - Overseas,volume,5.358482,million transactions,calculated
+2026-01,budget,MINISO,overseas,MINISO - Overseas,revenue,789.530991,RMB millions,synthetic_plan
+2026-01,budget,MINISO,overseas,MINISO - Overseas,gross_profit,375.027221,RMB millions,synthetic_plan
+2026-01,budget,MINISO,overseas,MINISO - Overseas,cost_of_sales,414.503770,RMB millions,synthetic_plan
+2026-01,budget,MINISO,overseas,MINISO - Overseas,operating_expense,248.702262,RMB millions,synthetic_plan
+2026-01,budget,MINISO,overseas,MINISO - Overseas,operating_profit,126.324959,RMB millions,synthetic_plan
+2026-01,budget,MINISO,overseas,MINISO - Overseas,average_ticket,145.000000,RMB per transaction,synthetic_plan
+2026-01,budget,MINISO,overseas,MINISO - Overseas,volume,5.445041,million transactions,calculated
+2026-02,budget,MINISO,overseas,MINISO - Overseas,revenue,684.260192,RMB millions,synthetic_plan
+2026-02,budget,MINISO,overseas,MINISO - Overseas,gross_profit,325.023591,RMB millions,synthetic_plan
+2026-02,budget,MINISO,overseas,MINISO - Overseas,cost_of_sales,359.236601,RMB millions,synthetic_plan
+2026-02,budget,MINISO,overseas,MINISO - Overseas,operating_expense,215.541961,RMB millions,synthetic_plan
+2026-02,budget,MINISO,overseas,MINISO - Overseas,operating_profit,109.481631,RMB millions,synthetic_plan
+2026-02,budget,MINISO,overseas,MINISO - Overseas,average_ticket,145.000000,RMB per transaction,synthetic_plan
+2026-02,budget,MINISO,overseas,MINISO - Overseas,volume,4.719036,million transactions,calculated
+2026-03,budget,MINISO,overseas,MINISO - Overseas,revenue,842.166390,RMB millions,synthetic_plan
+2026-03,budget,MINISO,overseas,MINISO - Overseas,gross_profit,400.029035,RMB millions,synthetic_plan
+2026-03,budget,MINISO,overseas,MINISO - Overseas,cost_of_sales,442.137355,RMB millions,synthetic_plan
+2026-03,budget,MINISO,overseas,MINISO - Overseas,operating_expense,265.282413,RMB millions,synthetic_plan
+2026-03,budget,MINISO,overseas,MINISO - Overseas,operating_profit,134.746622,RMB millions,synthetic_plan
+2026-03,budget,MINISO,overseas,MINISO - Overseas,average_ticket,145.000000,RMB per transaction,synthetic_plan
+2026-03,budget,MINISO,overseas,MINISO - Overseas,volume,5.808044,million transactions,calculated
+2026-04,budget,MINISO,overseas,MINISO - Overseas,revenue,842.166390,RMB millions,synthetic_plan
+2026-04,budget,MINISO,overseas,MINISO - Overseas,gross_profit,400.029035,RMB millions,synthetic_plan
+2026-04,budget,MINISO,overseas,MINISO - Overseas,cost_of_sales,442.137355,RMB millions,synthetic_plan
+2026-04,budget,MINISO,overseas,MINISO - Overseas,operating_expense,265.282413,RMB millions,synthetic_plan
+2026-04,budget,MINISO,overseas,MINISO - Overseas,operating_profit,134.746622,RMB millions,synthetic_plan
+2026-04,budget,MINISO,overseas,MINISO - Overseas,average_ticket,145.000000,RMB per transaction,synthetic_plan
+2026-04,budget,MINISO,overseas,MINISO - Overseas,volume,5.808044,million transactions,calculated
+2026-05,budget,MINISO,overseas,MINISO - Overseas,revenue,894.801790,RMB millions,synthetic_plan
+2026-05,budget,MINISO,overseas,MINISO - Overseas,gross_profit,425.030850,RMB millions,synthetic_plan
+2026-05,budget,MINISO,overseas,MINISO - Overseas,cost_of_sales,469.770940,RMB millions,synthetic_plan
+2026-05,budget,MINISO,overseas,MINISO - Overseas,operating_expense,281.862564,RMB millions,synthetic_plan
+2026-05,budget,MINISO,overseas,MINISO - Overseas,operating_profit,143.168286,RMB millions,synthetic_plan
+2026-05,budget,MINISO,overseas,MINISO - Overseas,average_ticket,145.000000,RMB per transaction,synthetic_plan
+2026-05,budget,MINISO,overseas,MINISO - Overseas,volume,6.171047,million transactions,calculated
+2026-06,budget,MINISO,overseas,MINISO - Overseas,revenue,1000.072589,RMB millions,synthetic_plan
+2026-06,budget,MINISO,overseas,MINISO - Overseas,gross_profit,475.034480,RMB millions,synthetic_plan
+2026-06,budget,MINISO,overseas,MINISO - Overseas,cost_of_sales,525.038109,RMB millions,synthetic_plan
+2026-06,budget,MINISO,overseas,MINISO - Overseas,operating_expense,315.022865,RMB millions,synthetic_plan
+2026-06,budget,MINISO,overseas,MINISO - Overseas,operating_profit,160.011614,RMB millions,synthetic_plan
+2026-06,budget,MINISO,overseas,MINISO - Overseas,average_ticket,145.000000,RMB per transaction,synthetic_plan
+2026-06,budget,MINISO,overseas,MINISO - Overseas,volume,6.897052,million transactions,calculated
+2026-07,budget,MINISO,overseas,MINISO - Overseas,revenue,842.166390,RMB millions,synthetic_plan
+2026-07,budget,MINISO,overseas,MINISO - Overseas,gross_profit,400.029035,RMB millions,synthetic_plan
+2026-07,budget,MINISO,overseas,MINISO - Overseas,cost_of_sales,442.137355,RMB millions,synthetic_plan
+2026-07,budget,MINISO,overseas,MINISO - Overseas,operating_expense,265.282413,RMB millions,synthetic_plan
+2026-07,budget,MINISO,overseas,MINISO - Overseas,operating_profit,134.746622,RMB millions,synthetic_plan
+2026-07,budget,MINISO,overseas,MINISO - Overseas,average_ticket,145.000000,RMB per transaction,synthetic_plan
+2026-07,budget,MINISO,overseas,MINISO - Overseas,volume,5.808044,million transactions,calculated
+2026-08,budget,MINISO,overseas,MINISO - Overseas,revenue,842.166390,RMB millions,synthetic_plan
+2026-08,budget,MINISO,overseas,MINISO - Overseas,gross_profit,400.029035,RMB millions,synthetic_plan
+2026-08,budget,MINISO,overseas,MINISO - Overseas,cost_of_sales,442.137355,RMB millions,synthetic_plan
+2026-08,budget,MINISO,overseas,MINISO - Overseas,operating_expense,265.282413,RMB millions,synthetic_plan
+2026-08,budget,MINISO,overseas,MINISO - Overseas,operating_profit,134.746622,RMB millions,synthetic_plan
+2026-08,budget,MINISO,overseas,MINISO - Overseas,average_ticket,145.000000,RMB per transaction,synthetic_plan
+2026-08,budget,MINISO,overseas,MINISO - Overseas,volume,5.808044,million transactions,calculated
+2026-09,budget,MINISO,overseas,MINISO - Overseas,revenue,1000.072589,RMB millions,synthetic_plan
+2026-09,budget,MINISO,overseas,MINISO - Overseas,gross_profit,475.034480,RMB millions,synthetic_plan
+2026-09,budget,MINISO,overseas,MINISO - Overseas,cost_of_sales,525.038109,RMB millions,synthetic_plan
+2026-09,budget,MINISO,overseas,MINISO - Overseas,operating_expense,315.022865,RMB millions,synthetic_plan
+2026-09,budget,MINISO,overseas,MINISO - Overseas,operating_profit,160.011614,RMB millions,synthetic_plan
+2026-09,budget,MINISO,overseas,MINISO - Overseas,average_ticket,145.000000,RMB per transaction,synthetic_plan
+2026-09,budget,MINISO,overseas,MINISO - Overseas,volume,6.897052,million transactions,calculated
+2026-10,budget,MINISO,overseas,MINISO - Overseas,revenue,842.166390,RMB millions,synthetic_plan
+2026-10,budget,MINISO,overseas,MINISO - Overseas,gross_profit,400.029035,RMB millions,synthetic_plan
+2026-10,budget,MINISO,overseas,MINISO - Overseas,cost_of_sales,442.137355,RMB millions,synthetic_plan
+2026-10,budget,MINISO,overseas,MINISO - Overseas,operating_expense,265.282413,RMB millions,synthetic_plan
+2026-10,budget,MINISO,overseas,MINISO - Overseas,operating_profit,134.746622,RMB millions,synthetic_plan
+2026-10,budget,MINISO,overseas,MINISO - Overseas,average_ticket,145.000000,RMB per transaction,synthetic_plan
+2026-10,budget,MINISO,overseas,MINISO - Overseas,volume,5.808044,million transactions,calculated
+2026-11,budget,MINISO,overseas,MINISO - Overseas,revenue,894.801790,RMB millions,synthetic_plan
+2026-11,budget,MINISO,overseas,MINISO - Overseas,gross_profit,425.030850,RMB millions,synthetic_plan
+2026-11,budget,MINISO,overseas,MINISO - Overseas,cost_of_sales,469.770940,RMB millions,synthetic_plan
+2026-11,budget,MINISO,overseas,MINISO - Overseas,operating_expense,281.862564,RMB millions,synthetic_plan
+2026-11,budget,MINISO,overseas,MINISO - Overseas,operating_profit,143.168286,RMB millions,synthetic_plan
+2026-11,budget,MINISO,overseas,MINISO - Overseas,average_ticket,145.000000,RMB per transaction,synthetic_plan
+2026-11,budget,MINISO,overseas,MINISO - Overseas,volume,6.171047,million transactions,calculated
+2026-12,budget,MINISO,overseas,MINISO - Overseas,revenue,1052.707988,RMB millions,synthetic_plan
+2026-12,budget,MINISO,overseas,MINISO - Overseas,gross_profit,500.036294,RMB millions,synthetic_plan
+2026-12,budget,MINISO,overseas,MINISO - Overseas,cost_of_sales,552.671694,RMB millions,synthetic_plan
+2026-12,budget,MINISO,overseas,MINISO - Overseas,operating_expense,331.603016,RMB millions,synthetic_plan
+2026-12,budget,MINISO,overseas,MINISO - Overseas,operating_profit,168.433278,RMB millions,synthetic_plan
+2026-12,budget,MINISO,overseas,MINISO - Overseas,average_ticket,145.000000,RMB per transaction,synthetic_plan
+2026-12,budget,MINISO,overseas,MINISO - Overseas,volume,7.260055,million transactions,calculated
+2026-01,forecast,MINISO,overseas,MINISO - Overseas,revenue,634.260937,RMB millions,calculated
+2026-01,forecast,MINISO,overseas,MINISO - Overseas,gross_profit,280.958999,RMB millions,calculated
+2026-01,forecast,MINISO,overseas,MINISO - Overseas,cost_of_sales,353.301938,RMB millions,calculated
+2026-01,forecast,MINISO,overseas,MINISO - Overseas,operating_expense,190.504193,RMB millions,calculated
+2026-01,forecast,MINISO,overseas,MINISO - Overseas,operating_profit,90.454806,RMB millions,calculated
+2026-01,forecast,MINISO,overseas,MINISO - Overseas,average_ticket,149.930000,RMB per transaction,calculated
+2026-01,forecast,MINISO,overseas,MINISO - Overseas,volume,4.230380,million transactions,calculated
+2026-02,forecast,MINISO,overseas,MINISO - Overseas,revenue,549.692813,RMB millions,calculated
+2026-02,forecast,MINISO,overseas,MINISO - Overseas,gross_profit,243.497799,RMB millions,calculated
+2026-02,forecast,MINISO,overseas,MINISO - Overseas,cost_of_sales,306.195013,RMB millions,calculated
+2026-02,forecast,MINISO,overseas,MINISO - Overseas,operating_expense,165.103634,RMB millions,calculated
+2026-02,forecast,MINISO,overseas,MINISO - Overseas,operating_profit,78.394165,RMB millions,calculated
+2026-02,forecast,MINISO,overseas,MINISO - Overseas,average_ticket,149.930000,RMB per transaction,calculated
+2026-02,forecast,MINISO,overseas,MINISO - Overseas,volume,3.666330,million transactions,calculated
+2026-03,forecast,MINISO,overseas,MINISO - Overseas,revenue,676.545000,RMB millions,calculated
+2026-03,forecast,MINISO,overseas,MINISO - Overseas,gross_profit,299.689599,RMB millions,calculated
+2026-03,forecast,MINISO,overseas,MINISO - Overseas,cost_of_sales,376.855401,RMB millions,calculated
+2026-03,forecast,MINISO,overseas,MINISO - Overseas,operating_expense,203.204473,RMB millions,calculated
+2026-03,forecast,MINISO,overseas,MINISO - Overseas,operating_profit,96.485126,RMB millions,calculated
+2026-03,forecast,MINISO,overseas,MINISO - Overseas,average_ticket,149.930000,RMB per transaction,calculated
+2026-03,forecast,MINISO,overseas,MINISO - Overseas,volume,4.512406,million transactions,calculated
+2026-04,forecast,MINISO,overseas,MINISO - Overseas,revenue,676.545000,RMB millions,calculated
+2026-04,forecast,MINISO,overseas,MINISO - Overseas,gross_profit,299.689599,RMB millions,calculated
+2026-04,forecast,MINISO,overseas,MINISO - Overseas,cost_of_sales,376.855401,RMB millions,calculated
+2026-04,forecast,MINISO,overseas,MINISO - Overseas,operating_expense,203.204473,RMB millions,calculated
+2026-04,forecast,MINISO,overseas,MINISO - Overseas,operating_profit,96.485126,RMB millions,calculated
+2026-04,forecast,MINISO,overseas,MINISO - Overseas,average_ticket,149.930000,RMB per transaction,calculated
+2026-04,forecast,MINISO,overseas,MINISO - Overseas,volume,4.512406,million transactions,calculated
+2026-05,forecast,MINISO,overseas,MINISO - Overseas,revenue,718.829063,RMB millions,calculated
+2026-05,forecast,MINISO,overseas,MINISO - Overseas,gross_profit,318.420199,RMB millions,calculated
+2026-05,forecast,MINISO,overseas,MINISO - Overseas,cost_of_sales,400.408864,RMB millions,calculated
+2026-05,forecast,MINISO,overseas,MINISO - Overseas,operating_expense,215.904753,RMB millions,calculated
+2026-05,forecast,MINISO,overseas,MINISO - Overseas,operating_profit,102.515446,RMB millions,calculated
+2026-05,forecast,MINISO,overseas,MINISO - Overseas,average_ticket,149.930000,RMB per transaction,calculated
+2026-05,forecast,MINISO,overseas,MINISO - Overseas,volume,4.794431,million transactions,calculated
+2026-06,forecast,MINISO,overseas,MINISO - Overseas,revenue,803.397187,RMB millions,calculated
+2026-06,forecast,MINISO,overseas,MINISO - Overseas,gross_profit,355.881399,RMB millions,calculated
+2026-06,forecast,MINISO,overseas,MINISO - Overseas,cost_of_sales,447.515789,RMB millions,calculated
+2026-06,forecast,MINISO,overseas,MINISO - Overseas,operating_expense,241.305312,RMB millions,calculated
+2026-06,forecast,MINISO,overseas,MINISO - Overseas,operating_profit,114.576087,RMB millions,calculated
+2026-06,forecast,MINISO,overseas,MINISO - Overseas,average_ticket,149.930000,RMB per transaction,calculated
+2026-06,forecast,MINISO,overseas,MINISO - Overseas,volume,5.358482,million transactions,calculated
+2026-07,forecast,MINISO,overseas,MINISO - Overseas,revenue,800.058071,RMB millions,synthetic_plan
+2026-07,forecast,MINISO,overseas,MINISO - Overseas,gross_profit,380.027584,RMB millions,synthetic_plan
+2026-07,forecast,MINISO,overseas,MINISO - Overseas,cost_of_sales,420.030487,RMB millions,synthetic_plan
+2026-07,forecast,MINISO,overseas,MINISO - Overseas,operating_expense,252.018292,RMB millions,synthetic_plan
+2026-07,forecast,MINISO,overseas,MINISO - Overseas,operating_profit,128.009291,RMB millions,synthetic_plan
+2026-07,forecast,MINISO,overseas,MINISO - Overseas,average_ticket,145.000000,RMB per transaction,synthetic_plan
+2026-07,forecast,MINISO,overseas,MINISO - Overseas,volume,5.517642,million transactions,calculated
+2026-08,forecast,MINISO,overseas,MINISO - Overseas,revenue,800.058071,RMB millions,synthetic_plan
+2026-08,forecast,MINISO,overseas,MINISO - Overseas,gross_profit,380.027584,RMB millions,synthetic_plan
+2026-08,forecast,MINISO,overseas,MINISO - Overseas,cost_of_sales,420.030487,RMB millions,synthetic_plan
+2026-08,forecast,MINISO,overseas,MINISO - Overseas,operating_expense,252.018292,RMB millions,synthetic_plan
+2026-08,forecast,MINISO,overseas,MINISO - Overseas,operating_profit,128.009291,RMB millions,synthetic_plan
+2026-08,forecast,MINISO,overseas,MINISO - Overseas,average_ticket,145.000000,RMB per transaction,synthetic_plan
+2026-08,forecast,MINISO,overseas,MINISO - Overseas,volume,5.517642,million transactions,calculated
+2026-09,forecast,MINISO,overseas,MINISO - Overseas,revenue,950.068959,RMB millions,synthetic_plan
+2026-09,forecast,MINISO,overseas,MINISO - Overseas,gross_profit,451.282756,RMB millions,synthetic_plan
+2026-09,forecast,MINISO,overseas,MINISO - Overseas,cost_of_sales,498.786204,RMB millions,synthetic_plan
+2026-09,forecast,MINISO,overseas,MINISO - Overseas,operating_expense,299.271722,RMB millions,synthetic_plan
+2026-09,forecast,MINISO,overseas,MINISO - Overseas,operating_profit,152.011033,RMB millions,synthetic_plan
+2026-09,forecast,MINISO,overseas,MINISO - Overseas,average_ticket,145.000000,RMB per transaction,synthetic_plan
+2026-09,forecast,MINISO,overseas,MINISO - Overseas,volume,6.552200,million transactions,calculated
+2026-10,forecast,MINISO,overseas,MINISO - Overseas,revenue,800.058071,RMB millions,synthetic_plan
+2026-10,forecast,MINISO,overseas,MINISO - Overseas,gross_profit,380.027584,RMB millions,synthetic_plan
+2026-10,forecast,MINISO,overseas,MINISO - Overseas,cost_of_sales,420.030487,RMB millions,synthetic_plan
+2026-10,forecast,MINISO,overseas,MINISO - Overseas,operating_expense,252.018292,RMB millions,synthetic_plan
+2026-10,forecast,MINISO,overseas,MINISO - Overseas,operating_profit,128.009291,RMB millions,synthetic_plan
+2026-10,forecast,MINISO,overseas,MINISO - Overseas,average_ticket,145.000000,RMB per transaction,synthetic_plan
+2026-10,forecast,MINISO,overseas,MINISO - Overseas,volume,5.517642,million transactions,calculated
+2026-11,forecast,MINISO,overseas,MINISO - Overseas,revenue,850.061700,RMB millions,synthetic_plan
+2026-11,forecast,MINISO,overseas,MINISO - Overseas,gross_profit,403.779308,RMB millions,synthetic_plan
+2026-11,forecast,MINISO,overseas,MINISO - Overseas,cost_of_sales,446.282393,RMB millions,synthetic_plan
+2026-11,forecast,MINISO,overseas,MINISO - Overseas,operating_expense,267.769436,RMB millions,synthetic_plan
+2026-11,forecast,MINISO,overseas,MINISO - Overseas,operating_profit,136.009872,RMB millions,synthetic_plan
+2026-11,forecast,MINISO,overseas,MINISO - Overseas,average_ticket,145.000000,RMB per transaction,synthetic_plan
+2026-11,forecast,MINISO,overseas,MINISO - Overseas,volume,5.862494,million transactions,calculated
+2026-12,forecast,MINISO,overseas,MINISO - Overseas,revenue,1000.072589,RMB millions,synthetic_plan
+2026-12,forecast,MINISO,overseas,MINISO - Overseas,gross_profit,475.034480,RMB millions,synthetic_plan
+2026-12,forecast,MINISO,overseas,MINISO - Overseas,cost_of_sales,525.038109,RMB millions,synthetic_plan
+2026-12,forecast,MINISO,overseas,MINISO - Overseas,operating_expense,315.022865,RMB millions,synthetic_plan
+2026-12,forecast,MINISO,overseas,MINISO - Overseas,operating_profit,160.011614,RMB millions,synthetic_plan
+2026-12,forecast,MINISO,overseas,MINISO - Overseas,average_ticket,145.000000,RMB per transaction,synthetic_plan
+2026-12,forecast,MINISO,overseas,MINISO - Overseas,volume,6.897052,million transactions,calculated
+2026-01,prior_year,MINISO,overseas,MINISO - Overseas,revenue,552.190156,RMB millions,synthetic_allocation
+2026-01,prior_year,MINISO,overseas,MINISO - Overseas,gross_profit,244.371535,RMB millions,synthetic_allocation
+2026-01,prior_year,MINISO,overseas,MINISO - Overseas,cost_of_sales,307.818621,RMB millions,synthetic_allocation
+2026-01,prior_year,MINISO,overseas,MINISO - Overseas,operating_expense,153.490279,RMB millions,synthetic_allocation
+2026-01,prior_year,MINISO,overseas,MINISO - Overseas,operating_profit,90.881256,RMB millions,synthetic_allocation
+2026-01,prior_year,MINISO,overseas,MINISO - Overseas,average_ticket,142.100000,RMB per transaction,synthetic_allocation
+2026-01,prior_year,MINISO,overseas,MINISO - Overseas,volume,3.885927,million transactions,calculated
+2026-02,prior_year,MINISO,overseas,MINISO - Overseas,revenue,478.564802,RMB millions,synthetic_allocation
+2026-02,prior_year,MINISO,overseas,MINISO - Overseas,gross_profit,211.788664,RMB millions,synthetic_allocation
+2026-02,prior_year,MINISO,overseas,MINISO - Overseas,cost_of_sales,266.776138,RMB millions,synthetic_allocation
+2026-02,prior_year,MINISO,overseas,MINISO - Overseas,operating_expense,133.024908,RMB millions,synthetic_allocation
+2026-02,prior_year,MINISO,overseas,MINISO - Overseas,operating_profit,78.763756,RMB millions,synthetic_allocation
+2026-02,prior_year,MINISO,overseas,MINISO - Overseas,average_ticket,142.100000,RMB per transaction,synthetic_allocation
+2026-02,prior_year,MINISO,overseas,MINISO - Overseas,volume,3.367803,million transactions,calculated
+2026-03,prior_year,MINISO,overseas,MINISO - Overseas,revenue,589.002833,RMB millions,synthetic_allocation
+2026-03,prior_year,MINISO,overseas,MINISO - Overseas,gross_profit,260.662971,RMB millions,synthetic_allocation
+2026-03,prior_year,MINISO,overseas,MINISO - Overseas,cost_of_sales,328.339862,RMB millions,synthetic_allocation
+2026-03,prior_year,MINISO,overseas,MINISO - Overseas,operating_expense,163.722964,RMB millions,synthetic_allocation
+2026-03,prior_year,MINISO,overseas,MINISO - Overseas,operating_profit,96.940007,RMB millions,synthetic_allocation
+2026-03,prior_year,MINISO,overseas,MINISO - Overseas,average_ticket,142.100000,RMB per transaction,synthetic_allocation
+2026-03,prior_year,MINISO,overseas,MINISO - Overseas,volume,4.144988,million transactions,calculated
+2026-04,prior_year,MINISO,overseas,MINISO - Overseas,revenue,589.002833,RMB millions,synthetic_allocation
+2026-04,prior_year,MINISO,overseas,MINISO - Overseas,gross_profit,260.662971,RMB millions,synthetic_allocation
+2026-04,prior_year,MINISO,overseas,MINISO - Overseas,cost_of_sales,328.339862,RMB millions,synthetic_allocation
+2026-04,prior_year,MINISO,overseas,MINISO - Overseas,operating_expense,163.722964,RMB millions,synthetic_allocation
+2026-04,prior_year,MINISO,overseas,MINISO - Overseas,operating_profit,96.940007,RMB millions,synthetic_allocation
+2026-04,prior_year,MINISO,overseas,MINISO - Overseas,average_ticket,142.100000,RMB per transaction,synthetic_allocation
+2026-04,prior_year,MINISO,overseas,MINISO - Overseas,volume,4.144988,million transactions,calculated
+2026-05,prior_year,MINISO,overseas,MINISO - Overseas,revenue,625.815510,RMB millions,synthetic_allocation
+2026-05,prior_year,MINISO,overseas,MINISO - Overseas,gross_profit,276.954407,RMB millions,synthetic_allocation
+2026-05,prior_year,MINISO,overseas,MINISO - Overseas,cost_of_sales,348.861104,RMB millions,synthetic_allocation
+2026-05,prior_year,MINISO,overseas,MINISO - Overseas,operating_expense,173.955649,RMB millions,synthetic_allocation
+2026-05,prior_year,MINISO,overseas,MINISO - Overseas,operating_profit,102.998757,RMB millions,synthetic_allocation
+2026-05,prior_year,MINISO,overseas,MINISO - Overseas,average_ticket,142.100000,RMB per transaction,synthetic_allocation
+2026-05,prior_year,MINISO,overseas,MINISO - Overseas,volume,4.404050,million transactions,calculated
+2026-06,prior_year,MINISO,overseas,MINISO - Overseas,revenue,699.440865,RMB millions,synthetic_allocation
+2026-06,prior_year,MINISO,overseas,MINISO - Overseas,gross_profit,309.537278,RMB millions,synthetic_allocation
+2026-06,prior_year,MINISO,overseas,MINISO - Overseas,cost_of_sales,389.903587,RMB millions,synthetic_allocation
+2026-06,prior_year,MINISO,overseas,MINISO - Overseas,operating_expense,194.421020,RMB millions,synthetic_allocation
+2026-06,prior_year,MINISO,overseas,MINISO - Overseas,operating_profit,115.116258,RMB millions,synthetic_allocation
+2026-06,prior_year,MINISO,overseas,MINISO - Overseas,average_ticket,142.100000,RMB per transaction,synthetic_allocation
+2026-06,prior_year,MINISO,overseas,MINISO - Overseas,volume,4.922174,million transactions,calculated
+2026-07,prior_year,MINISO,overseas,MINISO - Overseas,revenue,783.805692,RMB millions,synthetic_allocation
+2026-07,prior_year,MINISO,overseas,MINISO - Overseas,gross_profit,356.662883,RMB millions,synthetic_allocation
+2026-07,prior_year,MINISO,overseas,MINISO - Overseas,cost_of_sales,427.142809,RMB millions,synthetic_allocation
+2026-07,prior_year,MINISO,overseas,MINISO - Overseas,operating_expense,241.662978,RMB millions,synthetic_allocation
+2026-07,prior_year,MINISO,overseas,MINISO - Overseas,operating_profit,114.999905,RMB millions,synthetic_allocation
+2026-07,prior_year,MINISO,overseas,MINISO - Overseas,average_ticket,142.100000,RMB per transaction,synthetic_allocation
+2026-07,prior_year,MINISO,overseas,MINISO - Overseas,volume,5.515874,million transactions,calculated
+2026-08,prior_year,MINISO,overseas,MINISO - Overseas,revenue,783.805692,RMB millions,synthetic_allocation
+2026-08,prior_year,MINISO,overseas,MINISO - Overseas,gross_profit,356.662883,RMB millions,synthetic_allocation
+2026-08,prior_year,MINISO,overseas,MINISO - Overseas,cost_of_sales,427.142809,RMB millions,synthetic_allocation
+2026-08,prior_year,MINISO,overseas,MINISO - Overseas,operating_expense,241.662978,RMB millions,synthetic_allocation
+2026-08,prior_year,MINISO,overseas,MINISO - Overseas,operating_profit,114.999905,RMB millions,synthetic_allocation
+2026-08,prior_year,MINISO,overseas,MINISO - Overseas,average_ticket,142.100000,RMB per transaction,synthetic_allocation
+2026-08,prior_year,MINISO,overseas,MINISO - Overseas,volume,5.515874,million transactions,calculated
+2026-09,prior_year,MINISO,overseas,MINISO - Overseas,revenue,930.769260,RMB millions,synthetic_allocation
+2026-09,prior_year,MINISO,overseas,MINISO - Overseas,gross_profit,423.537174,RMB millions,synthetic_allocation
+2026-09,prior_year,MINISO,overseas,MINISO - Overseas,cost_of_sales,507.232086,RMB millions,synthetic_allocation
+2026-09,prior_year,MINISO,overseas,MINISO - Overseas,operating_expense,286.974787,RMB millions,synthetic_allocation
+2026-09,prior_year,MINISO,overseas,MINISO - Overseas,operating_profit,136.562387,RMB millions,synthetic_allocation
+2026-09,prior_year,MINISO,overseas,MINISO - Overseas,average_ticket,142.100000,RMB per transaction,synthetic_allocation
+2026-09,prior_year,MINISO,overseas,MINISO - Overseas,volume,6.550100,million transactions,calculated
+2026-10,prior_year,MINISO,overseas,MINISO - Overseas,revenue,783.805692,RMB millions,synthetic_allocation
+2026-10,prior_year,MINISO,overseas,MINISO - Overseas,gross_profit,356.662883,RMB millions,synthetic_allocation
+2026-10,prior_year,MINISO,overseas,MINISO - Overseas,cost_of_sales,427.142809,RMB millions,synthetic_allocation
+2026-10,prior_year,MINISO,overseas,MINISO - Overseas,operating_expense,241.662978,RMB millions,synthetic_allocation
+2026-10,prior_year,MINISO,overseas,MINISO - Overseas,operating_profit,114.999905,RMB millions,synthetic_allocation
+2026-10,prior_year,MINISO,overseas,MINISO - Overseas,average_ticket,142.100000,RMB per transaction,synthetic_allocation
+2026-10,prior_year,MINISO,overseas,MINISO - Overseas,volume,5.515874,million transactions,calculated
+2026-11,prior_year,MINISO,overseas,MINISO - Overseas,revenue,832.793548,RMB millions,synthetic_allocation
+2026-11,prior_year,MINISO,overseas,MINISO - Overseas,gross_profit,378.954313,RMB millions,synthetic_allocation
+2026-11,prior_year,MINISO,overseas,MINISO - Overseas,cost_of_sales,453.839235,RMB millions,synthetic_allocation
+2026-11,prior_year,MINISO,overseas,MINISO - Overseas,operating_expense,256.766915,RMB millions,synthetic_allocation
+2026-11,prior_year,MINISO,overseas,MINISO - Overseas,operating_profit,122.187399,RMB millions,synthetic_allocation
+2026-11,prior_year,MINISO,overseas,MINISO - Overseas,average_ticket,142.100000,RMB per transaction,synthetic_allocation
+2026-11,prior_year,MINISO,overseas,MINISO - Overseas,volume,5.860616,million transactions,calculated
+2026-12,prior_year,MINISO,overseas,MINISO - Overseas,revenue,979.757115,RMB millions,synthetic_allocation
+2026-12,prior_year,MINISO,overseas,MINISO - Overseas,gross_profit,445.828604,RMB millions,synthetic_allocation
+2026-12,prior_year,MINISO,overseas,MINISO - Overseas,cost_of_sales,533.928512,RMB millions,synthetic_allocation
+2026-12,prior_year,MINISO,overseas,MINISO - Overseas,operating_expense,302.078723,RMB millions,synthetic_allocation
+2026-12,prior_year,MINISO,overseas,MINISO - Overseas,operating_profit,143.749881,RMB millions,synthetic_allocation
+2026-12,prior_year,MINISO,overseas,MINISO - Overseas,average_ticket,142.100000,RMB per transaction,synthetic_allocation
+2026-12,prior_year,MINISO,overseas,MINISO - Overseas,volume,6.894842,million transactions,calculated
+2026-01,actual,TOP_TOY,global,TOP TOY - Global,revenue,153.846563,RMB millions,synthetic_allocation
+2026-01,actual,TOP_TOY,global,TOP TOY - Global,gross_profit,68.149516,RMB millions,synthetic_allocation
+2026-01,actual,TOP_TOY,global,TOP TOY - Global,cost_of_sales,85.697046,RMB millions,synthetic_allocation
+2026-01,actual,TOP_TOY,global,TOP TOY - Global,operating_expense,46.208766,RMB millions,synthetic_allocation
+2026-01,actual,TOP_TOY,global,TOP TOY - Global,operating_profit,21.940750,RMB millions,synthetic_allocation
+2026-01,actual,TOP_TOY,global,TOP TOY - Global,average_ticket,177.970000,RMB per transaction,synthetic_allocation
+2026-01,actual,TOP_TOY,global,TOP TOY - Global,volume,0.864452,million transactions,calculated
+2026-02,actual,TOP_TOY,global,TOP TOY - Global,revenue,133.333688,RMB millions,synthetic_allocation
+2026-02,actual,TOP_TOY,global,TOP TOY - Global,gross_profit,59.062914,RMB millions,synthetic_allocation
+2026-02,actual,TOP_TOY,global,TOP TOY - Global,cost_of_sales,74.270773,RMB millions,synthetic_allocation
+2026-02,actual,TOP_TOY,global,TOP TOY - Global,operating_expense,40.047597,RMB millions,synthetic_allocation
+2026-02,actual,TOP_TOY,global,TOP TOY - Global,operating_profit,19.015317,RMB millions,synthetic_allocation
+2026-02,actual,TOP_TOY,global,TOP TOY - Global,average_ticket,177.970000,RMB per transaction,synthetic_allocation
+2026-02,actual,TOP_TOY,global,TOP TOY - Global,volume,0.749192,million transactions,calculated
+2026-03,actual,TOP_TOY,global,TOP TOY - Global,revenue,164.103000,RMB millions,synthetic_allocation
+2026-03,actual,TOP_TOY,global,TOP TOY - Global,gross_profit,72.692818,RMB millions,synthetic_allocation
+2026-03,actual,TOP_TOY,global,TOP TOY - Global,cost_of_sales,91.410182,RMB millions,synthetic_allocation
+2026-03,actual,TOP_TOY,global,TOP TOY - Global,operating_expense,49.289351,RMB millions,synthetic_allocation
+2026-03,actual,TOP_TOY,global,TOP TOY - Global,operating_profit,23.403467,RMB millions,synthetic_allocation
+2026-03,actual,TOP_TOY,global,TOP TOY - Global,average_ticket,177.970000,RMB per transaction,synthetic_allocation
+2026-03,actual,TOP_TOY,global,TOP TOY - Global,volume,0.922082,million transactions,calculated
+2026-04,actual,TOP_TOY,global,TOP TOY - Global,revenue,164.103000,RMB millions,synthetic_allocation
+2026-04,actual,TOP_TOY,global,TOP TOY - Global,gross_profit,72.692818,RMB millions,synthetic_allocation
+2026-04,actual,TOP_TOY,global,TOP TOY - Global,cost_of_sales,91.410182,RMB millions,synthetic_allocation
+2026-04,actual,TOP_TOY,global,TOP TOY - Global,operating_expense,49.289351,RMB millions,synthetic_allocation
+2026-04,actual,TOP_TOY,global,TOP TOY - Global,operating_profit,23.403467,RMB millions,synthetic_allocation
+2026-04,actual,TOP_TOY,global,TOP TOY - Global,average_ticket,177.970000,RMB per transaction,synthetic_allocation
+2026-04,actual,TOP_TOY,global,TOP TOY - Global,volume,0.922082,million transactions,calculated
+2026-05,actual,TOP_TOY,global,TOP TOY - Global,revenue,174.359438,RMB millions,synthetic_allocation
+2026-05,actual,TOP_TOY,global,TOP TOY - Global,gross_profit,77.236119,RMB millions,synthetic_allocation
+2026-05,actual,TOP_TOY,global,TOP TOY - Global,cost_of_sales,97.123319,RMB millions,synthetic_allocation
+2026-05,actual,TOP_TOY,global,TOP TOY - Global,operating_expense,52.369935,RMB millions,synthetic_allocation
+2026-05,actual,TOP_TOY,global,TOP TOY - Global,operating_profit,24.866184,RMB millions,synthetic_allocation
+2026-05,actual,TOP_TOY,global,TOP TOY - Global,average_ticket,177.970000,RMB per transaction,synthetic_allocation
+2026-05,actual,TOP_TOY,global,TOP TOY - Global,volume,0.979713,million transactions,calculated
+2026-06,actual,TOP_TOY,global,TOP TOY - Global,revenue,194.872313,RMB millions,synthetic_allocation
+2026-06,actual,TOP_TOY,global,TOP TOY - Global,gross_profit,86.322721,RMB millions,synthetic_allocation
+2026-06,actual,TOP_TOY,global,TOP TOY - Global,cost_of_sales,108.549592,RMB millions,synthetic_allocation
+2026-06,actual,TOP_TOY,global,TOP TOY - Global,operating_expense,58.531104,RMB millions,synthetic_allocation
+2026-06,actual,TOP_TOY,global,TOP TOY - Global,operating_profit,27.791617,RMB millions,synthetic_allocation
+2026-06,actual,TOP_TOY,global,TOP TOY - Global,average_ticket,177.970000,RMB per transaction,synthetic_allocation
+2026-06,actual,TOP_TOY,global,TOP TOY - Global,volume,1.094973,million transactions,calculated
+2026-01,budget,TOP_TOY,global,TOP TOY - Global,revenue,208.323457,RMB millions,synthetic_plan
+2026-01,budget,TOP_TOY,global,TOP TOY - Global,gross_profit,99.995260,RMB millions,synthetic_plan
+2026-01,budget,TOP_TOY,global,TOP TOY - Global,cost_of_sales,108.328198,RMB millions,synthetic_plan
+2026-01,budget,TOP_TOY,global,TOP TOY - Global,operating_expense,68.746741,RMB millions,synthetic_plan
+2026-01,budget,TOP_TOY,global,TOP TOY - Global,operating_profit,31.248519,RMB millions,synthetic_plan
+2026-01,budget,TOP_TOY,global,TOP TOY - Global,average_ticket,185.000000,RMB per transaction,synthetic_plan
+2026-01,budget,TOP_TOY,global,TOP TOY - Global,volume,1.126073,million transactions,calculated
+2026-02,budget,TOP_TOY,global,TOP TOY - Global,revenue,180.546997,RMB millions,synthetic_plan
+2026-02,budget,TOP_TOY,global,TOP TOY - Global,gross_profit,86.662558,RMB millions,synthetic_plan
+2026-02,budget,TOP_TOY,global,TOP TOY - Global,cost_of_sales,93.884438,RMB millions,synthetic_plan
+2026-02,budget,TOP_TOY,global,TOP TOY - Global,operating_expense,59.580509,RMB millions,synthetic_plan
+2026-02,budget,TOP_TOY,global,TOP TOY - Global,operating_profit,27.082049,RMB millions,synthetic_plan
+2026-02,budget,TOP_TOY,global,TOP TOY - Global,average_ticket,185.000000,RMB per transaction,synthetic_plan
+2026-02,budget,TOP_TOY,global,TOP TOY - Global,volume,0.975930,million transactions,calculated
+2026-03,budget,TOP_TOY,global,TOP TOY - Global,revenue,222.211688,RMB millions,synthetic_plan
+2026-03,budget,TOP_TOY,global,TOP TOY - Global,gross_profit,106.661610,RMB millions,synthetic_plan
+2026-03,budget,TOP_TOY,global,TOP TOY - Global,cost_of_sales,115.550078,RMB millions,synthetic_plan
+2026-03,budget,TOP_TOY,global,TOP TOY - Global,operating_expense,73.329857,RMB millions,synthetic_plan
+2026-03,budget,TOP_TOY,global,TOP TOY - Global,operating_profit,33.331753,RMB millions,synthetic_plan
+2026-03,budget,TOP_TOY,global,TOP TOY - Global,average_ticket,185.000000,RMB per transaction,synthetic_plan
+2026-03,budget,TOP_TOY,global,TOP TOY - Global,volume,1.201144,million transactions,calculated
+2026-04,budget,TOP_TOY,global,TOP TOY - Global,revenue,222.211688,RMB millions,synthetic_plan
+2026-04,budget,TOP_TOY,global,TOP TOY - Global,gross_profit,106.661610,RMB millions,synthetic_plan
+2026-04,budget,TOP_TOY,global,TOP TOY - Global,cost_of_sales,115.550078,RMB millions,synthetic_plan
+2026-04,budget,TOP_TOY,global,TOP TOY - Global,operating_expense,73.329857,RMB millions,synthetic_plan
+2026-04,budget,TOP_TOY,global,TOP TOY - Global,operating_profit,33.331753,RMB millions,synthetic_plan
+2026-04,budget,TOP_TOY,global,TOP TOY - Global,average_ticket,185.000000,RMB per transaction,synthetic_plan
+2026-04,budget,TOP_TOY,global,TOP TOY - Global,volume,1.201144,million transactions,calculated
+2026-05,budget,TOP_TOY,global,TOP TOY - Global,revenue,236.099919,RMB millions,synthetic_plan
+2026-05,budget,TOP_TOY,global,TOP TOY - Global,gross_profit,113.327961,RMB millions,synthetic_plan
+2026-05,budget,TOP_TOY,global,TOP TOY - Global,cost_of_sales,122.771958,RMB millions,synthetic_plan
+2026-05,budget,TOP_TOY,global,TOP TOY - Global,operating_expense,77.912973,RMB millions,synthetic_plan
+2026-05,budget,TOP_TOY,global,TOP TOY - Global,operating_profit,35.414988,RMB millions,synthetic_plan
+2026-05,budget,TOP_TOY,global,TOP TOY - Global,average_ticket,185.000000,RMB per transaction,synthetic_plan
+2026-05,budget,TOP_TOY,global,TOP TOY - Global,volume,1.276216,million transactions,calculated
+2026-06,budget,TOP_TOY,global,TOP TOY - Global,revenue,263.876379,RMB millions,synthetic_plan
+2026-06,budget,TOP_TOY,global,TOP TOY - Global,gross_profit,126.660662,RMB millions,synthetic_plan
+2026-06,budget,TOP_TOY,global,TOP TOY - Global,cost_of_sales,137.215717,RMB millions,synthetic_plan
+2026-06,budget,TOP_TOY,global,TOP TOY - Global,operating_expense,87.079205,RMB millions,synthetic_plan
+2026-06,budget,TOP_TOY,global,TOP TOY - Global,operating_profit,39.581457,RMB millions,synthetic_plan
+2026-06,budget,TOP_TOY,global,TOP TOY - Global,average_ticket,185.000000,RMB per transaction,synthetic_plan
+2026-06,budget,TOP_TOY,global,TOP TOY - Global,volume,1.426359,million transactions,calculated
+2026-07,budget,TOP_TOY,global,TOP TOY - Global,revenue,222.211688,RMB millions,synthetic_plan
+2026-07,budget,TOP_TOY,global,TOP TOY - Global,gross_profit,106.661610,RMB millions,synthetic_plan
+2026-07,budget,TOP_TOY,global,TOP TOY - Global,cost_of_sales,115.550078,RMB millions,synthetic_plan
+2026-07,budget,TOP_TOY,global,TOP TOY - Global,operating_expense,73.329857,RMB millions,synthetic_plan
+2026-07,budget,TOP_TOY,global,TOP TOY - Global,operating_profit,33.331753,RMB millions,synthetic_plan
+2026-07,budget,TOP_TOY,global,TOP TOY - Global,average_ticket,185.000000,RMB per transaction,synthetic_plan
+2026-07,budget,TOP_TOY,global,TOP TOY - Global,volume,1.201144,million transactions,calculated
+2026-08,budget,TOP_TOY,global,TOP TOY - Global,revenue,222.211688,RMB millions,synthetic_plan
+2026-08,budget,TOP_TOY,global,TOP TOY - Global,gross_profit,106.661610,RMB millions,synthetic_plan
+2026-08,budget,TOP_TOY,global,TOP TOY - Global,cost_of_sales,115.550078,RMB millions,synthetic_plan
+2026-08,budget,TOP_TOY,global,TOP TOY - Global,operating_expense,73.329857,RMB millions,synthetic_plan
+2026-08,budget,TOP_TOY,global,TOP TOY - Global,operating_profit,33.331753,RMB millions,synthetic_plan
+2026-08,budget,TOP_TOY,global,TOP TOY - Global,average_ticket,185.000000,RMB per transaction,synthetic_plan
+2026-08,budget,TOP_TOY,global,TOP TOY - Global,volume,1.201144,million transactions,calculated
+2026-09,budget,TOP_TOY,global,TOP TOY - Global,revenue,263.876379,RMB millions,synthetic_plan
+2026-09,budget,TOP_TOY,global,TOP TOY - Global,gross_profit,126.660662,RMB millions,synthetic_plan
+2026-09,budget,TOP_TOY,global,TOP TOY - Global,cost_of_sales,137.215717,RMB millions,synthetic_plan
+2026-09,budget,TOP_TOY,global,TOP TOY - Global,operating_expense,87.079205,RMB millions,synthetic_plan
+2026-09,budget,TOP_TOY,global,TOP TOY - Global,operating_profit,39.581457,RMB millions,synthetic_plan
+2026-09,budget,TOP_TOY,global,TOP TOY - Global,average_ticket,185.000000,RMB per transaction,synthetic_plan
+2026-09,budget,TOP_TOY,global,TOP TOY - Global,volume,1.426359,million transactions,calculated
+2026-10,budget,TOP_TOY,global,TOP TOY - Global,revenue,222.211688,RMB millions,synthetic_plan
+2026-10,budget,TOP_TOY,global,TOP TOY - Global,gross_profit,106.661610,RMB millions,synthetic_plan
+2026-10,budget,TOP_TOY,global,TOP TOY - Global,cost_of_sales,115.550078,RMB millions,synthetic_plan
+2026-10,budget,TOP_TOY,global,TOP TOY - Global,operating_expense,73.329857,RMB millions,synthetic_plan
+2026-10,budget,TOP_TOY,global,TOP TOY - Global,operating_profit,33.331753,RMB millions,synthetic_plan
+2026-10,budget,TOP_TOY,global,TOP TOY - Global,average_ticket,185.000000,RMB per transaction,synthetic_plan
+2026-10,budget,TOP_TOY,global,TOP TOY - Global,volume,1.201144,million transactions,calculated
+2026-11,budget,TOP_TOY,global,TOP TOY - Global,revenue,236.099919,RMB millions,synthetic_plan
+2026-11,budget,TOP_TOY,global,TOP TOY - Global,gross_profit,113.327961,RMB millions,synthetic_plan
+2026-11,budget,TOP_TOY,global,TOP TOY - Global,cost_of_sales,122.771958,RMB millions,synthetic_plan
+2026-11,budget,TOP_TOY,global,TOP TOY - Global,operating_expense,77.912973,RMB millions,synthetic_plan
+2026-11,budget,TOP_TOY,global,TOP TOY - Global,operating_profit,35.414988,RMB millions,synthetic_plan
+2026-11,budget,TOP_TOY,global,TOP TOY - Global,average_ticket,185.000000,RMB per transaction,synthetic_plan
+2026-11,budget,TOP_TOY,global,TOP TOY - Global,volume,1.276216,million transactions,calculated
+2026-12,budget,TOP_TOY,global,TOP TOY - Global,revenue,277.764610,RMB millions,synthetic_plan
+2026-12,budget,TOP_TOY,global,TOP TOY - Global,gross_profit,133.327013,RMB millions,synthetic_plan
+2026-12,budget,TOP_TOY,global,TOP TOY - Global,cost_of_sales,144.437597,RMB millions,synthetic_plan
+2026-12,budget,TOP_TOY,global,TOP TOY - Global,operating_expense,91.662321,RMB millions,synthetic_plan
+2026-12,budget,TOP_TOY,global,TOP TOY - Global,operating_profit,41.664692,RMB millions,synthetic_plan
+2026-12,budget,TOP_TOY,global,TOP TOY - Global,average_ticket,185.000000,RMB per transaction,synthetic_plan
+2026-12,budget,TOP_TOY,global,TOP TOY - Global,volume,1.501430,million transactions,calculated
+2026-01,forecast,TOP_TOY,global,TOP TOY - Global,revenue,153.846563,RMB millions,calculated
+2026-01,forecast,TOP_TOY,global,TOP TOY - Global,gross_profit,68.149516,RMB millions,calculated
+2026-01,forecast,TOP_TOY,global,TOP TOY - Global,cost_of_sales,85.697046,RMB millions,calculated
+2026-01,forecast,TOP_TOY,global,TOP TOY - Global,operating_expense,46.208766,RMB millions,calculated
+2026-01,forecast,TOP_TOY,global,TOP TOY - Global,operating_profit,21.940750,RMB millions,calculated
+2026-01,forecast,TOP_TOY,global,TOP TOY - Global,average_ticket,177.970000,RMB per transaction,calculated
+2026-01,forecast,TOP_TOY,global,TOP TOY - Global,volume,0.864452,million transactions,calculated
+2026-02,forecast,TOP_TOY,global,TOP TOY - Global,revenue,133.333688,RMB millions,calculated
+2026-02,forecast,TOP_TOY,global,TOP TOY - Global,gross_profit,59.062914,RMB millions,calculated
+2026-02,forecast,TOP_TOY,global,TOP TOY - Global,cost_of_sales,74.270773,RMB millions,calculated
+2026-02,forecast,TOP_TOY,global,TOP TOY - Global,operating_expense,40.047597,RMB millions,calculated
+2026-02,forecast,TOP_TOY,global,TOP TOY - Global,operating_profit,19.015317,RMB millions,calculated
+2026-02,forecast,TOP_TOY,global,TOP TOY - Global,average_ticket,177.970000,RMB per transaction,calculated
+2026-02,forecast,TOP_TOY,global,TOP TOY - Global,volume,0.749192,million transactions,calculated
+2026-03,forecast,TOP_TOY,global,TOP TOY - Global,revenue,164.103000,RMB millions,calculated
+2026-03,forecast,TOP_TOY,global,TOP TOY - Global,gross_profit,72.692818,RMB millions,calculated
+2026-03,forecast,TOP_TOY,global,TOP TOY - Global,cost_of_sales,91.410182,RMB millions,calculated
+2026-03,forecast,TOP_TOY,global,TOP TOY - Global,operating_expense,49.289351,RMB millions,calculated
+2026-03,forecast,TOP_TOY,global,TOP TOY - Global,operating_profit,23.403467,RMB millions,calculated
+2026-03,forecast,TOP_TOY,global,TOP TOY - Global,average_ticket,177.970000,RMB per transaction,calculated
+2026-03,forecast,TOP_TOY,global,TOP TOY - Global,volume,0.922082,million transactions,calculated
+2026-04,forecast,TOP_TOY,global,TOP TOY - Global,revenue,164.103000,RMB millions,calculated
+2026-04,forecast,TOP_TOY,global,TOP TOY - Global,gross_profit,72.692818,RMB millions,calculated
+2026-04,forecast,TOP_TOY,global,TOP TOY - Global,cost_of_sales,91.410182,RMB millions,calculated
+2026-04,forecast,TOP_TOY,global,TOP TOY - Global,operating_expense,49.289351,RMB millions,calculated
+2026-04,forecast,TOP_TOY,global,TOP TOY - Global,operating_profit,23.403467,RMB millions,calculated
+2026-04,forecast,TOP_TOY,global,TOP TOY - Global,average_ticket,177.970000,RMB per transaction,calculated
+2026-04,forecast,TOP_TOY,global,TOP TOY - Global,volume,0.922082,million transactions,calculated
+2026-05,forecast,TOP_TOY,global,TOP TOY - Global,revenue,174.359438,RMB millions,calculated
+2026-05,forecast,TOP_TOY,global,TOP TOY - Global,gross_profit,77.236119,RMB millions,calculated
+2026-05,forecast,TOP_TOY,global,TOP TOY - Global,cost_of_sales,97.123319,RMB millions,calculated
+2026-05,forecast,TOP_TOY,global,TOP TOY - Global,operating_expense,52.369935,RMB millions,calculated
+2026-05,forecast,TOP_TOY,global,TOP TOY - Global,operating_profit,24.866184,RMB millions,calculated
+2026-05,forecast,TOP_TOY,global,TOP TOY - Global,average_ticket,177.970000,RMB per transaction,calculated
+2026-05,forecast,TOP_TOY,global,TOP TOY - Global,volume,0.979713,million transactions,calculated
+2026-06,forecast,TOP_TOY,global,TOP TOY - Global,revenue,194.872313,RMB millions,calculated
+2026-06,forecast,TOP_TOY,global,TOP TOY - Global,gross_profit,86.322721,RMB millions,calculated
+2026-06,forecast,TOP_TOY,global,TOP TOY - Global,cost_of_sales,108.549592,RMB millions,calculated
+2026-06,forecast,TOP_TOY,global,TOP TOY - Global,operating_expense,58.531104,RMB millions,calculated
+2026-06,forecast,TOP_TOY,global,TOP TOY - Global,operating_profit,27.791617,RMB millions,calculated
+2026-06,forecast,TOP_TOY,global,TOP TOY - Global,average_ticket,177.970000,RMB per transaction,calculated
+2026-06,forecast,TOP_TOY,global,TOP TOY - Global,volume,1.094973,million transactions,calculated
+2026-07,forecast,TOP_TOY,global,TOP TOY - Global,revenue,204.434753,RMB millions,synthetic_plan
+2026-07,forecast,TOP_TOY,global,TOP TOY - Global,gross_profit,98.128681,RMB millions,synthetic_plan
+2026-07,forecast,TOP_TOY,global,TOP TOY - Global,cost_of_sales,106.306072,RMB millions,synthetic_plan
+2026-07,forecast,TOP_TOY,global,TOP TOY - Global,operating_expense,67.463468,RMB millions,synthetic_plan
+2026-07,forecast,TOP_TOY,global,TOP TOY - Global,operating_profit,30.665213,RMB millions,synthetic_plan
+2026-07,forecast,TOP_TOY,global,TOP TOY - Global,average_ticket,185.000000,RMB per transaction,synthetic_plan
+2026-07,forecast,TOP_TOY,global,TOP TOY - Global,volume,1.105053,million transactions,calculated
+2026-08,forecast,TOP_TOY,global,TOP TOY - Global,revenue,204.434753,RMB millions,synthetic_plan
+2026-08,forecast,TOP_TOY,global,TOP TOY - Global,gross_profit,98.128681,RMB millions,synthetic_plan
+2026-08,forecast,TOP_TOY,global,TOP TOY - Global,cost_of_sales,106.306072,RMB millions,synthetic_plan
+2026-08,forecast,TOP_TOY,global,TOP TOY - Global,operating_expense,67.463468,RMB millions,synthetic_plan
+2026-08,forecast,TOP_TOY,global,TOP TOY - Global,operating_profit,30.665213,RMB millions,synthetic_plan
+2026-08,forecast,TOP_TOY,global,TOP TOY - Global,average_ticket,185.000000,RMB per transaction,synthetic_plan
+2026-08,forecast,TOP_TOY,global,TOP TOY - Global,volume,1.105053,million transactions,calculated
+2026-09,forecast,TOP_TOY,global,TOP TOY - Global,revenue,242.766269,RMB millions,synthetic_plan
+2026-09,forecast,TOP_TOY,global,TOP TOY - Global,gross_profit,116.527809,RMB millions,synthetic_plan
+2026-09,forecast,TOP_TOY,global,TOP TOY - Global,cost_of_sales,126.238460,RMB millions,synthetic_plan
+2026-09,forecast,TOP_TOY,global,TOP TOY - Global,operating_expense,80.112869,RMB millions,synthetic_plan
+2026-09,forecast,TOP_TOY,global,TOP TOY - Global,operating_profit,36.414940,RMB millions,synthetic_plan
+2026-09,forecast,TOP_TOY,global,TOP TOY - Global,average_ticket,185.000000,RMB per transaction,synthetic_plan
+2026-09,forecast,TOP_TOY,global,TOP TOY - Global,volume,1.312250,million transactions,calculated
+2026-10,forecast,TOP_TOY,global,TOP TOY - Global,revenue,204.434753,RMB millions,synthetic_plan
+2026-10,forecast,TOP_TOY,global,TOP TOY - Global,gross_profit,98.128681,RMB millions,synthetic_plan
+2026-10,forecast,TOP_TOY,global,TOP TOY - Global,cost_of_sales,106.306072,RMB millions,synthetic_plan
+2026-10,forecast,TOP_TOY,global,TOP TOY - Global,operating_expense,67.463468,RMB millions,synthetic_plan
+2026-10,forecast,TOP_TOY,global,TOP TOY - Global,operating_profit,30.665213,RMB millions,synthetic_plan
+2026-10,forecast,TOP_TOY,global,TOP TOY - Global,average_ticket,185.000000,RMB per transaction,synthetic_plan
+2026-10,forecast,TOP_TOY,global,TOP TOY - Global,volume,1.105053,million transactions,calculated
+2026-11,forecast,TOP_TOY,global,TOP TOY - Global,revenue,217.211925,RMB millions,synthetic_plan
+2026-11,forecast,TOP_TOY,global,TOP TOY - Global,gross_profit,104.261724,RMB millions,synthetic_plan
+2026-11,forecast,TOP_TOY,global,TOP TOY - Global,cost_of_sales,112.950201,RMB millions,synthetic_plan
+2026-11,forecast,TOP_TOY,global,TOP TOY - Global,operating_expense,71.679935,RMB millions,synthetic_plan
+2026-11,forecast,TOP_TOY,global,TOP TOY - Global,operating_profit,32.581789,RMB millions,synthetic_plan
+2026-11,forecast,TOP_TOY,global,TOP TOY - Global,average_ticket,185.000000,RMB per transaction,synthetic_plan
+2026-11,forecast,TOP_TOY,global,TOP TOY - Global,volume,1.174119,million transactions,calculated
+2026-12,forecast,TOP_TOY,global,TOP TOY - Global,revenue,255.543441,RMB millions,synthetic_plan
+2026-12,forecast,TOP_TOY,global,TOP TOY - Global,gross_profit,122.660852,RMB millions,synthetic_plan
+2026-12,forecast,TOP_TOY,global,TOP TOY - Global,cost_of_sales,132.882589,RMB millions,synthetic_plan
+2026-12,forecast,TOP_TOY,global,TOP TOY - Global,operating_expense,84.329336,RMB millions,synthetic_plan
+2026-12,forecast,TOP_TOY,global,TOP TOY - Global,operating_profit,38.331516,RMB millions,synthetic_plan
+2026-12,forecast,TOP_TOY,global,TOP TOY - Global,average_ticket,185.000000,RMB per transaction,synthetic_plan
+2026-12,forecast,TOP_TOY,global,TOP TOY - Global,volume,1.381316,million transactions,calculated
+2026-01,prior_year,TOP_TOY,global,TOP TOY - Global,revenue,115.946563,RMB millions,synthetic_allocation
+2026-01,prior_year,TOP_TOY,global,TOP TOY - Global,gross_profit,51.312105,RMB millions,synthetic_allocation
+2026-01,prior_year,TOP_TOY,global,TOP TOY - Global,cost_of_sales,64.634457,RMB millions,synthetic_allocation
+2026-01,prior_year,TOP_TOY,global,TOP TOY - Global,operating_expense,32.229242,RMB millions,synthetic_allocation
+2026-01,prior_year,TOP_TOY,global,TOP TOY - Global,operating_profit,19.082863,RMB millions,synthetic_allocation
+2026-01,prior_year,TOP_TOY,global,TOP TOY - Global,average_ticket,175.750000,RMB per transaction,synthetic_allocation
+2026-01,prior_year,TOP_TOY,global,TOP TOY - Global,volume,0.659724,million transactions,calculated
+2026-02,prior_year,TOP_TOY,global,TOP TOY - Global,revenue,100.487021,RMB millions,synthetic_allocation
+2026-02,prior_year,TOP_TOY,global,TOP TOY - Global,gross_profit,44.470491,RMB millions,synthetic_allocation
+2026-02,prior_year,TOP_TOY,global,TOP TOY - Global,cost_of_sales,56.016530,RMB millions,synthetic_allocation
+2026-02,prior_year,TOP_TOY,global,TOP TOY - Global,operating_expense,27.932010,RMB millions,synthetic_allocation
+2026-02,prior_year,TOP_TOY,global,TOP TOY - Global,operating_profit,16.538482,RMB millions,synthetic_allocation
+2026-02,prior_year,TOP_TOY,global,TOP TOY - Global,average_ticket,175.750000,RMB per transaction,synthetic_allocation
+2026-02,prior_year,TOP_TOY,global,TOP TOY - Global,volume,0.571761,million transactions,calculated
+2026-03,prior_year,TOP_TOY,global,TOP TOY - Global,revenue,123.676333,RMB millions,synthetic_allocation
+2026-03,prior_year,TOP_TOY,global,TOP TOY - Global,gross_profit,54.732912,RMB millions,synthetic_allocation
+2026-03,prior_year,TOP_TOY,global,TOP TOY - Global,cost_of_sales,68.943421,RMB millions,synthetic_allocation
+2026-03,prior_year,TOP_TOY,global,TOP TOY - Global,operating_expense,34.377858,RMB millions,synthetic_allocation
+2026-03,prior_year,TOP_TOY,global,TOP TOY - Global,operating_profit,20.355054,RMB millions,synthetic_allocation
+2026-03,prior_year,TOP_TOY,global,TOP TOY - Global,average_ticket,175.750000,RMB per transaction,synthetic_allocation
+2026-03,prior_year,TOP_TOY,global,TOP TOY - Global,volume,0.703706,million transactions,calculated
+2026-04,prior_year,TOP_TOY,global,TOP TOY - Global,revenue,123.676333,RMB millions,synthetic_allocation
+2026-04,prior_year,TOP_TOY,global,TOP TOY - Global,gross_profit,54.732912,RMB millions,synthetic_allocation
+2026-04,prior_year,TOP_TOY,global,TOP TOY - Global,cost_of_sales,68.943421,RMB millions,synthetic_allocation
+2026-04,prior_year,TOP_TOY,global,TOP TOY - Global,operating_expense,34.377858,RMB millions,synthetic_allocation
+2026-04,prior_year,TOP_TOY,global,TOP TOY - Global,operating_profit,20.355054,RMB millions,synthetic_allocation
+2026-04,prior_year,TOP_TOY,global,TOP TOY - Global,average_ticket,175.750000,RMB per transaction,synthetic_allocation
+2026-04,prior_year,TOP_TOY,global,TOP TOY - Global,volume,0.703706,million transactions,calculated
+2026-05,prior_year,TOP_TOY,global,TOP TOY - Global,revenue,131.406104,RMB millions,synthetic_allocation
+2026-05,prior_year,TOP_TOY,global,TOP TOY - Global,gross_profit,58.153719,RMB millions,synthetic_allocation
+2026-05,prior_year,TOP_TOY,global,TOP TOY - Global,cost_of_sales,73.252385,RMB millions,synthetic_allocation
+2026-05,prior_year,TOP_TOY,global,TOP TOY - Global,operating_expense,36.526474,RMB millions,synthetic_allocation
+2026-05,prior_year,TOP_TOY,global,TOP TOY - Global,operating_profit,21.627245,RMB millions,synthetic_allocation
+2026-05,prior_year,TOP_TOY,global,TOP TOY - Global,average_ticket,175.750000,RMB per transaction,synthetic_allocation
+2026-05,prior_year,TOP_TOY,global,TOP TOY - Global,volume,0.747688,million transactions,calculated
+2026-06,prior_year,TOP_TOY,global,TOP TOY - Global,revenue,146.865646,RMB millions,synthetic_allocation
+2026-06,prior_year,TOP_TOY,global,TOP TOY - Global,gross_profit,64.995333,RMB millions,synthetic_allocation
+2026-06,prior_year,TOP_TOY,global,TOP TOY - Global,cost_of_sales,81.870312,RMB millions,synthetic_allocation
+2026-06,prior_year,TOP_TOY,global,TOP TOY - Global,operating_expense,40.823707,RMB millions,synthetic_allocation
+2026-06,prior_year,TOP_TOY,global,TOP TOY - Global,operating_profit,24.171627,RMB millions,synthetic_allocation
+2026-06,prior_year,TOP_TOY,global,TOP TOY - Global,average_ticket,175.750000,RMB per transaction,synthetic_allocation
+2026-06,prior_year,TOP_TOY,global,TOP TOY - Global,volume,0.835651,million transactions,calculated
+2026-07,prior_year,TOP_TOY,global,TOP TOY - Global,revenue,180.547692,RMB millions,synthetic_allocation
+2026-07,prior_year,TOP_TOY,global,TOP TOY - Global,gross_profit,82.074726,RMB millions,synthetic_allocation
+2026-07,prior_year,TOP_TOY,global,TOP TOY - Global,cost_of_sales,98.472967,RMB millions,synthetic_allocation
+2026-07,prior_year,TOP_TOY,global,TOP TOY - Global,operating_expense,55.467963,RMB millions,synthetic_allocation
+2026-07,prior_year,TOP_TOY,global,TOP TOY - Global,operating_profit,26.606763,RMB millions,synthetic_allocation
+2026-07,prior_year,TOP_TOY,global,TOP TOY - Global,average_ticket,175.750000,RMB per transaction,synthetic_allocation
+2026-07,prior_year,TOP_TOY,global,TOP TOY - Global,volume,1.027298,million transactions,calculated
+2026-08,prior_year,TOP_TOY,global,TOP TOY - Global,revenue,180.547692,RMB millions,synthetic_allocation
+2026-08,prior_year,TOP_TOY,global,TOP TOY - Global,gross_profit,82.074726,RMB millions,synthetic_allocation
+2026-08,prior_year,TOP_TOY,global,TOP TOY - Global,cost_of_sales,98.472967,RMB millions,synthetic_allocation
+2026-08,prior_year,TOP_TOY,global,TOP TOY - Global,operating_expense,55.467963,RMB millions,synthetic_allocation
+2026-08,prior_year,TOP_TOY,global,TOP TOY - Global,operating_profit,26.606763,RMB millions,synthetic_allocation
+2026-08,prior_year,TOP_TOY,global,TOP TOY - Global,average_ticket,175.750000,RMB per transaction,synthetic_allocation
+2026-08,prior_year,TOP_TOY,global,TOP TOY - Global,volume,1.027298,million transactions,calculated
+2026-09,prior_year,TOP_TOY,global,TOP TOY - Global,revenue,214.400385,RMB millions,synthetic_allocation
+2026-09,prior_year,TOP_TOY,global,TOP TOY - Global,gross_profit,97.463737,RMB millions,synthetic_allocation
+2026-09,prior_year,TOP_TOY,global,TOP TOY - Global,cost_of_sales,116.936648,RMB millions,synthetic_allocation
+2026-09,prior_year,TOP_TOY,global,TOP TOY - Global,operating_expense,65.868206,RMB millions,synthetic_allocation
+2026-09,prior_year,TOP_TOY,global,TOP TOY - Global,operating_profit,31.595531,RMB millions,synthetic_allocation
+2026-09,prior_year,TOP_TOY,global,TOP TOY - Global,average_ticket,175.750000,RMB per transaction,synthetic_allocation
+2026-09,prior_year,TOP_TOY,global,TOP TOY - Global,volume,1.219917,million transactions,calculated
+2026-10,prior_year,TOP_TOY,global,TOP TOY - Global,revenue,180.547692,RMB millions,synthetic_allocation
+2026-10,prior_year,TOP_TOY,global,TOP TOY - Global,gross_profit,82.074726,RMB millions,synthetic_allocation
+2026-10,prior_year,TOP_TOY,global,TOP TOY - Global,cost_of_sales,98.472967,RMB millions,synthetic_allocation
+2026-10,prior_year,TOP_TOY,global,TOP TOY - Global,operating_expense,55.467963,RMB millions,synthetic_allocation
+2026-10,prior_year,TOP_TOY,global,TOP TOY - Global,operating_profit,26.606763,RMB millions,synthetic_allocation
+2026-10,prior_year,TOP_TOY,global,TOP TOY - Global,average_ticket,175.750000,RMB per transaction,synthetic_allocation
+2026-10,prior_year,TOP_TOY,global,TOP TOY - Global,volume,1.027298,million transactions,calculated
+2026-11,prior_year,TOP_TOY,global,TOP TOY - Global,revenue,191.831923,RMB millions,synthetic_allocation
+2026-11,prior_year,TOP_TOY,global,TOP TOY - Global,gross_profit,87.204396,RMB millions,synthetic_allocation
+2026-11,prior_year,TOP_TOY,global,TOP TOY - Global,cost_of_sales,104.627527,RMB millions,synthetic_allocation
+2026-11,prior_year,TOP_TOY,global,TOP TOY - Global,operating_expense,58.934710,RMB millions,synthetic_allocation
+2026-11,prior_year,TOP_TOY,global,TOP TOY - Global,operating_profit,28.269685,RMB millions,synthetic_allocation
+2026-11,prior_year,TOP_TOY,global,TOP TOY - Global,average_ticket,175.750000,RMB per transaction,synthetic_allocation
+2026-11,prior_year,TOP_TOY,global,TOP TOY - Global,volume,1.091505,million transactions,calculated
+2026-12,prior_year,TOP_TOY,global,TOP TOY - Global,revenue,225.684615,RMB millions,synthetic_allocation
+2026-12,prior_year,TOP_TOY,global,TOP TOY - Global,gross_profit,102.593407,RMB millions,synthetic_allocation
+2026-12,prior_year,TOP_TOY,global,TOP TOY - Global,cost_of_sales,123.091208,RMB millions,synthetic_allocation
+2026-12,prior_year,TOP_TOY,global,TOP TOY - Global,operating_expense,69.334953,RMB millions,synthetic_allocation
+2026-12,prior_year,TOP_TOY,global,TOP TOY - Global,operating_profit,33.258453,RMB millions,synthetic_allocation
+2026-12,prior_year,TOP_TOY,global,TOP TOY - Global,average_ticket,175.750000,RMB per transaction,synthetic_allocation
+2026-12,prior_year,TOP_TOY,global,TOP TOY - Global,volume,1.284123,million transactions,calculated

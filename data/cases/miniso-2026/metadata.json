@@ -1,0 +1,23 @@
+{
+  "case_id": "miniso-2026",
+  "name": "MINISO FP&A Portfolio MVP",
+  "description": "Public-data anchored FY2026 planning case across MINISO Mainland, MINISO Overseas and TOP TOY Global.",
+  "planning_year": "CY2026",
+  "as_of_date": "2026-06-30",
+  "currency": "RMB",
+  "unit": "RMB millions unless stated otherwise",
+  "accounting_standard": "IFRS",
+  "business_units": ["MINISO - Chinese Mainland", "MINISO - Overseas", "TOP TOY - Global"],
+  "data_sources": [
+    {"name": "MINISO 2025 Form 20-F", "url": "https://ir.miniso.com/sec-filings?action=view&filer=Ticker:MNSO&item=1008095&pagetemplate=basic", "source_date": "2026-04-30", "scope": "FY2025 IFRS group results and segment disclosure"},
+    {"name": "MINISO 2026 H1 results", "url": "https://ir.miniso.com/2026-08-28-MINISO-Group-Announces-2026-June-Quarter-and-Interim-Unaudited-Financial-Results", "source_date": "2026-08-28", "scope": "2026 Q2 and H1 IFRS results and revenue split"},
+    {"name": "MINISO 2026 Q1 results", "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0526/2026052600560.pdf", "source_date": "2026-05-26", "scope": "2026 Q1 IFRS results and revenue split"},
+    {"name": "MINISO 2025 H1 results", "url": "https://ir.miniso.com/2025-08-21-MINISO-Group-Announces-2025-June-Quarter-and-Interim-Unaudited-Financial-Results", "source_date": "2025-08-21", "scope": "2025 H1 IFRS results and revenue split"}
+  ],
+  "provenance_legend": {
+    "public_reported": "Reported by MINISO in an official filing or investor-relations release.",
+    "synthetic_allocation": "Deterministic allocation of reported quarterly or annual totals to monthly or three-business-unit views.",
+    "synthetic_plan": "Illustrative budget or forecast assumption for this portfolio case; not MINISO internal data.",
+    "calculated": "Derived from other case values using documented formulas."
+  }
+}
