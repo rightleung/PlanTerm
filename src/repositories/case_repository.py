@@ -9,6 +9,7 @@ from pathlib import Path
 
 from src.config import ROOT_DIR
 from src.models.planning import PlanningRecord
+from src.services.case_builder import validate_case_records
 
 
 @dataclass(frozen=True)
@@ -60,4 +61,5 @@ class CaseRepository:
                     unit=row["unit"],
                     provenance=row["provenance"],
                 ))
+        validate_case_records(records)
         return CaseData(metadata["case_id"], metadata, assumptions, tuple(records))
