@@ -12,7 +12,7 @@ def test_case_builder_is_repeatable_and_validates_records():
     second = build_rows()
     assert first == second
     # This assertion ensures the shared validator sees the full required metric set.
-    validate_case_records([PlanningRecord(period="2026-01", scenario="actual", brand="MINISO", market="mainland", business_unit="MINISO - Chinese Mainland", metric=metric, value=1.0, unit="RMB millions", provenance="calculated") for metric in ("revenue", "volume", "average_ticket", "cost_of_sales", "gross_profit", "operating_expense", "operating_profit")])
+    validate_case_records([PlanningRecord(period="2026-01", scenario="actual", brand="MINISO", market="mainland", business_unit="MINISO - Chinese Mainland", metric=metric, value=value, unit="RMB millions", provenance="calculated") for metric, value in {"revenue": 10.0, "volume": 2.0, "average_ticket": 5.0, "cost_of_sales": 6.0, "gross_profit": 4.0, "operating_expense": 3.0, "operating_profit": 1.0}.items()])
 
 
 def test_case_reconciles_group_and_profit_formulas(case):

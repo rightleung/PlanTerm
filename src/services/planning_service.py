@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from src.models.planning import DataSource, KpiSnapshot, MonthlyTrendPoint, PlanningDashboardResponse
 from src.repositories.case_repository import CaseData
+from src.services.case_builder import validate_case_records
 from src.services.insight_service import make_insights
 from src.services.pvm_service import calculate_pvm
 from src.services.variance_service import aggregate_total, make_variance_rows, safe_pct, status_for
@@ -82,8 +83,11 @@ def _trend(case: CaseData, units: set[str]) -> list[MonthlyTrendPoint]:
 
 
 def build_dashboard(case: CaseData, brand: str, market: str) -> PlanningDashboardResponse:
+    validate_case_records(case.records)
     units = selected_units(brand, market)
     pvm, pvm_by_unit = calculate_pvm(case.records, units, YTD_MONTHS)
+    if pvm.reconciliation_difference is not None and abs(pvm.reconciliation_difference) > 0.01:
+        raise ValueError("PVM reconciliation failed")
     rows = make_variance_rows(case.records, units, YTD_MONTHS, FY_MONTHS, pvm_by_unit)
     sources = [DataSource(**source) for source in case.metadata["data_sources"]]
     return PlanningDashboardResponse(

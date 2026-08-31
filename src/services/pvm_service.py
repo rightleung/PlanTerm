@@ -43,10 +43,11 @@ def calculate_pvm(records: tuple[PlanningRecord, ...], units: set[str], periods:
     difference = volume + mix + price - (total_actual - total_budget)
     by_unit = {}
     for unit in units:
+        volume_delta = actual_volume.get(unit, 0) - budget_volume.get(unit, 0)
         by_unit[unit] = {
-            "volume": (actual_volume.get(unit, 0) - budget_volume.get(unit, 0)) * budget_ticket.get(unit, 0),
+            "volume": volume_delta * budget_weighted_ticket,
             "price": actual_volume.get(unit, 0) * (actual_ticket.get(unit, 0) - budget_ticket.get(unit, 0)),
-            "mix": 0.0,
+            "mix": volume_delta * (budget_ticket.get(unit, 0) - budget_weighted_ticket),
         }
     return PvmBridge(
         actual_revenue=total_actual,
