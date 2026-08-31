@@ -14,4 +14,3 @@ export function PvmBridge({ bridge }: { bridge: PvmBridgeData }) {
     </section>
   )
 }
-

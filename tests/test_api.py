@@ -36,4 +36,3 @@ def test_api_errors_are_normalized_and_safe():
     invalid = client.get("/api/v1/cases/miniso-2026/dashboard?market=not-a-market")
     assert invalid.status_code == 422
     assert invalid.json()["error_type"] == "validation_error"
-

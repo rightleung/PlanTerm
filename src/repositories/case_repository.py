@@ -61,4 +61,3 @@ class CaseRepository:
                     provenance=row["provenance"],
                 ))
         return CaseData(metadata["case_id"], metadata, assumptions, tuple(records))
-

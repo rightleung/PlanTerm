@@ -24,4 +24,3 @@ Completed in this release: public-data anchored Actual / Budget / Forecast / Pri
 - Public peer benchmark views
 
 Later versions remain out of scope until explicitly started.
-

@@ -34,4 +34,3 @@ def make_insights(rows: list[VarianceRow]) -> list[ManagementInsight]:
             action=ACTION_BY_DRIVER[driver],
         ))
     return insights
-

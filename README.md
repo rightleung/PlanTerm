@@ -66,4 +66,3 @@ npm run e2e:preflight
 ## Project history and license
 
 PlanTerm is an independent repository. Its FastAPI error handling, configuration patterns and selected React UI primitives were adapted from the author's earlier RiskLens project; no RiskLens Git history is copied into this repository. PlanTerm is released under the [MIT License](./LICENSE).
-

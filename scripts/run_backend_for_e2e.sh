@@ -9,4 +9,3 @@ if [ ! -x "$PYTHON_BIN" ]; then
   PYTHON_BIN="$(command -v python3)"
 fi
 exec "$PYTHON_BIN" -m uvicorn src.api:app --host 127.0.0.1 --port 8000
-

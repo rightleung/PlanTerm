@@ -78,4 +78,3 @@ jobs:
         working-directory: web
       - run: npm audit --audit-level=high
         working-directory: web
-

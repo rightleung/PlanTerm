@@ -11,4 +11,3 @@ export function VarianceTable({ rows }: { rows: VarianceRow[] }) {
     </section>
   )
 }
-

@@ -30,4 +30,3 @@ export function MonthlyTrendChart({ data }: { data: MonthlyTrendPoint[] }) {
     </section>
   )
 }
-

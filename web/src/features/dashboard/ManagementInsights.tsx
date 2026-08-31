@@ -8,4 +8,3 @@ export function ManagementInsights({ insights }: { insights: ManagementInsight[]
     </section>
   )
 }
-

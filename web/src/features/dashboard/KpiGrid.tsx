@@ -28,4 +28,3 @@ export function KpiGrid({ kpis }: { kpis: KpiSnapshot[] }) {
     </section>
   )
 }
-

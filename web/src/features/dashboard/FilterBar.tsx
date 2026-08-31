@@ -32,4 +32,3 @@ export function FilterBar({ brand, market, onBrandChange, onMarketChange, onRese
     </section>
   )
 }
-

@@ -86,4 +86,3 @@ def make_variance_rows(records: tuple[PlanningRecord, ...], units: set[str], ytd
             status=status_for("revenue", revenue_variance, budget["revenue"]),
         ))
     return rows
-

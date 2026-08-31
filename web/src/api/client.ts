@@ -21,4 +21,3 @@ export async function fetchDashboard(caseId: string, brand: BrandFilter, market:
   }
   return body as DashboardResponse
 }
-

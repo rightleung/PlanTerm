@@ -22,4 +22,3 @@ def validate_case_records(records: Iterable[PlanningRecord]) -> None:
     for record in records:
         if record.value is not None and not math.isfinite(record.value):
             raise ValueError(f"Non-finite value found for {record.metric} in {record.period}")
-

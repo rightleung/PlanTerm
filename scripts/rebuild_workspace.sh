@@ -29,4 +29,3 @@ echo "[Rebuild] Installing frontend dependencies and building"
 
 test -s "$WEB_DIR/dist/index.html"
 echo "[Rebuild] Done"
-

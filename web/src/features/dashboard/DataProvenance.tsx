@@ -12,4 +12,3 @@ export function DataProvenance({ dashboard }: { dashboard: DashboardResponse }) 
     </section>
   )
 }
-
