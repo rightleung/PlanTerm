@@ -6,8 +6,13 @@
     "MINISO - Overseas": {"revenue_growth_vs_fy2025": 0.22, "budget_gross_margin": 0.475, "budget_operating_margin": 0.16, "average_ticket": 145.0},
     "TOP TOY - Global": {"revenue_growth_vs_fy2025": 0.45, "budget_gross_margin": 0.48, "budget_operating_margin": 0.15, "average_ticket": 185.0}
   },
+  "profit_allocation_indices": {
+    "MINISO - Chinese Mainland": {"gross_margin_index": 0.96, "operating_margin_index": 0.90},
+    "MINISO - Overseas": {"gross_margin_index": 1.04, "operating_margin_index": 1.08},
+    "TOP TOY - Global": {"gross_margin_index": 1.10, "operating_margin_index": 1.20}
+  },
   "h2_forecast_adjustment_vs_budget": {"MINISO - Chinese Mainland": 0.03, "MINISO - Overseas": -0.05, "TOP TOY - Global": -0.08},
   "monthly_seasonality": {"2026-01": 0.075, "2026-02": 0.065, "2026-03": 0.08, "2026-04": 0.08, "2026-05": 0.085, "2026-06": 0.095, "2026-07": 0.08, "2026-08": 0.08, "2026-09": 0.095, "2026-10": 0.08, "2026-11": 0.085, "2026-12": 0.1},
   "actual_ticket_factors_vs_budget": {"MINISO - Chinese Mainland": 0.968, "MINISO - Overseas": 1.034, "TOP TOY - Global": 0.962},
-  "note": "All budget, forecast, volume, ticket, cost and business-unit profit allocations are illustrative and are not MINISO internal data."
+  "note": "All budget, forecast, volume, ticket, cost and business-unit profit allocations are illustrative and are not MINISO internal data. Profit allocation indices are normalized synthetic allocation controls, not reported segment margins."
 }

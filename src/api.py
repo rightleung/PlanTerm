@@ -13,7 +13,7 @@ from fastapi.staticfiles import StaticFiles
 
 from src.config import ROOT_DIR, settings
 from src.repositories.case_repository import CaseNotFoundError, CaseRepository
-from src.services.planning_service import build_dashboard
+from src.services.planning_service import build_dashboard, filters_are_compatible, valid_combinations
 
 
 logger = logging.getLogger(__name__)
@@ -87,6 +87,14 @@ def dashboard(
         case = repository.get_case(case_id)
     except CaseNotFoundError:
         raise HTTPException(status_code=404, detail={"error": "Case not found", "error_type": "case_not_found", "case_id": case_id})
+    if not filters_are_compatible(case, brand, market):
+        raise HTTPException(status_code=422, detail={
+            "error": "Brand and market combination is not supported",
+            "error_type": "incompatible_filters",
+            "brand": brand,
+            "market": market,
+            "valid_combinations": valid_combinations(case),
+        })
     return build_dashboard(case, brand, market)
 
 

@@ -1,5 +1,9 @@
 # Roadmap
 
+## v0.1.1 — Credibility hardening
+
+Completed in this release: normalized synthetic profit allocation indices, reconciled operating-profit drivers, data-derived filter combinations, incompatible-filter errors, automatic filter reset, split-aware atomic snapshot refreshes and formula-backed Excel formatting.
+
 ## v0.1 — MINISO FP&A Portfolio MVP
 
 Completed in this release: public-data anchored Actual / Budget / Forecast / Prior Year, three-business-unit analysis, deterministic PVM, management insights, local FastAPI API, React dashboard and Excel management pack.

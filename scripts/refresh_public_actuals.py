@@ -7,7 +7,9 @@ import argparse
 import html as html_lib
 import json
 import math
+import os
 import re
+import tempfile
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlparse
@@ -22,6 +24,7 @@ REQUIRED_METRICS = {
     "Revenue", "Cost of Sales", "Gross Profit", "Operating Profit",
     "Adjusted EBITDA", "Operating Cash Flow", "CAPEX", "FCF",
 }
+REQUIRED_SPLIT = {"MINISO Mainland", "MINISO Overseas", "TOP TOY", "Others"}
 
 
 class SnapshotParseError(ValueError):
@@ -103,7 +106,7 @@ def parse_h1_summary_value(cells: list[str]) -> float | None:
 def normalize_metric_unit(value: float, cells: list[str]) -> float:
     """Convert detailed statement values expressed in RMB thousands."""
     candidates = numeric_candidates(cells)
-    if len(candidates) >= 6 and abs(value) >= 100_000:
+    if len(candidates) >= 6:
         return value / 1_000
     return value
 
@@ -120,11 +123,24 @@ def parse_public_html(html: str, source_url: str, source_date: str) -> dict:
         "Adjusted EBITDA": "Adjusted EBITDA", "Net cash from operating activities": "Operating Cash Flow",
         "Capital expenditure": "CAPEX", "CAPEX": "CAPEX", "Free cash flow": "FCF",
     }
+    split_aliases = {
+        "MINISO Mainland": re.compile(r"^[-–—]\s*chinese mainland$", re.IGNORECASE),
+        "MINISO Overseas": re.compile(r"^[-–—]\s*overseas markets$", re.IGNORECASE),
+        "TOP TOY": re.compile(r"^top toy brand", re.IGNORECASE),
+        "Others": re.compile(r"^others$", re.IGNORECASE),
+    }
     metrics: dict[str, float] = {}
+    revenue_split: dict[str, float] = {}
     for row in parser.rows:
         if len(row) < 2:
             continue
         label = row[0].rstrip(":")
+        for split_name, pattern in split_aliases.items():
+            if split_name not in revenue_split and pattern.match(label):
+                split_value = parse_h1_summary_value(row[1:])
+                if split_value is not None:
+                    revenue_split[split_name] = normalize_metric_unit(split_value, row[1:])
+                break
         for alias, metric in aliases.items():
             if label.lower().startswith(alias.lower()):
                 value = parse_h1_summary_value(row[1:])
@@ -156,7 +172,10 @@ def parse_public_html(html: str, source_url: str, source_date: str) -> dict:
     missing = sorted(REQUIRED_METRICS - metrics.keys())
     if missing:
         raise SnapshotParseError(f"Missing required metrics after parsing: {', '.join(missing)}")
-    return {"period_end": EXPECTED_PERIOD_END, "source_url": source_url, "source_date": source_date, "provenance": "public_reported", "metrics": metrics}
+    missing_split = sorted(REQUIRED_SPLIT - revenue_split.keys())
+    if missing_split:
+        raise SnapshotParseError(f"Missing required revenue split after parsing: {', '.join(missing_split)}")
+    return {"period_end": EXPECTED_PERIOD_END, "source_url": source_url, "source_date": source_date, "provenance": "public_reported", "metrics": metrics, "revenue_split": revenue_split}
 
 
 def validate_refresh_payload(parsed: dict, html: str, snapshot: dict) -> None:
@@ -179,6 +198,14 @@ def validate_refresh_payload(parsed: dict, html: str, snapshot: dict) -> None:
         raise SnapshotParseError("Non-finite metric found; refusing to update the public snapshot")
     if not math.isclose(metrics["Revenue"], metrics["Gross Profit"] + metrics["Cost of Sales"], abs_tol=0.01):
         raise SnapshotParseError("Revenue, cost of sales, and gross profit do not reconcile")
+    revenue_split = parsed.get("revenue_split", {})
+    missing_split = sorted(REQUIRED_SPLIT - revenue_split.keys())
+    if missing_split:
+        raise SnapshotParseError(f"Missing required revenue split before write: {', '.join(missing_split)}")
+    if any(not math.isfinite(value) or value < 0 for value in revenue_split.values()):
+        raise SnapshotParseError("Revenue split contains a negative or non-finite value")
+    if not math.isclose(sum(revenue_split.values()), metrics["Revenue"], abs_tol=0.01):
+        raise SnapshotParseError("Parsed revenue split does not reconcile to group revenue")
     current = snapshot["periods"].get("2026 H1", {})
     split_total = sum(current.get("revenue_split", {}).values())
     if not math.isclose(split_total, current.get("metrics", {}).get("Revenue", 0), abs_tol=0.01):
@@ -186,7 +213,7 @@ def validate_refresh_payload(parsed: dict, html: str, snapshot: dict) -> None:
 
 
 def fetch(url: str) -> str:
-    request = Request(url, headers={"User-Agent": "PlanTerm/0.1 public snapshot refresh"})
+    request = Request(url, headers={"User-Agent": "PlanTerm/0.1.1 public snapshot refresh"})
     with urlopen(request, timeout=30) as response:
         return response.read().decode("utf-8", errors="replace")
 
@@ -209,10 +236,32 @@ def main() -> int:
             print(f"- {metric}: {old} -> {value}")
     if not changed:
         print("- none")
+    split_changed = False
+    print("Public revenue split differences (2026 H1):")
+    for segment, value in parsed["revenue_split"].items():
+        old = current.get("revenue_split", {}).get(segment)
+        if old != value:
+            split_changed = True
+            print(f"- {segment}: {old} -> {value}")
+    if not split_changed:
+        print("- none")
     if args.write:
-        current.update({key: parsed[key] for key in ("source_url", "source_date", "provenance")})
+        current.update({key: parsed[key] for key in ("period_end", "source_url", "source_date", "provenance")})
         current["metrics"].update(parsed["metrics"])
-        SNAPSHOT.write_text(json.dumps(snapshot, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        current["revenue_split"] = parsed["revenue_split"]
+        payload = json.dumps(snapshot, indent=2, ensure_ascii=False) + "\n"
+        temporary_path: str | None = None
+        try:
+            file_descriptor, temporary_path = tempfile.mkstemp(prefix=f"{SNAPSHOT.name}.", suffix=".tmp", dir=SNAPSHOT.parent)
+            with os.fdopen(file_descriptor, "w", encoding="utf-8") as handle:
+                handle.write(payload)
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(temporary_path, SNAPSHOT)
+        except Exception:
+            if temporary_path:
+                Path(temporary_path).unlink(missing_ok=True)
+            raise
         print(f"Updated {SNAPSHOT}")
     else:
         print("Dry-run only. Pass --write to update the snapshot.")

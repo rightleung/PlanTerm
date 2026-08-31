@@ -21,6 +21,16 @@ export default function App() {
   const [exporting, setExporting] = useState(false)
   const [retryCount, setRetryCount] = useState(0)
 
+  const marketIsAllowed = (nextBrand: BrandFilter, nextMarket: MarketFilter) => {
+    if (nextMarket === 'all' || !dashboard) return true
+    return dashboard.available_filters.valid_combinations.some((combination) => (nextBrand === 'all' || combination.brand === nextBrand) && combination.market === nextMarket)
+  }
+
+  const handleBrandChange = (nextBrand: BrandFilter) => {
+    setBrand(nextBrand)
+    if (!marketIsAllowed(nextBrand, market)) setMarket('all')
+  }
+
   useEffect(() => {
     let active = true
     setLoading(true)
@@ -36,7 +46,7 @@ export default function App() {
   const resetFilters = () => { setBrand('all'); setMarket('all') }
 
   const download = async () => {
-    if (!dashboard) return
+    if (!dashboard || dashboard.business_unit_variances.length === 0) return
     setExporting(true)
     try { await exportManagementPack(dashboard) } catch (reason: unknown) { setError(reason instanceof Error ? reason : new Error('Excel export failed')) } finally { setExporting(false) }
   }
@@ -55,22 +65,24 @@ export default function App() {
         </section>
 
         <div className="callout"><span className="callout-icon">i</span><span>Public reported data anchors H1 Actual and Prior Year. Budget, Forecast, monthly allocations and business-unit cost/profit views are clearly marked synthetic planning assumptions.</span></div>
-        <FilterBar brand={brand} market={market} onBrandChange={setBrand} onMarketChange={setMarket} onReset={resetFilters} />
+        <FilterBar brand={brand} market={market} availableFilters={dashboard?.available_filters} onBrandChange={handleBrandChange} onMarketChange={setMarket} onReset={resetFilters} />
 
         {loading && <div className="state-card" role="status"><div className="spinner" />Loading planning case…</div>}
         {!loading && error && <div className="state-card error-state" role="alert"><div><strong>Dashboard unavailable</strong><p>{error.message}</p></div><button className="button" type="button" onClick={() => setRetryCount((count) => count + 1)}>Retry</button></div>}
         {!loading && !error && dashboard && (
           <div className="dashboard-stack">
-            <KpiGrid kpis={dashboard.kpis} />
-            <MonthlyTrendChart data={dashboard.monthly_trend} />
-            <VarianceTable rows={dashboard.business_unit_variances} />
-            <div className="two-column"><PvmBridge bridge={dashboard.pvm_bridge} /><ManagementInsights insights={dashboard.management_insights} /></div>
+            {dashboard.business_unit_variances.length > 0 ? <>
+              <KpiGrid kpis={dashboard.kpis} />
+              <MonthlyTrendChart data={dashboard.monthly_trend} />
+              <VarianceTable rows={dashboard.business_unit_variances} />
+              <div className="two-column"><PvmBridge bridge={dashboard.pvm_bridge} /><ManagementInsights insights={dashboard.management_insights} /></div>
+            </> : <div className="state-card empty-dashboard" role="status"><div><strong>No business unit matches the selected filters</strong><p>Choose a valid brand and market combination to view planning metrics.</p></div></div>}
             <DataProvenance dashboard={dashboard} />
-            <div className="export-row"><div><strong>Take this view to your next review</strong><span>Exports the current brand and market filters into a five-sheet Excel management pack.</span></div><button className="button button-primary" type="button" onClick={download} disabled={exporting}>{exporting ? 'Building workbook…' : 'Export Excel management pack'}</button></div>
+            <div className="export-row"><div><strong>Take this view to your next review</strong><span>Exports the current brand and market filters into a five-sheet Excel management pack.</span></div><button className="button button-primary" type="button" onClick={download} disabled={exporting || dashboard.business_unit_variances.length === 0}>{exporting ? 'Building workbook…' : 'Export Excel management pack'}</button></div>
           </div>
         )}
       </div>
-      <footer className="app-footer"><span>PlanTerm v0.1.0</span><span>FP&amp;A Planning and Performance Management Workbench</span><span>Public case study · not internal company data</span></footer>
+      <footer className="app-footer"><span>PlanTerm v0.1.1</span><span>FP&amp;A Planning and Performance Management Workbench</span><span>Public case study · not internal company data</span></footer>
     </main>
   )
 }

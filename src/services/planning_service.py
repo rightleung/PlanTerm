@@ -21,19 +21,34 @@ METRIC_LABELS = {
 }
 
 
-def selected_units(brand: str, market: str) -> set[str]:
-    units = {"MINISO - Chinese Mainland", "MINISO - Overseas", "TOP TOY - Global"}
-    if brand == "MINISO":
-        units &= {"MINISO - Chinese Mainland", "MINISO - Overseas"}
-    elif brand == "TOP_TOY":
-        units &= {"TOP TOY - Global"}
-    if market == "mainland":
-        units &= {"MINISO - Chinese Mainland"}
-    elif market == "overseas":
-        units &= {"MINISO - Overseas"}
-    elif market == "global":
-        units &= {"TOP TOY - Global"}
-    return units
+def valid_combinations(case: CaseData) -> list[dict[str, str]]:
+    """Derive filter combinations from the case records, not UI mappings."""
+    combinations = {
+        (record.brand, record.market, record.business_unit)
+        for record in case.records
+    }
+    return [
+        {"brand": brand, "market": market, "business_unit": business_unit}
+        for brand, market, business_unit in sorted(combinations)
+    ]
+
+
+def filters_are_compatible(case: CaseData, brand: str, market: str) -> bool:
+    combinations = valid_combinations(case)
+    return any(
+        (brand == "all" or combination["brand"] == brand)
+        and (market == "all" or combination["market"] == market)
+        for combination in combinations
+    )
+
+
+def selected_units(case: CaseData, brand: str, market: str) -> set[str]:
+    return {
+        combination["business_unit"]
+        for combination in valid_combinations(case)
+        if (brand == "all" or combination["brand"] == brand)
+        and (market == "all" or combination["market"] == market)
+    }
 
 
 def _metric_total(case: CaseData, scenario: str, periods: set[str], metric: str, units: set[str]) -> float | None:
@@ -84,7 +99,8 @@ def _trend(case: CaseData, units: set[str]) -> list[MonthlyTrendPoint]:
 
 def build_dashboard(case: CaseData, brand: str, market: str) -> PlanningDashboardResponse:
     validate_case_records(case.records)
-    units = selected_units(brand, market)
+    combinations = valid_combinations(case)
+    units = selected_units(case, brand, market)
     pvm, pvm_by_unit = calculate_pvm(case.records, units, YTD_MONTHS)
     if pvm.reconciliation_difference is not None and abs(pvm.reconciliation_difference) > 0.01:
         raise ValueError("PVM reconciliation failed")
@@ -94,9 +110,10 @@ def build_dashboard(case: CaseData, brand: str, market: str) -> PlanningDashboar
         metadata=case.metadata,
         assumptions=case.assumptions,
         available_filters={
-            "brands": ["all", "MINISO", "TOP_TOY"],
-            "markets": ["all", "mainland", "overseas", "global"],
-            "business_units": sorted({record.business_unit for record in case.records}),
+            "brands": ["all", *sorted({combination["brand"] for combination in combinations})],
+            "markets": ["all", *sorted({combination["market"] for combination in combinations})],
+            "business_units": sorted({combination["business_unit"] for combination in combinations}),
+            "valid_combinations": combinations,
         },
         selected_filters={"brand": brand, "market": market},
         kpis=_kpis(case, units),

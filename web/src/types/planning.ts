@@ -40,13 +40,20 @@ export interface VarianceRow {
   operating_profit_budget: number | null
   operating_margin_actual: number | null
   operating_margin_budget: number | null
+  gross_margin_actual: number | null
+  gross_margin_budget: number | null
   operating_expense_actual: number | null
   operating_expense_budget: number | null
+  operating_profit_variance: number | null
   forecast_gap: number | null
+  fy_budget: number | null
+  fy_forecast: number | null
   price_amount: number | null
   volume_amount: number | null
   mix_amount: number | null
   primary_driver: string | null
+  profit_driver: string | null
+  profit_driver_amount: number | null
   status: Status | null
 }
 
@@ -67,6 +74,9 @@ export interface ManagementInsight {
   message: string
   driver: string
   driver_amount: number | null
+  revenue_driver: string | null
+  profit_driver: string | null
+  profit_driver_amount: number | null
   forecast_gap: number | null
   action: string
 }
@@ -92,12 +102,13 @@ export interface DashboardResponse {
   }
   assumptions: {
     budget_assumptions: Record<string, { revenue_growth_vs_fy2025: number; budget_gross_margin: number; budget_operating_margin: number; average_ticket: number }>
+    profit_allocation_indices: Record<string, { gross_margin_index: number; operating_margin_index: number }>
     h2_forecast_adjustment_vs_budget: Record<string, number>
     monthly_seasonality: Record<string, number>
     actual_ticket_factors_vs_budget: Record<string, number>
     note: string
   }
-  available_filters: { brands: BrandFilter[]; markets: MarketFilter[]; business_units: string[] }
+  available_filters: { brands: BrandFilter[]; markets: MarketFilter[]; business_units: string[]; valid_combinations: { brand: Exclude<BrandFilter, 'all'>; market: Exclude<MarketFilter, 'all'>; business_unit: string }[] }
   selected_filters: { brand: BrandFilter; market: MarketFilter }
   kpis: KpiSnapshot[]
   monthly_trend: MonthlyTrendPoint[]

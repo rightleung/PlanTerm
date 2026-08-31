@@ -1,12 +1,12 @@
 # PlanTerm
 
-PlanTerm is an FP&A planning and performance management workbench. The v0.1 portfolio MVP uses MINISO Group as a public-data case and presents Actual, Budget, Forecast and Prior Year across:
+PlanTerm is an FP&A planning and performance management workbench. The v0.1.1 credibility-hardening release uses MINISO Group as a public-data case and presents Actual, Budget, Forecast and Prior Year across:
 
 - MINISO — Chinese Mainland
 - MINISO — Overseas
 - TOP TOY — Global
 
-The dashboard is an English, local-first application with a deterministic API and an Excel management pack. It covers revenue, gross profit, operating profit, margin, variance analysis and a Price / Volume / Mix bridge. Public reported figures are separated from synthetic allocations and illustrative planning assumptions throughout the product.
+The dashboard is an English, local-first application with a deterministic API and an Excel management pack. It covers revenue, gross profit, operating profit, margin, variance analysis, Price / Volume / Mix and Profit Driver bridges. Public reported figures are separated from synthetic allocations and illustrative planning assumptions throughout the product.
 
 ![PlanTerm dashboard showing the MINISO portfolio planning case](./docs/assets/planterm-dashboard.png)
 
@@ -33,7 +33,7 @@ The API uses a consistent error shape: `error`, `error_type` and `details`. Unkn
 
 ## Data and provenance
 
-The committed public snapshot is anchored to MINISO's 2025 Form 20-F and official 2025 H1, 2026 Q1 and 2026 H1 investor-relations releases. The case uses RMB millions and IFRS-reported group metrics. Monthly values, three-business-unit allocations, budget, forecast, volume, ticket and profit allocations are deterministic and explicitly marked as synthetic or calculated.
+The committed public snapshot is anchored to MINISO's 2025 Form 20-F and official 2025 H1, 2026 Q1 and 2026 H1 investor-relations releases. The case uses RMB millions and IFRS-reported group metrics. Monthly values, three-business-unit allocations, budget, forecast, volume, ticket and profit allocations are deterministic and explicitly marked as synthetic or calculated. Business-unit gross profit and operating profit are normalized synthetic allocations using documented profit-allocation indices; they are not reported segment margins. See [data methodology](./docs/data-methodology.md) for the formulas and provenance rules.
 
 `scripts/refresh_public_actuals.py` is a dry-run-first refresh utility. It downloads the fixed official source, validates the expected HTML table fields and fails loudly when the page structure changes. Pass `--write` only after reviewing the displayed differences.
 
@@ -51,6 +51,10 @@ The dashboard export produces `PlanTerm_MINISO_2026H1_Management_Pack.xlsx` with
 
 The export follows the active dashboard filters and uses RMB millions as the default unit.
 
+## v0.1.1 hardening
+
+This release adds data-derived valid filter combinations, incompatible-filter 422 responses, automatic filter reset, an explicit empty dashboard state, distinct revenue and operating-profit drivers, formula-backed Excel variance fields, and atomic public-snapshot refreshes that include revenue split validation.
+
 ## Validation
 
 ```bash
@@ -65,4 +69,4 @@ npm run e2e:preflight
 
 ## Project history and license
 
-PlanTerm is an independent repository. Its FastAPI error handling, configuration patterns and selected React UI primitives were adapted from the author's earlier project; no historical Git history is copied into this repository. PlanTerm is released under the [MIT License](./LICENSE).
+PlanTerm is an independent repository. Its FastAPI error handling, configuration patterns and selected React UI primitives were adapted from the author's earlier project; no historical Git history is copied into this repository. PlanTerm v0.1.1 is released under the [MIT License](./LICENSE).

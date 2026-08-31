@@ -60,17 +60,24 @@ class VarianceRow(BaseModel):
     revenue_variance_pct: float | None
     gross_profit_actual: float | None
     gross_profit_budget: float | None
+    gross_margin_actual: float | None
+    gross_margin_budget: float | None
     operating_profit_actual: float | None
     operating_profit_budget: float | None
+    operating_profit_variance: float | None
     operating_margin_actual: float | None
     operating_margin_budget: float | None
     operating_expense_actual: float | None
     operating_expense_budget: float | None
+    fy_budget: float | None
+    fy_forecast: float | None
     forecast_gap: float | None
     price_amount: float | None
     volume_amount: float | None
     mix_amount: float | None
     primary_driver: str | None
+    profit_driver: str | None
+    profit_driver_amount: float | None
     status: Literal["Favorable", "Unfavorable", "Neutral"] | None
 
 
@@ -91,6 +98,9 @@ class ManagementInsight(BaseModel):
     message: str
     driver: str
     driver_amount: float | None
+    revenue_driver: str | None = None
+    profit_driver: str | None = None
+    profit_driver_amount: float | None = None
     forecast_gap: float | None
     action: str
 

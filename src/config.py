@@ -17,7 +17,7 @@ class Settings(BaseSettings):
 
     app_name: str = "PlanTerm"
     app_port: int = Field(8000, ge=1, le=65535)
-    version: str = "0.1.0"
+    version: str = "0.1.1"
     environment: str = "development"
     debug: bool = False
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
@@ -31,4 +31,3 @@ def get_settings() -> Settings:
 
 
 settings = get_settings()
-

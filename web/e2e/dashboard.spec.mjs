@@ -22,6 +22,24 @@ test('filters update business unit rows and PVM values', async ({ page }) => {
   await expect(page.locator('tbody tr')).toHaveCount(3);
 });
 
+test('disables incompatible markets and resets once on brand change', async ({ page }) => {
+  let dashboardRequests = 0;
+  page.on('request', (request) => {
+    if (request.url().includes('/api/v1/cases/miniso-2026/dashboard')) dashboardRequests += 1;
+  });
+  await page.goto('/');
+  await expect(page.getByRole('heading', { name: 'Monthly revenue trend' })).toBeVisible();
+  await page.getByLabel('Market').selectOption('global');
+  await expect(page.getByLabel('Market')).toHaveValue('global');
+  await expect(page.locator('tbody tr')).toHaveCount(1);
+  const requestsBeforeBrandChange = dashboardRequests;
+  await page.getByLabel('Brand').selectOption('MINISO');
+  await expect(page.getByLabel('Market')).toHaveValue('all');
+  await expect(page.locator('tbody tr')).toHaveCount(2);
+  await expect(page.getByLabel('Market').locator('option[value="global"]')).toHaveAttribute('disabled', '');
+  await expect.poll(() => dashboardRequests).toBe(requestsBeforeBrandChange + 1);
+});
+
 test('API errors are visible and recoverable', async ({ page }) => {
   let requests = 0;
   await page.route('**/api/v1/cases/miniso-2026/dashboard*', async (route) => {
@@ -40,6 +58,9 @@ test('API errors are visible and recoverable', async ({ page }) => {
 
 test('Excel management pack downloads five verified worksheets', async ({ page }) => {
   await page.goto('/');
+  await page.getByLabel('Brand').selectOption('MINISO');
+  await page.getByLabel('Market').selectOption('overseas');
+  await expect(page.locator('tbody tr')).toHaveCount(1);
   const downloadPromise = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Export Excel management pack' }).click();
   const download = await downloadPromise;
@@ -51,6 +72,27 @@ test('Excel management pack downloads five verified worksheets', async ({ page }
   expect(workbook.worksheets.map((sheet) => sheet.name)).toEqual([
     'Executive Summary', 'Monthly Trend', 'Business Unit Variance', 'PVM Bridge', 'Assumptions & Sources',
   ]);
-  expect(workbook.getWorksheet('Executive Summary').getCell('A1').value).toContain('PlanTerm');
-  expect(workbook.getWorksheet('PVM Bridge').getCell('A8').value).toBe('Reconciliation difference');
+  const summary = workbook.getWorksheet('Executive Summary');
+  const trend = workbook.getWorksheet('Monthly Trend');
+  const variance = workbook.getWorksheet('Business Unit Variance');
+  const pvm = workbook.getWorksheet('PVM Bridge');
+  const assumptions = workbook.getWorksheet('Assumptions & Sources');
+  expect(summary.getCell('A1').value).toContain('PlanTerm');
+  expect(summary.getCell('A6').value).toBe('KPI');
+  expect(summary.getCell('D7').value).toMatchObject({ formula: expect.stringContaining('B7-C7'), result: expect.any(Number) });
+  expect(summary.getCell('E7').numFmt).toContain('%');
+  expect(summary.getCell('K7').fill.fgColor.argb).toBeTruthy();
+  expect(summary.views[0].ySplit).toBe(6);
+  expect(summary.autoFilter).toBe('A6:K6');
+  expect(trend.getCell('A2').value).toBe('Period');
+  expect(trend.views[0].ySplit).toBe(2);
+  expect(variance.getCell('A2').value).toBe('Business Unit');
+  expect(variance.getRow(3).getCell(1).value).toBe('MINISO - Overseas');
+  expect(variance.rowCount).toBe(3);
+  expect(variance.getCell('J3').value).toMatchObject({ formula: expect.stringContaining('H3-I3'), result: expect.any(Number) });
+  expect(variance.getCell('O3').value).toBeTruthy();
+  expect(pvm.getCell('A8').value).toBe('Reconciliation difference');
+  expect(pvm.getCell('B8').value).toMatchObject({ formula: 'SUM(B5:B7)-(B3-B4)', result: expect.any(Number) });
+  expect(assumptions.getCell('A2').value).toBe('Source type');
+  expect(assumptions.getColumn(3).width).toBeGreaterThan(50);
 });

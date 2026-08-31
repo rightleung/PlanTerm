@@ -54,6 +54,7 @@ def build_rows() -> list[dict]:
     snapshot = json.loads(SNAPSHOT.read_text(encoding="utf-8"))
     assumptions = json.loads((CASE_DIR / "assumptions.json").read_text(encoding="utf-8"))
     weights = assumptions["monthly_seasonality"]
+    profit_indices = assumptions["profit_allocation_indices"]
     rows: list[dict] = []
 
     fy25_revenue = {unit: get_split(snapshot, "FY2025")[source] for unit, (_, _, source) in UNIT_MAP.items()}
@@ -66,20 +67,35 @@ def build_rows() -> list[dict]:
     budget_revenue = {unit: fy25_revenue[unit] * (1 + assumptions["budget_assumptions"][unit]["revenue_growth_vs_fy2025"]) for unit in UNITS}
     forecast_revenue = {unit: h1_26_revenue[unit] + budget_revenue[unit] * 0.52 * (1 + assumptions["h2_forecast_adjustment_vs_budget"][unit]) for unit in UNITS}
 
-    def metric_totals_for_h1(period: str, revenue: dict[str, float], scenario: str) -> dict[str, dict[str, float]]:
+    def normalized_index_weights(revenue: dict[str, float], index_name: str) -> dict[str, float]:
+        indexed = {unit: revenue[unit] * profit_indices[unit][index_name] for unit in UNITS}
+        if any(value <= 0 for value in indexed.values()) or sum(indexed.values()) <= 0:
+            raise ValueError(f"Invalid {index_name} values for profit allocation")
+        total = sum(indexed.values())
+        return {unit: value / total for unit, value in indexed.items()}
+
+    def metric_totals_for_h1(period: str, revenue: dict[str, float]) -> dict[str, dict[str, float]]:
         total_revenue = get_metric(snapshot, period, "Revenue")
         gp = get_metric(snapshot, period, "Gross Profit")
         op = get_metric(snapshot, period, "Operating Profit")
+        gross_profit_weights = normalized_index_weights(revenue, "gross_margin_index")
+        operating_profit_weights = normalized_index_weights(revenue, "operating_margin_index")
         result = {}
         for unit in UNITS:
-            share = revenue[unit] / sum(revenue.values())
-            result[unit] = {"revenue": revenue[unit], "gross_profit": gp * share, "cost_of_sales": (total_revenue - gp) * share, "operating_profit": op * share}
+            result[unit] = {
+                "revenue": revenue[unit],
+                "gross_profit": gp * gross_profit_weights[unit],
+                "cost_of_sales": revenue[unit] - gp * gross_profit_weights[unit],
+                "operating_profit": op * operating_profit_weights[unit],
+            }
             result[unit]["operating_expense"] = result[unit]["gross_profit"] - result[unit]["operating_profit"]
+            if result[unit]["cost_of_sales"] < 0 or result[unit]["operating_expense"] < 0 or result[unit]["gross_profit"] > result[unit]["revenue"]:
+                raise ValueError(f"Invalid profit allocation for {period} / {unit}")
         return result
 
-    actual26 = metric_totals_for_h1("2026 H1", h1_26_revenue, "actual")
-    prior25_h1 = metric_totals_for_h1("2025 H1", h1_25_revenue, "prior_year")
-    fy25_total = metric_totals_for_h1("FY2025", fy25_revenue, "prior_year")
+    actual26 = metric_totals_for_h1("2026 H1", h1_26_revenue)
+    prior25_h1 = metric_totals_for_h1("2025 H1", h1_25_revenue)
+    fy25_total = metric_totals_for_h1("FY2025", fy25_revenue)
     budget_total = {}
     for unit in UNITS:
         assumption = assumptions["budget_assumptions"][unit]
