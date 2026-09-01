@@ -9,16 +9,17 @@ from src.repositories.case_repository import CaseData
 from src.services.case_builder import validate_case_records
 from src.services.insight_service import make_insights
 from src.services.pvm_service import calculate_pvm
-from src.services.variance_service import aggregate_total, make_variance_rows, safe_pct, status_for
+from src.services.variance_service import aggregate_total, calculate_profit_bridge, make_variance_rows, safe_pct, status_for
 from src.services.scenario_service import seed_rows, preview as scenario_preview
 from src.services.csv_input_service import InputError, parse_json_rows
-from src.services.category_plan_service import calculate_rows
-from src.services.scenario_service import seed_rows
+from src.services.category_plan_service import calculate_rows, is_committed_variant_seed
 from src.services.working_capital_service import calculate_working_capital, dec, json_float
 from src.services.cash_forecast_service import calculate_cash_bridge
 from src.services.forecast_accuracy_service import calculate_forecast_accuracy
 from src.services.action_service import build_actions
 from src.services.headcount_service import build_headcount
+from src.services.assumption_registry import build_assumption_registry
+from src.services.decision_log_service import DecisionLogService, seeded_decision_rows
 
 
 MONTHS = [f"2026-{month:02d}" for month in range(1, 13)]
@@ -35,8 +36,8 @@ SCENARIO_METRICS = ("revenue", "gross_profit", "operating_profit")
 
 def _scenario_rollups(category_detail: list[dict], plan_variant: str, units: set[str]) -> tuple[dict, dict]:
     """Project validated category rows into selected-variant dashboard totals."""
-    h2: dict[tuple[str, str, str], float] = {}
-    fy: dict[tuple[str, str], float] = {}
+    h2: dict[tuple[str, str, str], Decimal] = {}
+    fy: dict[tuple[str, str], Decimal] = {}
     for item in category_detail:
         if item.get("plan_variant") != plan_variant or item.get("business_unit") not in units:
             continue
@@ -45,11 +46,11 @@ def _scenario_rollups(category_detail: list[dict], plan_variant: str, units: set
         if period in MONTHS[6:]:
             for metric in SCENARIO_METRICS:
                 key = (period, unit, metric)
-                h2[key] = h2.get(key, 0.0) + float(item.get(metric) or 0.0)
+                h2[key] = h2.get(key, Decimal(0)) + (dec(item.get(metric), nullable=False) or Decimal(0))
         elif period == "FY2026":
             for metric in SCENARIO_METRICS:
                 key = (unit, metric)
-                fy[key] = fy.get(key, 0.0) + float(item.get(metric) or 0.0)
+                fy[key] = fy.get(key, Decimal(0)) + (dec(item.get(metric), nullable=False) or Decimal(0))
     return h2, fy
 
 
@@ -83,7 +84,7 @@ def selected_units(case: CaseData, brand: str, market: str) -> set[str]:
     }
 
 
-def _metric_total(case: CaseData, scenario: str, periods: set[str], metric: str, units: set[str]) -> float | None:
+def _metric_total(case: CaseData, scenario: str, periods: set[str], metric: str, units: set[str]) -> Decimal | None:
     if metric == "operating_margin":
         revenue = _metric_total(case, scenario, periods, "revenue", units)
         operating_profit = _metric_total(case, scenario, periods, "operating_profit", units)
@@ -91,7 +92,7 @@ def _metric_total(case: CaseData, scenario: str, periods: set[str], metric: str,
     return aggregate_total(case.records, scenario, periods, metric, units)
 
 
-def _kpis(case: CaseData, units: set[str], scenario_fy: dict[tuple[str, str], float]) -> list[KpiSnapshot]:
+def _kpis(case: CaseData, units: set[str], scenario_fy: dict[tuple[str, str], Decimal]) -> list[KpiSnapshot]:
     result = []
     for metric, (label, unit) in METRIC_LABELS.items():
         actual = _metric_total(case, "actual", YTD_MONTHS, metric, units)
@@ -99,11 +100,11 @@ def _kpis(case: CaseData, units: set[str], scenario_fy: dict[tuple[str, str], fl
         prior = _metric_total(case, "prior_year", YTD_MONTHS, metric, units)
         fy_budget = _metric_total(case, "budget", FY_MONTHS, metric, units)
         if metric == "operating_margin":
-            selected_revenue = sum(scenario_fy.get((unit, "revenue"), 0.0) for unit in units)
-            selected_operating_profit = sum(scenario_fy.get((unit, "operating_profit"), 0.0) for unit in units)
+            selected_revenue = sum((scenario_fy.get((unit, "revenue"), Decimal(0)) for unit in units), Decimal(0))
+            selected_operating_profit = sum((scenario_fy.get((unit, "operating_profit"), Decimal(0)) for unit in units), Decimal(0))
             fy_forecast = safe_pct(selected_operating_profit, selected_revenue)
         else:
-            fy_forecast = sum((scenario_fy.get((unit, metric), 0.0) for unit in units), 0.0) or None
+            fy_forecast = sum((scenario_fy.get((unit, metric), Decimal(0)) for unit in units), Decimal(0)) or None
         variance = None if actual is None or budget is None else actual - budget
         yoy = None if actual is None or prior in (None, 0) else (actual - prior) / abs(prior)
         result.append(KpiSnapshot(
@@ -124,7 +125,7 @@ def _kpis(case: CaseData, units: set[str], scenario_fy: dict[tuple[str, str], fl
     return result
 
 
-def _trend(case: CaseData, units: set[str], scenario_h2: dict[tuple[str, str, str], float]) -> list[MonthlyTrendPoint]:
+def _trend(case: CaseData, units: set[str], scenario_h2: dict[tuple[str, str, str], Decimal]) -> list[MonthlyTrendPoint]:
     return [MonthlyTrendPoint(
         period=month,
         actual=_metric_total(case, "actual", {month}, "revenue", units),
@@ -132,7 +133,7 @@ def _trend(case: CaseData, units: set[str], scenario_h2: dict[tuple[str, str, st
         forecast=(
             _metric_total(case, "actual", {month}, "revenue", units)
             if month in MONTHS[:6]
-            else (sum((scenario_h2.get((month, unit, "revenue"), 0.0) for unit in units), 0.0) or None)
+            else (sum((scenario_h2.get((month, unit, "revenue"), Decimal(0)) for unit in units), Decimal(0)) or None)
         ),
         prior_year=_metric_total(case, "prior_year", {month}, "revenue", units),
     ) for month in MONTHS]
@@ -140,12 +141,24 @@ def _trend(case: CaseData, units: set[str], scenario_h2: dict[tuple[str, str, st
 
 def build_dashboard(case: CaseData, brand: str, market: str, plan_variant: str = "base", planning_input_source: str = "seed", planning_rows=None) -> PlanningDashboardResponse:
     validate_case_records(case.records)
+    governance_metadata = build_assumption_registry(case)
     combinations = valid_combinations(case)
     units = selected_units(case, brand, market)
     pvm, pvm_by_unit = calculate_pvm(case.records, units, YTD_MONTHS)
     if pvm.reconciliation_difference is not None and abs(pvm.reconciliation_difference) > 0.01:
         raise ValueError("PVM reconciliation failed")
     rows = make_variance_rows(case.records, units, YTD_MONTHS, FY_MONTHS, pvm_by_unit)
+    actual_profit_bridge_inputs = {
+        metric: _metric_total(case, "actual", YTD_MONTHS, metric, units)
+        for metric in ("revenue", "gross_profit", "operating_profit", "operating_expense")
+    }
+    budget_profit_bridge_inputs = {
+        metric: _metric_total(case, "budget", YTD_MONTHS, metric, units)
+        for metric in ("revenue", "gross_profit", "operating_profit", "operating_expense")
+    }
+    profit_bridge = calculate_profit_bridge(actual_profit_bridge_inputs, budget_profit_bridge_inputs, pvm)
+    if profit_bridge.reconciliation_difference is not None and abs(profit_bridge.reconciliation_difference) > 0.01:
+        raise ValueError("Profit bridge reconciliation failed")
     sources = [DataSource(**source) for source in case.metadata["data_sources"]]
     category_detail, comparison, category_context = scenario_preview(case, planning_rows, plan_variant) if planning_rows is not None else scenario_preview(case, [r.model_dump() for r in seed_rows(case)], plan_variant)
     # Scenario detail follows the same brand/market filter as the dashboard;
@@ -157,15 +170,20 @@ def build_dashboard(case: CaseData, brand: str, market: str, plan_variant: str =
     # Forecast-facing BU values with the selected scenario projection.
     for row in rows:
         fy_forecast = scenario_fy.get((row.business_unit, "revenue"))
-        row.fy_forecast = fy_forecast
-        row.forecast_gap = None if fy_forecast is None or row.fy_budget is None else fy_forecast - row.fy_budget
+        row.fy_forecast = None if fy_forecast is None else float(fy_forecast)
+        row.forecast_gap = None if fy_forecast is None or row.fy_budget is None else float(fy_forecast - Decimal(str(row.fy_budget)))
+    committed_category_detail, _, _ = scenario_preview(case, [r.model_dump() for r in seed_rows(case)], "base")
+    committed_category_detail = [item for item in committed_category_detail if item.get("business_unit") in units]
     comparison = {"selected_plan_variant": plan_variant}
     for metric in ("revenue", "gross_profit", "operating_profit"):
-        base_value = sum(item.get(metric, 0) for item in category_detail if item.get("period") == "FY2026" and item.get("plan_variant") == "base")
-        selected_value = sum(item.get(metric, 0) for item in category_detail if item.get("period") == "FY2026" and item.get("plan_variant") == plan_variant)
-        comparison[metric] = {"base_fy_forecast": base_value, "selected_fy_forecast": selected_value, "delta": selected_value - base_value, "unit": "RMB millions"}
+        # Always compare to the committed Base seed. This keeps a valid edit
+        # to the Base plan visible as a delta instead of comparing it with
+        # itself, while the selected scenario remains fully recalculated.
+        base_value = sum((dec(item.get(metric), nullable=False) or Decimal(0) for item in committed_category_detail if item.get("period") == "FY2026" and item.get("plan_variant") == "base"), Decimal(0))
+        selected_value = sum((dec(item.get(metric), nullable=False) or Decimal(0) for item in category_detail if item.get("period") == "FY2026" and item.get("plan_variant") == plan_variant), Decimal(0))
+        comparison[metric] = {"base_fy_forecast": float(base_value), "selected_fy_forecast": float(selected_value), "delta": float(selected_value - base_value), "unit": "RMB millions"}
     return PlanningDashboardResponse(
-        metadata=case.metadata,
+        metadata={**case.metadata, "assumption_version": governance_metadata["assumption_version"], "git_sha": governance_metadata["git_sha"]},
         assumptions=case.assumptions,
         available_filters={
             "brands": ["all", *sorted({combination["brand"] for combination in combinations})],
@@ -178,6 +196,7 @@ def build_dashboard(case: CaseData, brand: str, market: str, plan_variant: str =
         monthly_trend=_trend(case, units, scenario_h2),
         business_unit_variances=rows,
         pvm_bridge=pvm,
+        profit_bridge=profit_bridge,
         management_insights=make_insights(rows),
         data_sources=sources,
         provenance_legend=case.metadata["provenance_legend"],
@@ -293,6 +312,19 @@ def _metric_detail(details, variant, period, unit, metric):
     return sum((dec(item.get(metric)) or Decimal(0) for item in details if item.get("plan_variant") == variant and item.get("period") == period and item.get("business_unit") == unit), Decimal(0))
 
 
+def _portfolio_ccc(rows: list[dict]) -> Decimal | None:
+    """Calculate a portfolio CCC with revenue/COGS-weighted day assumptions."""
+    eligible = [row for row in rows if row.get("status") == "eligible"]
+    revenue = sum((dec(row.get("revenue"), nullable=False) or Decimal(0) for row in eligible), Decimal(0))
+    cogs = sum((dec(row.get("cogs"), nullable=False) or Decimal(0) for row in eligible), Decimal(0))
+    if not eligible or revenue == 0 or cogs == 0:
+        return None
+    ar_days = sum((dec(row.get("revenue"), nullable=False) or Decimal(0)) * (dec(row.get("ar_days"), nullable=False) or Decimal(0)) for row in eligible) / revenue
+    inventory_days = sum((dec(row.get("cogs"), nullable=False) or Decimal(0)) * (dec(row.get("inventory_days"), nullable=False) or Decimal(0)) for row in eligible) / cogs
+    ap_days = sum((dec(row.get("cogs"), nullable=False) or Decimal(0)) * (dec(row.get("ap_days"), nullable=False) or Decimal(0)) for row in eligible) / cogs
+    return ar_days + inventory_days - ap_days
+
+
 def build_operating_plan(case, plan_variant="base", planning_input_source="seed", planning_rows=None, working_capital_rows=None, cash_assumption_rows=None, actions=None, headcount_rows=None):
     if plan_variant not in VARIANTS:
         raise InputError("invalid_variant", "Unknown plan variant")
@@ -356,20 +388,34 @@ def build_operating_plan(case, plan_variant="base", planning_input_source="seed"
     closing_values = [row.get("closing_illustrative_cash") for row in cash_bridge if row.get("closing_illustrative_cash") is not None]
     headrooms = [row.get("headroom") for row in cash_bridge if row.get("headroom") is not None]
     decision_table = []
-    base_fy_revenue = sum((_metric_detail(details, "base", "FY2026", unit, "revenue") for unit in UNITS), Decimal(0))
-    base_fy_op = sum((_metric_detail(details, "base", "FY2026", unit, "operating_profit") for unit in UNITS), Decimal(0))
+    committed_details, _, _ = calculate_rows(case, seed_rows(case), "base")
+    base_fy_revenue = sum((_metric_detail(committed_details, "base", "FY2026", unit, "revenue") for unit in UNITS), Decimal(0))
+    base_fy_op = sum((_metric_detail(committed_details, "base", "FY2026", unit, "operating_profit") for unit in UNITS), Decimal(0))
     for variant in VARIANTS:
-        variant_details, variant_cash = variant_results[variant]
+        variant_wc, variant_cash = variant_results[variant]
         fy_revenue = sum((_metric_detail(details, variant, "FY2026", unit, "revenue") for unit in UNITS), Decimal(0))
         fy_op = sum((_metric_detail(details, variant, "FY2026", unit, "operating_profit") for unit in UNITS), Decimal(0))
         valid_cash = [row for row in variant_cash if row.get("closing_illustrative_cash") is not None]
         minimum_cash = min(valid_cash, key=lambda row: row.get("headroom")) if valid_cash else None
-        decision_table.append({"plan_variant": variant, "fy_revenue_delta": float(fy_revenue - base_fy_revenue), "fy_operating_profit_delta": float(fy_op - base_fy_op), "minimum_cash_month": minimum_cash.get("period") if minimum_cash else None, "cash_headroom": minimum_cash.get("headroom") if minimum_cash else None, "ccc": None, "top_revenue_driver": "H2 category drivers", "top_profit_driver": "Operating profit", "top_cash_driver": "Working capital", "owner": "Group FP&A", "next_review_date": "2026-07-31", "provenance": "calculated"})
+        variant_ccc = None
+        if minimum_cash:
+            variant_ccc = json_float(_portfolio_ccc([row for row in variant_wc if row.get("period") == minimum_cash.get("period")]))
+        decision_table.append({"plan_variant": variant, "fy_revenue_delta": float(fy_revenue - base_fy_revenue), "fy_operating_profit_delta": float(fy_op - base_fy_op), "minimum_cash_month": minimum_cash.get("period") if minimum_cash else None, "cash_headroom": minimum_cash.get("headroom") if minimum_cash else None, "ccc": variant_ccc, "top_revenue_driver": "H2 category drivers", "top_profit_driver": "Operating profit", "top_cash_driver": "Working capital", "owner": "Group FP&A", "next_review_date": "2026-07-31", "provenance": "calculated"})
     # Residual evidence is surfaced rather than asserted by flag.
-    base_h2_residual = sum((_metric_detail(details, "base", period, unit, "revenue") - _records(case, "forecast", period, unit, "revenue") for period in OD_MONTHS for unit in UNITS), Decimal(0))
+    base_committed = is_committed_variant_seed(case, rows, "base")
+    base_h2_residual = sum((_metric_detail(details, "base", period, unit, "revenue") - _records(case, "forecast", period, unit, "revenue") for period in OD_MONTHS for unit in UNITS), Decimal(0)) if base_committed else Decimal(0)
     cash_residuals = [dec(row.get("cash_identity_residual"), nullable=False) for row in cash_bridge if row.get("cash_identity_residual") is not None]
     max_cash_residual = max((abs(x) for x in cash_residuals), default=None)
     category_ok = abs(base_h2_residual) <= Decimal("0.01")
     cash_ok = max_cash_residual is not None and max_cash_residual <= Decimal("0.01")
     headcount = build_headcount(case, plan_variant, headcount_rows)
-    return {"as_of_date": case.metadata["as_of_date"], "planning_horizon": {"locked_through": "2026-06", "editable_from": "2026-07", "editable_to": "2026-12"}, "plan_variant": plan_variant, "provenance_legend": case.metadata["provenance_legend"], "working_capital": {"rows": working_capital, "unit": "RMB millions", "input_provenance": "synthetic_plan", "disclosure": "Synthetic planning assumption; not public reported working capital."}, "cash_bridge": {"rows": cash_bridge, "closing_illustrative_cash": closing_values[-1] if closing_values else None, "input_provenance": "synthetic_plan", "disclosure": "Illustrative cash balance; not a bank-reported cash balance."}, "forecast_accuracy": accuracy, "actions": actions_out, "decision_table": decision_table, "headcount_rows": headcount["headcount_rows"], "workforce_capacity": headcount, "reconciliation": {"status": "reconciled" if category_ok and cash_ok and headcount["reconciliation_evidence"]["status"] == "reconciled" else "not_reconciled", "tolerance_rmb_millions": 0.01, "cash_bridge": {"status": "reconciled" if cash_ok else "not_reconciled", "max_residual": json_float(max_cash_residual)}, "category_rollup": {"status": "reconciled" if category_ok else "not_reconciled", "revenue_residual": json_float(base_h2_residual)}, "headcount": headcount["reconciliation_evidence"]}}
+    reconciliation = {"status": "reconciled" if category_ok and cash_ok and headcount["reconciliation_evidence"]["status"] == "reconciled" else "not_reconciled", "tolerance_rmb_millions": 0.01, "cash_bridge": {"status": "reconciled" if cash_ok else "not_reconciled", "max_residual": json_float(max_cash_residual)}, "category_rollup": {"status": "reconciled" if category_ok else "not_reconciled", "revenue_residual": json_float(base_h2_residual), "anchor": "committed_forecast" if base_committed else "scenario_internal"}, "headcount": headcount["reconciliation_evidence"]}
+    # Governance is additive and derived only from the deterministic operating-plan result.
+    decision_log = DecisionLogService(session_id=f"{case.case_id}:{plan_variant}:demo")
+    assumption_registry = build_assumption_registry(case)
+    seeded_decisions = seeded_decision_rows(case.case_id, case.metadata["as_of_date"], decision_table)
+    for table_row, row in zip(decision_table, seeded_decisions):
+        table_row["evidence"] = row["evidence"]
+    for row in seeded_decisions:
+        decision_log.append(row)
+    return {"as_of_date": case.metadata["as_of_date"], "planning_horizon": {"locked_through": "2026-06", "editable_from": "2026-07", "editable_to": "2026-12"}, "plan_variant": plan_variant, "provenance_legend": case.metadata["provenance_legend"], "working_capital": {"rows": working_capital, "unit": "RMB millions", "input_provenance": "synthetic_plan", "disclosure": "Synthetic planning assumption; not a bank-reported working capital."}, "cash_bridge": {"rows": cash_bridge, "closing_illustrative_cash": closing_values[-1] if closing_values else None, "input_provenance": "synthetic_plan", "disclosure": "Illustrative cash balance; not a bank-reported cash balance."}, "forecast_accuracy": accuracy, "actions": actions_out, "decision_table": decision_table, "decision_log": decision_log.export(), "assumption_registry": assumption_registry, "assumption_version": assumption_registry["assumption_version"], "git_sha": assumption_registry["git_sha"], "governance": {"scope": "session", "persistence": "none", "decision_log": decision_log.export(), "assumption_registry": assumption_registry}, "headcount_rows": headcount["headcount_rows"], "workforce_capacity": headcount, "reconciliation": reconciliation}

@@ -34,6 +34,10 @@ Opex effect = −(Actual Opex − Budget Opex)
 
 The sum is checked against Actual versus Budget Operating Profit with a RMB 0.01 million tolerance. `Revenue driver` is selected only from Price, Volume and Mix; `Profit driver` is selected independently from those effects, Gross Margin and Opex.
 
+The dashboard, `PVM Bridge` worksheet and Operating Profit bridge expose the same three reconciled profit effects—`PVM profit effect`, `Gross Margin` and `Opex`—with signed amount, contribution percentage, favorability direction, calculated provenance and a role owner. Portfolio KPI source labels identify public group anchors only for the unfiltered group view; BU-filtered values are synthetic allocations, and every variance/margin conclusion is labelled calculated.
+
+The scenario decision table reports portfolio CCC for each variant at that variant's minimum-cash month. AR days are revenue-weighted, while inventory and AP days are COGS-weighted before applying `CCC = AR days + Inventory days - AP days`; this keeps the variant-level decision metric consistent with the underlying working-capital rows.
+
 ## Refresh behavior
 
 `scripts/refresh_public_actuals.py` is dry-run by default. It parses the official H1 metrics and revenue split, validates the source URL, period, unit, finite non-negative split values and split-to-group reconciliation, and only then performs an atomic replacement when `--write` is supplied. A missing split or changed page structure fails loudly rather than combining a new group total with an old split.
@@ -78,3 +82,7 @@ Headroom = Illustrative closing cash - Minimum cash buffer
 ```
 
 The browser action register is session memory only. It is not written to case data, a database or a user directory. The operating-decision Excel sheet keeps source and disclosure text as literal spreadsheet-neutralized values, preserves numeric negatives as numbers, and uses auditable formulas only for calculated numeric cells. The cash bridge must be described as illustrative or synthetic, never as public reported or actual cash. All roll-ups and bridge reconciliations use a RMB 0.01m tolerance; missing or ineligible accuracy metrics remain `null` with a status rather than becoming zero.
+
+## v0.5 governance evidence
+
+Governance conclusions are reviewed against `miniso-2026`, as of `2026-06-30`, with `base` selected unless a preview explicitly changes it. A deterministic review edit changes `MINISO - Chinese Mainland / IP & Toys / miniso_ip_toys / 2026-07` from the committed `3.0%` volume driver to `10.0%`; the expected result is a recomputed positive revenue/profit and illustrative cash delta, with headcount unchanged. An edited Base variant reconciles to its own scenario-internal roll-up; an unedited Base variant remains checked against the committed forecast anchor. Group FP&A owns the review action. The UI and workbook expose the assumption version and git SHA, and each conclusion carries a metric, formula, source/provenance label and reconciliation status. This evidence is bounded to the case study and does not claim internal MINISO data.

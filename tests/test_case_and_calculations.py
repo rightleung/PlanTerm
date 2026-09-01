@@ -1,11 +1,12 @@
 import math
 from collections import defaultdict
+from decimal import Decimal
 
 from scripts.build_miniso_case import build_rows
 from src.models.planning import PlanningRecord
 from src.services.case_builder import validate_case_records
 from src.services.pvm_service import calculate_pvm
-from src.services.variance_service import calculate_profit_effects, safe_pct, status_for
+from src.services.variance_service import aggregate, calculate_profit_effects, safe_pct, status_for
 
 
 def test_case_builder_is_repeatable_and_validates_records():
@@ -74,6 +75,12 @@ def test_pvm_bridge_reconciles_to_revenue_variance(case):
     bridge, _ = calculate_pvm(tuple(case.records), {"MINISO - Chinese Mainland", "MINISO - Overseas", "TOP TOY - Global"}, {f"2026-{month:02d}" for month in range(1, 7)})
     assert abs(bridge.reconciliation_difference or 1) <= 0.01
     assert math.isclose((bridge.actual_revenue or 0) - (bridge.budget_revenue or 0), (bridge.volume or 0) + (bridge.mix or 0) + (bridge.price or 0), abs_tol=0.01)
+
+
+def test_core_dashboard_aggregators_keep_decimal_internal_precision(case):
+    values = aggregate(case.records, "actual", {f"2026-{month:02d}" for month in range(1, 7)}, "revenue")
+    assert values
+    assert all(isinstance(value, Decimal) for value in values.values())
 
 
 def test_favorability_and_safe_denominators():

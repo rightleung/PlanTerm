@@ -15,6 +15,7 @@ def test_operating_plan_contract_and_variant_sensitivity():
     assert base["cash_bridge"]["disclosure"].startswith("Illustrative")
     assert base["reconciliation"]["status"] == "reconciled"
     assert base["decision_table"][0]["fy_operating_profit_delta"] == 0
+    assert all(row["ccc"] is not None for row in base["decision_table"])
     assert upside["plan_variant"] == "upside"
 
 

@@ -1,6 +1,7 @@
 import type { Worksheet } from 'exceljs'
-import type { ActionRegisterRow, DashboardResponse, KpiSnapshot, OperatingPlanResponse, PlanningInputRow, VarianceRow, WorkforceRoleGroup } from '@/types/planning'
+import type { ActionRegisterRow, DashboardResponse, DecisionLogRow, KpiSnapshot, OperatingPlanResponse, PlanningInputRow, VarianceRow, WorkforceCapacityResponse, WorkforceRoleGroup } from '@/types/planning'
 import { sanitizeSpreadsheetCell } from '@/lib/spreadsheetText'
+import { ASSUMPTION_VERSION, GIT_SHA } from '@/features/governance/ProvenancePanel'
 
 const FILE_NAME = 'PlanTerm_MINISO_2026H1_Management_Pack.xlsx'
 const COLORS = {
@@ -145,7 +146,44 @@ function addVarianceRows(sheet: Worksheet, rows: VarianceRow[]) {
   })
 }
 
-export async function exportManagementPack(dashboard: DashboardResponse, scenarioRows: PlanningInputRow[], operatingPlan: OperatingPlanResponse | null = null, sessionActions: ActionRegisterRow[] = []) {
+function addWorkforceSection(sheet: Worksheet, workforce: WorkforceCapacityResponse) {
+  const headingRow = sheet.rowCount + 2
+  sheet.addRow([])
+  sheet.addRow([`Workforce Capacity · ${workforce.plan_variant} · synthetic planning`])
+  sheet.addRow(['Workforce disclosure', workforce.disclosure])
+  sheet.addRow(['Workforce provenance', workforce.provenance, 'Input provenance', workforce.input_provenance])
+  sheet.addRow(['Workforce reconciliation', workforce.reconciliation_evidence?.status || 'Not available', 'Residual', nullableNumber((workforce.reconciliation_evidence?.residual ?? workforce.reconciliation_evidence?.max_residual) as number | null), 'Tolerance', nullableNumber(workforce.reconciliation_evidence?.tolerance_rmb_millions ?? null)])
+  const summaryHeaderRow = sheet.rowCount + 1
+  sheet.addRow(['Role group', 'Planned FTE', 'Required FTE', 'Capacity gap', 'Loaded cost', 'Revenue / FTE', 'Variant delta', 'Status', 'Provenance'])
+  const roles: WorkforceRoleGroup[] = ['store operations', 'commercial', 'supply chain', 'finance/support']
+  roles.forEach((role) => {
+    const rollup = workforce.rollups?.role_group?.[role]
+    const roleRows = workforce.headcount_rows.filter((row) => row.role_group === role)
+    const revenue = roleRows.reduce((total, row) => total + (Number.isFinite(row.revenue) ? row.revenue : 0), 0)
+    const planned = rollup?.planned_fte || 0
+    sheet.addRow([role, nullableNumber(rollup?.planned_fte ?? null), nullableNumber(rollup?.required_fte ?? null), nullableNumber(rollup?.capacity_gap ?? null), nullableNumber(rollup?.loaded_cost ?? null), planned > 0 ? nullableNumber(revenue / planned) : null, nullableNumber((workforce.selected_vs_base_delta || {})[`${role}.loaded_cost`] ?? null), roleRows.some((row) => row.status === 'capacity_gap') ? 'capacity_gap' : roleRows.some((row) => row.status === 'over_capacity') ? 'over_capacity' : roleRows.length > 0 && roleRows.every((row) => row.status === 'zero_capacity') ? 'zero_capacity' : 'balanced', rollup?.provenance || workforce.provenance])
+  })
+  const portfolio = workforce.rollups?.portfolio
+  const portfolioRevenue = workforce.headcount_rows.reduce((total, row) => total + (Number.isFinite(row.revenue) ? row.revenue : 0), 0)
+  sheet.addRow(['Portfolio total', nullableNumber(portfolio?.planned_fte ?? null), nullableNumber(portfolio?.required_fte ?? null), nullableNumber(portfolio?.capacity_gap ?? null), nullableNumber(portfolio?.loaded_cost ?? null), (portfolio?.planned_fte || 0) > 0 ? nullableNumber(portfolioRevenue / (portfolio?.planned_fte || 1)) : null, nullableNumber(workforce.selected_vs_base_delta?.loaded_cost ?? null), workforce.reconciliation_evidence?.status || 'Not available', workforce.provenance])
+  sheet.addRow([])
+  const detailHeaderRow = sheet.rowCount + 1
+  sheet.addRow(['Period', 'Business Unit', 'Role Group', 'Planned FTE', 'Required FTE', 'Capacity Gap', 'Loaded Cost', 'Revenue / FTE', 'Status', 'Provenance'])
+  workforce.headcount_rows.forEach((row) => sheet.addRow([row.period, row.business_unit, row.role_group, nullableNumber(row.planned_fte), nullableNumber(row.required_fte), nullableNumber(row.capacity_gap), nullableNumber(row.loaded_cost), row.revenue_per_fte === null ? null : nullableNumber(row.revenue_per_fte), row.status, row.provenance]))
+  const roleTableStartRow = summaryHeaderRow + 1
+  const roleTableEndRow = roleTableStartRow + roles.length
+  const detailStartRow = detailHeaderRow + 1
+  const detailEndRow = detailStartRow + workforce.headcount_rows.length - 1
+  sheet.getRow(headingRow).font = { bold: true }
+  styleHeader(sheet, summaryHeaderRow)
+  styleHeader(sheet, detailHeaderRow)
+  formatColumns(sheet, Array.from({ length: roles.length + 1 }, (_, index) => roleTableStartRow + index), [2, 3, 4, 5, 6, 7])
+  formatColumns(sheet, Array.from({ length: workforce.headcount_rows.length }, (_, index) => detailStartRow + index), [4, 5, 6, 7, 8])
+  addWorkforceStatusConditionalFormatting(sheet, `H${roleTableStartRow}:H${roleTableEndRow}`)
+  addWorkforceStatusConditionalFormatting(sheet, `I${detailStartRow}:I${detailEndRow}`)
+}
+
+export async function exportManagementPack(dashboard: DashboardResponse, scenarioRows: PlanningInputRow[], operatingPlan: OperatingPlanResponse | null = null, sessionActions: ActionRegisterRow[] = [], decisionLog: DecisionLogRow[] = []) {
   const [{ Workbook }, { saveAs }] = await Promise.all([import('exceljs'), import('file-saver')])
   const workbook = new Workbook()
   workbook.creator = 'PlanTerm'
@@ -180,7 +218,7 @@ export async function exportManagementPack(dashboard: DashboardResponse, scenari
   addStatusConditionalFormatting(variance, `Q3:Q${2 + dashboard.business_unit_variances.length}`)
 
   const pvm = workbook.addWorksheet('PVM Bridge')
-  setTitle(pvm, 'Price / Volume / Mix Bridge · RMB millions', 2)
+  setTitle(pvm, 'Price / Volume / Mix and Operating Profit Bridges · RMB millions', 6)
   pvm.addRow(['Bridge item', 'Amount'])
   pvm.addRow(['Actual revenue', nullableNumber(dashboard.pvm_bridge.actual_revenue)])
   pvm.addRow(['Budget revenue', nullableNumber(dashboard.pvm_bridge.budget_revenue)])
@@ -188,10 +226,31 @@ export async function exportManagementPack(dashboard: DashboardResponse, scenari
   pvm.addRow(['Mix', nullableNumber(dashboard.pvm_bridge.mix)])
   pvm.addRow(['Price', nullableNumber(dashboard.pvm_bridge.price)])
   pvm.addRow(['Reconciliation difference', formula('SUM(B5:B7)-(B3-B4)', nullableNumber(dashboard.pvm_bridge.reconciliation_difference))])
-  configureSheet(pvm, 2, [30, 20])
-  formatColumns(pvm, [3, 4, 5, 6, 7, 8], [2])
+  pvm.addRow([])
+  pvm.addRow(['Operating Profit bridge · PVM profit effect + GM effect + Opex effect'])
+  const profitSummaryHeaderRow = pvm.rowCount + 1
+  pvm.addRow(['Driver', 'Amount', '% of OP variance', 'Direction', 'Provenance', 'Action owner'])
+  const actualProfitProvenance = dashboard.selected_filters.brand === 'all' && dashboard.selected_filters.market === 'all'
+    ? 'public_reported · group anchor'
+    : 'synthetic_allocation · allocated BU view'
+  const profitActualRow = pvm.rowCount + 1
+  pvm.addRow(['Actual operating profit', nullableNumber(dashboard.profit_bridge.actual_operating_profit), null, null, actualProfitProvenance, null])
+  const profitBudgetRow = pvm.rowCount + 1
+  pvm.addRow(['Budget operating profit', nullableNumber(dashboard.profit_bridge.budget_operating_profit), null, null, 'synthetic_plan', null])
+  const profitVarianceRow = pvm.rowCount + 1
+  pvm.addRow(['Operating profit variance', formula(`IF(OR(B${profitActualRow}="",B${profitBudgetRow}=""),"",B${profitActualRow}-B${profitBudgetRow})`, nullableNumber(dashboard.profit_bridge.operating_profit_variance)), null, null, 'calculated', null])
+  const profitItemsHeaderRow = pvm.rowCount + 1
+  pvm.addRow(['Driver', 'Amount', '% of OP variance', 'Direction', 'Provenance', 'Action owner'])
+  const profitItemsStartRow = pvm.rowCount + 1
+  dashboard.profit_bridge.items.forEach((item) => {
+    const rowNumber = pvm.rowCount + 1
+    pvm.addRow([item.driver, nullableNumber(item.amount), formula(`IFERROR(B${rowNumber}/ABS(B${profitVarianceRow}),"")`, nullableNumber(item.pct_of_variance)), item.direction, item.provenance, item.action_owner])
+  })
+  configureSheet(pvm, 2, [34, 20, 20, 16, 24, 34])
+  styleHeader(pvm, profitSummaryHeaderRow)
+  styleHeader(pvm, profitItemsHeaderRow)
+  formatColumns(pvm, [3, 4, 5, 6, 7, 8, profitActualRow, profitBudgetRow, profitVarianceRow, ...Array.from({ length: dashboard.profit_bridge.items.length }, (_, index) => profitItemsStartRow + index)], [2], [3])
 
-  if (!workforce) {
   const assumptions = workbook.addWorksheet('Assumptions & Sources')
   setTitle(assumptions, 'Assumptions & Sources', 4)
   assumptions.addRow(['Source type', 'Item', 'Detail', 'Provenance'])
@@ -206,7 +265,6 @@ export async function exportManagementPack(dashboard: DashboardResponse, scenari
   configureSheet(assumptions, 2, [22, 38, 86, 22])
   const assumptionRows = Array.from({ length: assumptions.rowCount - 2 }, (_, index) => index + 3)
   formatColumns(assumptions, assumptionRows, [3])
-  }
 
   const category = workbook.addWorksheet('Product Category Detail')
   const selectedVariant = dashboard.selected_plan_variant || 'base'
@@ -253,46 +311,12 @@ export async function exportManagementPack(dashboard: DashboardResponse, scenari
     })
   }
 
-  if (workforce) {
-    const capacity = workbook.addWorksheet('Workforce Capacity')
-    setTitle(capacity, `Workforce Capacity · ${workforce.plan_variant} · synthetic planning`, 10)
-    capacity.addRow(['Selected plan variant', workforce.plan_variant, 'As of', workforce.as_of_date, 'Unit', workforce.unit])
-    capacity.addRow(['Disclosure', workforce.disclosure])
-    capacity.addRow(['Productivity basis', workforce.headcount_rows[0]?.productivity_basis || 'Revenue / planned FTE'])
-    capacity.addRow(['Provenance', workforce.provenance, 'Input provenance', workforce.input_provenance])
-    capacity.addRow(['Reconciliation status', workforce.reconciliation_evidence?.status || 'Not available', 'Residual', nullableNumber((workforce.reconciliation_evidence?.residual ?? workforce.reconciliation_evidence?.max_residual) as number | null), 'Tolerance', nullableNumber(workforce.reconciliation_evidence?.tolerance_rmb_millions ?? null)])
-    capacity.addRow([])
-    capacity.addRow(['Role group', 'Planned FTE', 'Required FTE', 'Capacity gap', 'Loaded cost', 'Revenue / FTE', 'Variant delta', 'Status', 'Provenance'])
-    const roles: WorkforceRoleGroup[] = ['store operations', 'commercial', 'supply chain', 'finance/support']
-    roles.forEach((role) => {
-      const rollup = workforce.rollups?.role_group?.[role]
-      const roleRows = workforce.headcount_rows.filter((row) => row.role_group === role)
-      const revenue = roleRows.reduce((total, row) => total + (Number.isFinite(row.revenue) ? row.revenue : 0), 0)
-      const planned = rollup?.planned_fte || 0
-      capacity.addRow([role, nullableNumber(rollup?.planned_fte ?? null), nullableNumber(rollup?.required_fte ?? null), nullableNumber(rollup?.capacity_gap ?? null), nullableNumber(rollup?.loaded_cost ?? null), planned > 0 ? nullableNumber(revenue / planned) : null, nullableNumber((workforce.selected_vs_base_delta || {})[`${role}.loaded_cost`] ?? null), roleRows.some((row) => row.status === 'capacity_gap') ? 'capacity_gap' : roleRows.some((row) => row.status === 'over_capacity') ? 'over_capacity' : roleRows.length > 0 && roleRows.every((row) => row.status === 'zero_capacity') ? 'zero_capacity' : 'balanced', rollup?.provenance || workforce.provenance])
-    })
-    const portfolio = workforce.rollups?.portfolio
-    const portfolioRevenue = workforce.headcount_rows.reduce((total, row) => total + (Number.isFinite(row.revenue) ? row.revenue : 0), 0)
-    capacity.addRow(['Portfolio total', nullableNumber(portfolio?.planned_fte ?? null), nullableNumber(portfolio?.required_fte ?? null), nullableNumber(portfolio?.capacity_gap ?? null), nullableNumber(portfolio?.loaded_cost ?? null), (portfolio?.planned_fte || 0) > 0 ? nullableNumber(portfolioRevenue / (portfolio?.planned_fte || 1)) : null, nullableNumber(workforce.selected_vs_base_delta?.loaded_cost ?? null), workforce.reconciliation_evidence?.status || 'Not available', workforce.provenance])
-    capacity.addRow([])
-    capacity.addRow(['Period', 'Business Unit', 'Role Group', 'Planned FTE', 'Required FTE', 'Capacity Gap', 'Loaded Cost', 'Revenue / FTE', 'Status', 'Provenance'])
-    workforce.headcount_rows.forEach((row) => capacity.addRow([row.period, row.business_unit, row.role_group, nullableNumber(row.planned_fte), nullableNumber(row.required_fte), nullableNumber(row.capacity_gap), nullableNumber(row.loaded_cost), row.revenue_per_fte === null ? null : nullableNumber(row.revenue_per_fte), row.status, row.provenance]))
-    const roleTableStartRow = 9
-    const roleTableEndRow = roleTableStartRow + roles.length
-    const detailHeaderRow = roleTableEndRow + 2
-    const detailStartRow = detailHeaderRow + 1
-    const detailEndRow = detailStartRow + workforce.headcount_rows.length - 1
-    configureSheet(capacity, detailHeaderRow, [18, 28, 20, 14, 14, 14, 16, 16, 18, 24])
-    styleHeader(capacity, 8)
-    formatColumns(capacity, Array.from({ length: roles.length + 1 }, (_, index) => roleTableStartRow + index), [2, 3, 4, 5, 6, 7], [])
-    formatColumns(capacity, Array.from({ length: workforce.headcount_rows.length }, (_, index) => detailStartRow + index), [4, 5, 6, 7, 8], [])
-    addWorkforceStatusConditionalFormatting(capacity, `H${roleTableStartRow}:H${roleTableEndRow}`)
-    addWorkforceStatusConditionalFormatting(capacity, `I${detailStartRow}:I${detailEndRow}`)
-  }
-
   const operating = workbook.addWorksheet('Operating Decision')
   const operatingVariant = operatingPlan?.plan_variant || dashboard.selected_plan_variant || 'base'
-  setTitle(operating, `Operating Decision · ${operatingVariant} · illustrative / synthetic`, 12)
+  const assumptionVersion = operatingPlan?.assumption_registry?.assumption_version || operatingPlan?.assumption_version || dashboard.metadata.assumption_version || ASSUMPTION_VERSION
+  const gitSha = operatingPlan?.assumption_registry?.git_sha || operatingPlan?.git_sha || dashboard.metadata.git_sha || GIT_SHA
+  const exportedDecisionLog = decisionLog.length > 0 ? decisionLog : (operatingPlan?.decision_log || operatingPlan?.governance?.decision_log || [])
+  setTitle(operating, `Operating Decision · ${operatingVariant} · illustrative / synthetic · assumptions ${assumptionVersion} · git ${gitSha}`, 12)
   operating.addRow(['Case', dashboard.metadata.name, 'As of', operatingPlan?.as_of_date || dashboard.metadata.as_of_date, 'Unit', 'RMB millions'])
   operating.addRow(['Disclosure', 'Synthetic planning assumptions and calculated illustrative cash - not public reported or actual cash.'])
   operating.addRow([])
@@ -330,7 +354,8 @@ export async function exportManagementPack(dashboard: DashboardResponse, scenari
   operating.addRow(['Illustrative closing cash', formula(`IF(OR(B${cashStartRow}="",B${netCashRow}=""),"",B${cashStartRow}+B${netCashRow})`, nullableNumber(latestCash?.closing_illustrative_cash ?? null)), 'calculated'])
   operating.addRow(['Minimum cash buffer', nullableNumber(latestCash?.minimum_cash_buffer ?? null), 'synthetic_plan'])
   operating.addRow(['Headroom', formula(`IF(OR(B${netCashRow + 1}="",B${netCashRow + 2}=""),"",B${netCashRow + 1}-B${netCashRow + 2})`, nullableNumber(latestCash?.headroom ?? null)), 'calculated'])
-  const accuracyHeadingRow = netCashRow + 5
+  if (workforce) addWorkforceSection(operating, workforce)
+  const accuracyHeadingRow = operating.rowCount + 2
   operating.addRow([])
   operating.addRow(['Forecast accuracy · calculated from synthetic snapshots'])
   operating.addRow(['Metric', 'Value', 'Definition', 'Status', 'Provenance'])
@@ -349,6 +374,12 @@ export async function exportManagementPack(dashboard: DashboardResponse, scenari
   operating.addRow(['Action register · illustrative session-only actions'])
   operating.addRow(['Observation', 'Driver', 'Impact', 'Risk', 'Action', 'Owner', 'Due', 'Cadence', 'Status', 'Provenance'])
   sessionActions.forEach((action) => operating.addRow([action.observation, action.driver, nullableNumber(action.impact), action.risk, action.action, action.owner, action.due_period, action.cadence, action.status || 'Open', action.provenance]))
+  const governanceHeadingRow = operating.rowCount + 2
+  operating.addRow([])
+  operating.addRow(['Governance metadata and decision evidence'])
+  operating.addRow(['assumption_version', assumptionVersion, 'git_sha', gitSha, 'Case / as-of', dashboard.metadata.case_id, dashboard.metadata.as_of_date])
+  operating.addRow(['Decision ID', 'Date', 'Context', 'Options', 'Decision', 'Rationale', 'Owner role', 'Affected contracts', 'Evidence', 'Supersedes', 'Status'])
+  exportedDecisionLog.forEach((decision) => operating.addRow([decision.decision_id, decision.date, decision.context, Array.isArray(decision.options) ? decision.options.join(' | ') : decision.options, decision.decision, decision.rationale, decision.owner_role, Array.isArray(decision.affected_contracts) ? decision.affected_contracts.join(' | ') : decision.affected_contracts, Array.isArray(decision.evidence) ? decision.evidence.map((item) => `${item.metric}: ${item.formula} · ${item.source} · ${item.reconciliation_status}`).join(' | ') : decision.evidence, decision.supersedes, decision.status]))
   operating.addRow([])
   const reconciliation = operatingPlan?.reconciliation
   operating.addRow([
@@ -365,6 +396,7 @@ export async function exportManagementPack(dashboard: DashboardResponse, scenari
   formatColumns(operating, Array.from({ length: cashRows.length + 4 }, (_, index) => cashStartRow + index), [2])
   formatColumns(operating, accuracyRows.map((_, index) => accuracyHeadingRow + 2 + index), [2])
   operating.getRow(actionHeadingRow).font = { bold: true }
+  operating.getRow(governanceHeadingRow).font = { bold: true }
 
   // Sanitize only primitive text cells; Excel formulas and numeric values remain untouched.
   sanitizeWorkbookText(workbook)

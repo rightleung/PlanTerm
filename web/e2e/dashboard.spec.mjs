@@ -70,10 +70,11 @@ function findRowByValues(sheet, expected) {
 
 function workforceFixture(variant = 'base') {
   const requiredRatio = variant === 'upside' ? 1.08 : variant === 'downside' ? 0.92 : 1;
+  const variantOffset = variant === 'upside' ? 1 : variant === 'downside' ? -1 : 0;
   const periods = ['2026-07', '2026-08', '2026-09', '2026-10', '2026-11', '2026-12'];
   const businessUnits = ['MINISO - Chinese Mainland', 'MINISO - Overseas', 'TOP TOY - Global'];
   const roleRows = [
-    ['store operations', 12, 0.12, 120],
+    ['store operations', 12 + variantOffset, 0.12, 120],
     ['commercial', 4, 0.2, 60],
     ['supply chain', 3, 0.18, 40],
     ['finance/support', 2, 0.22, 25],
@@ -111,6 +112,8 @@ function operatingPlanFixture(variant = 'base', reconciliation = { status: 'reco
     planning_horizon: { locked_through: '2026-06', editable_from: '2026-07', editable_to: '2026-12' },
     plan_variant: variant,
     provenance_legend: { synthetic_plan: 'Synthetic planning assumptions', calculated: 'Server-calculated output' },
+    assumption_registry: { case_id: 'miniso-2026', assumption_version: 'miniso-2026@2026-06-30', git_sha: 'unavailable-local-build', provenance_labels: { public_reported: 'Public reported', synthetic_allocation: 'Synthetic allocation', synthetic_plan: 'Synthetic plan', calculated: 'Calculated' }, as_of_date: '2026-06-30', currency: 'RMB', unit: 'RMB millions' },
+    decision_log: [{ decision_id: 'fixture-base-scenario', date: '2026-06-30', context: 'FY2026 base review', options: ['base', 'upside', 'downside'], decision: 'Use base plan for review', rationale: 'Fixture evidence is reconciled', owner_role: 'Group FP&A', affected_contracts: ['decision_table', 'reconciliation'], evidence: [{ metric: 'fy_revenue_delta', formula: 'selected - base', source: 'calculated fixture', provenance: 'calculated', reconciliation_status: 'reconciled' }], supersedes: null, status: 'Approved' }],
     working_capital: { unit: 'RMB millions', disclosure: 'Synthetic planning assumption; not public reported working capital.', rows: [{ case_id: 'miniso-2026', plan_variant: variant, period: '2026-12', business_unit: 'Portfolio', revenue: 100, cogs: 62, ar_days: 34, inventory_days: 51, ap_days: 42, ar_balance: 9.3, inventory_balance: 8.7, ap_balance: 7.1, nwc: 10.9, ccc: 43, provenance: 'calculated', status: 'eligible' }] },
     cash_bridge: { closing_illustrative_cash: 92.6 + delta, minimum_headroom: 12.6 + delta, disclosure: 'Illustrative cash balance; not a bank-reported cash balance.', rows: [{ case_id: 'miniso-2026', plan_variant: variant, period: '2026-12', opening_cash: 90, minimum_cash_buffer: 80, operating_profit: 20 + delta, prior_ar: 11.7, current_ar: 14.1, prior_inventory: 14, current_inventory: 17.2, current_ap: 9.5, prior_ap: 7.7, capex: 12.5, other_cash_items: -1.1, net_cash_change: 2.6 + delta, closing_illustrative_cash: 92.6 + delta, headroom: 12.6 + delta, status: 'eligible', provenance: 'calculated' }] },
     forecast_accuracy: { wape: null, bias: null, directional_hit_rate: null, eligible_periods: 0, status: 'not_eligible', provenance: 'calculated' },
@@ -143,6 +146,29 @@ test('loads the offline MINISO planning case and renders the disclosure', async 
   await expect(page.getByText('Public reported data anchors H1 Actual and Prior Year.')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Monthly revenue trend' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Price / Volume / Mix' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Operating Profit bridge' })).toBeVisible();
+});
+
+test('governance decision log is add-only for the browser session and provenance is explicit', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByRole('heading', { name: 'Conclusion provenance' })).toBeVisible();
+  for (const label of ['public reported', 'synthetic allocation', 'synthetic plan', 'calculated']) await expect(page.getByText(new RegExp(label, 'i')).first()).toBeVisible();
+  await expect(page.getByText('assumption_version')).toBeVisible();
+  await expect(page.getByText('git_sha')).toBeVisible();
+  const decisionSection = page.locator('section[aria-labelledby="decision-log-title"]');
+  const decisionForm = decisionSection.locator('[aria-label="Add decision"]');
+  await expect(decisionSection.getByText('miniso-2026-base-scenario')).toBeVisible();
+  await decisionForm.getByLabel('context').fill('July volume sensitivity');
+  await decisionForm.getByLabel('options').fill('base | upside | downside');
+  await decisionForm.getByLabel('decision').fill('Use base plan for review');
+  await decisionForm.getByLabel('rationale').fill('Keeps the committed case anchor unchanged');
+  await decisionForm.getByLabel('affected contracts').fill('decision_table | cash_bridge');
+  await decisionForm.getByLabel('evidence').fill('fy_revenue_delta; selected - base; calculated; reconciled');
+  await decisionForm.getByRole('button', { name: 'Add decision', exact: true }).click();
+  await expect(decisionSection.getByText('July volume sensitivity')).toBeVisible();
+  await expect(decisionSection.locator('tbody input, tbody textarea, tbody select')).toHaveCount(0);
+  await page.reload();
+  await expect(page.locator('section[aria-labelledby="decision-log-title"]').getByText('July volume sensitivity')).toHaveCount(0);
 });
 
 test('renders the empty business unit variance state', async ({ page }) => {
@@ -269,6 +295,13 @@ test('valid upload previews all variants, supports edits and discard, and export
   const template = await downloadTemplate(page);
   await uploadTemplate(page, template);
 
+  const workforceInput = page.getByLabel('planned_fte 2026-07 MINISO - Chinese Mainland store operations');
+  await expect(workforceInput).toHaveValue('12');
+  await page.getByRole('button', { name: 'upside', exact: true }).click();
+  await expect(workforceInput).toHaveValue('13');
+  await page.getByRole('button', { name: 'base', exact: true }).click();
+  await expect(workforceInput).toHaveValue('12');
+
   for (const variant of ['base', 'upside', 'downside']) {
     await page.getByRole('button', { name: variant, exact: true }).click();
     await expect(page.getByRole('button', { name: variant, exact: true })).toHaveClass(/active/);
@@ -322,7 +355,7 @@ test('valid upload previews all variants, supports edits and discard, and export
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.load(await fs.readFile(await download.path()));
   expect(workbook.worksheets.map((sheet) => sheet.name)).toEqual([
-    'Executive Summary', 'Monthly Trend', 'Business Unit Variance', 'PVM Bridge', 'Product Category Detail', 'Scenario Inputs & Provenance', 'Workforce Capacity', 'Operating Decision',
+    'Executive Summary', 'Monthly Trend', 'Business Unit Variance', 'PVM Bridge', 'Assumptions & Sources', 'Product Category Detail', 'Scenario Inputs & Provenance', 'Operating Decision',
   ]);
   const provenance = workbook.getWorksheet('Scenario Inputs & Provenance');
   const selectedVariant = findRowByFirstValue(provenance, 'Selected plan variant');
@@ -342,6 +375,8 @@ test('valid upload previews all variants, supports edits and discard, and export
   expect(provenance.autoFilter).toBeTruthy();
   [6, 7, 8, 9].forEach((column) => expect(provenance.getCell(matrixHeader.rowNumber + 1, column).numFmt).toContain('%'));
   expect(workbook.getWorksheet('PVM Bridge').getCell('B8').value).toHaveProperty('formula');
+  expect(findRowByFirstValue(workbook.getWorksheet('PVM Bridge'), 'Operating profit variance').row.getCell(2).value).toHaveProperty('formula');
+  expect(findRowByValues(workbook.getWorksheet('PVM Bridge'), ['Driver', 'Amount', '% of OP variance', 'Direction', 'Provenance', 'Action owner'])).toBeTruthy();
   const categorySheet = workbook.getWorksheet('Product Category Detail');
   const categoryHeader = findRowByValues(categorySheet, ['Period', 'Plan Variant', 'Business Unit', 'Category', 'Revenue', 'Revenue Mix %', 'Gross Margin %', 'Opex Ratio %', 'Operating Margin %', 'Provenance']);
   const categoryRows = Array.from({ length: categorySheet.rowCount - categoryHeader.rowNumber }, (_, index) => categorySheet.getRow(categoryHeader.rowNumber + 1 + index));
@@ -401,6 +436,8 @@ test('operating decision loads, previews selected variants, and exports safe ill
   expect(workbook.worksheets).toHaveLength(8);
   const operating = workbook.getWorksheet('Operating Decision');
   expect(operating).toBeTruthy();
+  expect(findRowByFirstValue(operating, 'assumption_version').row.getCell(2).value).toBe('miniso-2026@2026-06-30');
+  expect(findRowByFirstValue(operating, 'assumption_version').row.getCell(4).value).toBe('unavailable-local-build');
   expect(findRowByFirstValue(operating, 'Disclosure').row.getCell(2).value).toContain('not public reported or actual cash');
   expect(findRowByFirstValue(operating, 'Other cash').row.getCell(2).value).toBe(-1.1);
   const actionRow = findRowByFirstValue(operating, 'Inventory cover elevated');
@@ -437,7 +474,7 @@ test('evidence-object reconciliation renders and exports residual status', async
   expect(row.values).not.toContain('[object Object]');
 });
 
-test('workforce capacity renders bounded role groups and exports parity sheet', async ({ page }) => {
+test('workforce capacity renders bounded role groups and exports in the operating decision sheet', async ({ page }) => {
   await mockOperatingPlan(page);
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'Workforce Capacity' })).toBeVisible();
@@ -451,17 +488,19 @@ test('workforce capacity renders bounded role groups and exports parity sheet', 
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.load(await fs.readFile(await download.path()));
   expect(workbook.worksheets).toHaveLength(8);
-  const workforce = workbook.getWorksheet('Workforce Capacity');
-  expect(workforce).toBeTruthy();
-  expect(findRowByFirstValue(workforce, 'Portfolio total').row.getCell(2).value).toBe(21);
-  expect(findRowByFirstValue(workforce, 'Reconciliation status').row.getCell(2).value).toBe('reconciled');
-  expect(workforce.getCell(9, 2).value).toBe(12);
-  expect(typeof workforce.getCell(9, 2).value).toBe('number');
-  expect(workforce.getCell(9, 2).numFmt).toContain('#,##0.0');
-  const detailHeader = findRowByValues(workforce, ['Period', 'Business Unit', 'Role Group', 'Planned FTE', 'Required FTE', 'Capacity Gap', 'Loaded Cost', 'Revenue / FTE', 'Status', 'Provenance']);
-  expect(workforce.autoFilter).toBe(`A${detailHeader.rowNumber}:J${detailHeader.rowNumber}`);
-  expect(workforce.getCell(detailHeader.rowNumber + 1, 4).numFmt).toContain('#,##0.0');
-  expect(workforce.getRows(1, workforce.rowCount).flatMap((row) => row.values)).not.toContain('[object Object]');
+  const operating = workbook.getWorksheet('Operating Decision');
+  expect(operating).toBeTruthy();
+  expect(findRowByFirstValue(operating, 'Workforce disclosure').row.getCell(2).value).toContain('not MINISO reported');
+  expect(findRowByFirstValue(operating, 'Portfolio total').row.getCell(2).value).toBe(21);
+  expect(findRowByFirstValue(operating, 'Reconciliation status').row.getCell(2).value).toBe('reconciled');
+  const roleSummary = findRowByFirstValue(operating, 'store operations').row;
+  expect(roleSummary.getCell(2).value).toBe(12);
+  expect(typeof roleSummary.getCell(2).value).toBe('number');
+  expect(roleSummary.getCell(2).numFmt).toContain('#,##0.0');
+  const detailHeader = findRowByValues(operating, ['Period', 'Business Unit', 'Role Group', 'Planned FTE', 'Required FTE', 'Capacity Gap', 'Loaded Cost', 'Revenue / FTE', 'Status', 'Provenance']);
+  expect(operating.autoFilter).toBeTruthy();
+  expect(operating.getCell(detailHeader.rowNumber + 1, 4).numFmt).toContain('#,##0.0');
+  expect(operating.getRows(1, operating.rowCount).flatMap((row) => row.values)).not.toContain('[object Object]');
 });
 
 test('an older operating preview response cannot overwrite a newer selected variant', async ({ page }) => {

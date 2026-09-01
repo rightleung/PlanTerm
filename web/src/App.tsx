@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import { fetchDashboard, fetchForecastAccuracy, fetchOperatingPlan, fetchPlanningTemplate, previewDashboard, previewOperatingPlan, ApiError } from '@/api/client'
 import { exportManagementPack } from '@/export/managementPack'
-import { DataProvenance } from '@/features/dashboard/DataProvenance'
+import { DecisionLog } from '@/features/governance/DecisionLog'
+import { ProvenancePanel } from '@/features/governance/ProvenancePanel'
 import { FilterBar } from '@/features/dashboard/FilterBar'
+import { DataProvenance } from '@/features/dashboard/DataProvenance'
 import { KpiGrid } from '@/features/dashboard/KpiGrid'
 import { ManagementInsights } from '@/features/dashboard/ManagementInsights'
 import { MonthlyTrendChart } from '@/features/dashboard/MonthlyTrendChart'
 import { PvmBridge } from '@/features/dashboard/PvmBridge'
+import { ProfitBridge } from '@/features/dashboard/ProfitBridge'
 import { VarianceTable } from '@/features/dashboard/VarianceTable'
 import { parsePlanningInputCsv, PlanningInputs, type PlanningSession } from '@/features/planning-inputs/PlanningInputs'
 import { ActionRegister } from '@/features/operating-plan/ActionRegister'
@@ -14,7 +17,7 @@ import { CashBridge } from '@/features/operating-plan/CashBridge'
 import { ForecastAccuracy } from '@/features/operating-plan/ForecastAccuracy'
 import { ScenarioDecisionTable } from '@/features/operating-plan/ScenarioDecisionTable'
 import { HeadcountCapacity } from '@/features/operating-plan/HeadcountCapacity'
-import type { ActionRegisterRow, BrandFilter, DashboardResponse, MarketFilter, OperatingPlanResponse } from '@/types/planning'
+import type { ActionRegisterRow, BrandFilter, DashboardResponse, DecisionLogRow, MarketFilter, OperatingPlanResponse } from '@/types/planning'
 
 const CASE_ID = 'miniso-2026'
 
@@ -41,6 +44,7 @@ export default function App() {
   const [operatingError, setOperatingError] = useState<ApiError | Error | null>(null)
   const [operatingRetryCount, setOperatingRetryCount] = useState(0)
   const [sessionActions, setSessionActions] = useState<ActionRegisterRow[]>([])
+  const [decisionLog, setDecisionLog] = useState<DecisionLogRow[]>([])
   const requestId = useRef(0)
   const dashboardController = useRef<AbortController | null>(null)
   const operatingRequestId = useRef(0)
@@ -127,6 +131,7 @@ export default function App() {
       if (active && id === operatingRequestId.current) {
         setOperatingPlan(accuracy ? { ...result, forecast_accuracy: accuracy } : result)
         setSessionActions((current) => current.length > 0 ? current : sessionActionRows(result.actions))
+        setDecisionLog((current) => current.length > 0 ? current : (result.decision_log || result.governance?.decision_log || []))
       }
     }).catch((reason: unknown) => {
       if (active && id === operatingRequestId.current && (reason as Error).name !== 'AbortError') setOperatingError(reason instanceof Error ? reason : new Error('Unable to load operating decision plan'))
@@ -157,6 +162,7 @@ export default function App() {
     dashboardController.current?.abort()
     dashboardController.current = null
     setPlanningSession(null)
+    setDecisionLog([])
     setSessionRevision((revision) => revision + 1)
     setError(null)
   }
@@ -166,7 +172,7 @@ export default function App() {
   const download = async () => {
     if (!dashboard || dashboard.business_unit_variances.length === 0) return
     setExporting(true)
-    try { const rows = planningSession?.rows || parsePlanningInputCsv(await fetchPlanningTemplate(CASE_ID)); await exportManagementPack(dashboard, rows, operatingPlan, sessionActions) } catch (reason: unknown) { setError(reason instanceof Error ? reason : new Error('Excel export failed')) } finally { setExporting(false) }
+    try { const rows = planningSession?.rows || parsePlanningInputCsv(await fetchPlanningTemplate(CASE_ID)); await exportManagementPack(dashboard, rows, operatingPlan, sessionActions, decisionLog) } catch (reason: unknown) { setError(reason instanceof Error ? reason : new Error('Excel export failed')) } finally { setExporting(false) }
   }
   const selectedCategoryDetail = dashboard?.category_detail?.filter((row) => row.plan_variant === (dashboard.selected_plan_variant || 'base')) || []
 
@@ -195,7 +201,8 @@ export default function App() {
               <KpiGrid kpis={dashboard.kpis} />
               <MonthlyTrendChart data={dashboard.monthly_trend} />
               <VarianceTable rows={dashboard.business_unit_variances} />
-              <div className="two-column"><PvmBridge bridge={dashboard.pvm_bridge} /><ManagementInsights insights={dashboard.management_insights} /></div>
+              <div className="two-column"><PvmBridge bridge={dashboard.pvm_bridge} /><ProfitBridge bridge={dashboard.profit_bridge} /></div>
+              <ManagementInsights insights={dashboard.management_insights} />
             </> : <div className="state-card empty-dashboard" role="status"><div><strong>No business unit matches the selected filters</strong><p>Choose a valid brand and market combination to view planning metrics.</p></div></div>}
             {dashboard.scenario_comparison && <section className="panel scenario-panel"><div className="section-heading"><h2>Scenario comparison</h2><span className="unit-note">Selected FY Forecast vs Base FY Forecast</span></div><div className="scenario-grid">{(['revenue', 'gross_profit', 'operating_profit'] as const).map((metric) => { const item = dashboard.scenario_comparison![metric]; return <div key={metric}><span>{metric.replaceAll('_', ' ')}</span><strong>{item.selected_fy_forecast.toFixed(1)}</strong><em className={item.delta >= 0 ? 'positive' : 'negative'}>{item.delta >= 0 ? '+' : ''}{item.delta.toFixed(1)} vs base</em></div> })}</div></section>}
             {dashboard.category_detail && <section className="panel table-panel category-detail-panel"><div className="section-heading"><div><h2>Product Category Detail</h2><span className="unit-note">Filtered synthetic allocation · selected {dashboard.selected_plan_variant || 'base'}</span></div></div><div className="synthetic-disclosure">Synthetic planning input — not reported category data</div><div className="table-scroll"><table><thead><tr><th>Period</th><th>Business unit</th><th>Category</th><th>Revenue</th><th>Revenue mix</th><th>Gross margin</th><th>Opex ratio</th><th>Operating margin</th><th>Provenance</th></tr></thead><tbody>{selectedCategoryDetail.map((row) => <tr key={`${row.plan_variant}-${row.period}-${row.business_unit}-${row.category_id}`}><td>{row.period}</td><td>{row.business_unit}</td><td className="table-primary">{row.category_name}</td><td>{row.revenue.toFixed(1)}</td><td>{(row.revenue_mix_pct * 100).toFixed(1)}%</td><td>{(row.gross_margin_pct * 100).toFixed(1)}%</td><td>{(row.opex_ratio_pct * 100).toFixed(1)}%</td><td>{(row.operating_margin_pct * 100).toFixed(1)}%</td><td>{row.provenance}</td></tr>)}</tbody></table></div></section>}
@@ -207,8 +214,10 @@ export default function App() {
               <div className="two-column"><ForecastAccuracy accuracy={operatingPlan.forecast_accuracy} /><ScenarioDecisionTable decisionTable={operatingPlan.decision_table} selectedVariant={operatingPlan.plan_variant} /></div>
               <ActionRegister actions={sessionActions} onChange={setSessionActions} />
             </div>}
+            <ProvenancePanel dashboard={dashboard} operatingPlan={operatingPlan} />
             <DataProvenance dashboard={dashboard} />
-            <div className="export-row"><div><strong>Take this view to your next review</strong><span>Exports the current filters and selected plan variant into an eight-sheet Excel management pack.</span></div><button className="button button-primary" type="button" onClick={download} disabled={exporting || dashboard.business_unit_variances.length === 0}>{exporting ? 'Building workbook…' : 'Export Excel management pack'}</button></div>
+            <DecisionLog rows={decisionLog} onChange={setDecisionLog} />
+            <div className="export-row"><div><strong>Take this view to your next review</strong><span>Exports the current filters and selected plan variant into an eight-sheet Excel management pack; Operating Decision includes workforce capacity.</span></div><button className="button button-primary" type="button" onClick={download} disabled={exporting || dashboard.business_unit_variances.length === 0}>{exporting ? 'Building workbook…' : 'Export Excel management pack'}</button></div>
           </div>
         )}
       </div>

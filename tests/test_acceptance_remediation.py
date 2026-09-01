@@ -8,6 +8,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from planterm import __version__
+from src import __version__ as src_version
 from src.api import app
 from src.services.spreadsheet_neutralizer import neutralize_text, numeric_text, sanitize_csv_row
 
@@ -58,7 +59,7 @@ def test_version_declarations_and_health_are_exactly_020():
         pyproject_version = tomllib.load(handle)["project"]["version"]
     config_text = (root / "src" / "config.py").read_text(encoding="utf-8")
     web_version = json.loads((root / "web" / "package.json").read_text(encoding="utf-8"))["version"]
-    assert pyproject_version == __version__ == web_version == "0.2.0"
+    assert pyproject_version == __version__ == src_version == web_version == "0.2.0"
     assert 'version: str = "0.2.0"' in config_text
     assert client.get("/health").json()["version"] == "0.2.0"
 

@@ -6,7 +6,7 @@ PlanTerm is an FP&A planning and performance management workbench. The v0.3 work
 - MINISO — Overseas
 - TOP TOY — Global
 
-The dashboard is an English, local-first application with a deterministic API and an Excel management pack. It covers revenue, gross profit, operating profit, margin, variance analysis, Price / Volume / Mix and Profit Driver bridges. Public reported figures are separated from synthetic allocations and illustrative planning assumptions throughout the product.
+The dashboard is an English, local-first application with a deterministic API and an Excel management pack. It covers revenue, gross profit, operating profit, margin, variance analysis, Price / Volume / Mix and Operating Profit bridges. Public reported figures are separated from synthetic allocations and illustrative planning assumptions throughout the product.
 
 ![PlanTerm dashboard showing the MINISO portfolio planning case](./docs/assets/planterm-dashboard.png)
 
@@ -53,13 +53,15 @@ Product-category figures are synthetic planning allocations, not public category
 
 ## Operating decision workflow
 
-The v0.3 operating-decision view extends the selected `base`, `upside` or `downside` H2 plan variant with AR, inventory and AP days; calculated balances, NWC and cash-conversion cycle; an illustrative cash bridge; forecast-accuracy metrics; a scenario decision table; and an action register.
+The v0.3 operating-decision view extends the selected `base`, `upside` or `downside` H2 plan variant with AR, inventory and AP days; calculated balances, NWC and cash-conversion cycle; an illustrative cash bridge; forecast-accuracy metrics; a scenario decision table; and an action register. The v0.4 workforce view adds bounded role-group capacity; the v0.5 governance view adds session-only decisions and portfolio evidence.
 
 AR/AP/inventory days, opening cash, CAPEX proxy, other cash assumptions, actions and forecast snapshots are synthetic planning inputs. Balances, cash effects, NWC, CCC, headroom, accuracy metrics and reconciliations are calculated. The product does not report actual company cash, working-capital balances, internal forecasts or action records. Browser action edits are session-only and are never persisted.
 
+Governance evidence adds a session-only immutable decision log and conclusion-level provenance links. Each conclusion identifies its metric, formula, source label and reconciliation status; `public_reported`, `synthetic_allocation`, `synthetic_plan` and `calculated` remain explicit. Assumption version and git SHA are surfaced in the UI and workbook. See [v0.5 release evidence](./docs/release-evidence.md) for the deterministic review edit and pending release gates.
+
 ## Excel management pack
 
-The dashboard export produces `PlanTerm_MINISO_2026H1_Management_Pack.xlsx` with:
+The dashboard export produces `PlanTerm_MINISO_2026H1_Management_Pack.xlsx` with the seven existing sheets plus one `Operating Decision` sheet. The active order is:
 
 1. Executive Summary
 2. Monthly Trend
@@ -70,7 +72,7 @@ The dashboard export produces `PlanTerm_MINISO_2026H1_Management_Pack.xlsx` with
 7. Scenario Inputs & Provenance
 8. Operating Decision
 
-The export follows the active dashboard filters and selected plan variant, uses RMB millions as the default unit, and includes the exact 252-row input matrix plus taxonomy, source and operating-decision disclosures. Numeric cells, including negatives, remain numeric. Formula-backed calculated cells remain auditable; disclosure text is exported as literal, spreadsheet-neutralized text.
+The `PVM Bridge` sheet contains both the Revenue PVM and the reconciled Operating Profit bridge. The `Operating Decision` sheet contains working capital, illustrative cash, workforce capacity, forecast accuracy, scenario decisions, actions and governance evidence, so the existing seven-sheet order is preserved. The export follows the active dashboard filters and selected plan variant, uses RMB millions as the default unit, and includes the exact 252-row input matrix plus taxonomy, source and operating-decision disclosures. Numeric cells, including negatives, remain numeric. Formula-backed calculated cells remain auditable; disclosure text is exported as literal, spreadsheet-neutralized text.
 
 ## v0.2.0 planning inputs
 
@@ -78,7 +80,14 @@ This release adds deterministic product-category planning allocations, a strict 
 
 ## v0.3 status
 
-Operating Decision is in implementation. Completion requires the P1 API/UI/Excel parity, reconciliation and browser acceptance gates to pass against the frozen endpoint contract; until then, this workstream is not represented as a completed release.
+Operating Decision, workforce capacity and governance evidence are implemented in the working tree. The v1.0 integration contract is frozen locally across the API, TypeScript surface, UI and eight-sheet workbook. CI, tags and release publication are not claimed here; those remain release-owner actions.
+
+### Implemented versus future scope
+
+| Implemented in this case | Explicitly future / out of scope |
+|---|---|
+| Public-data anchored `miniso-2026`, H1 Actual / Budget / Prior Year, H2-only planning, P0–P3 API/UI/Excel workflows, governance provenance and stateless session previews | ERP, bank, HRIS, payroll, database/cloud persistence, PDF pack, peer benchmarks, LLM-generated conclusions, a second case, and bilingual UI |
+| Synthetic allocation, synthetic plan and calculated values are labelled separately from public reported anchors | Production deployment, account management, multi-user persistence and automated release publication |
 
 ## v0.1.1 hardening
 
@@ -92,6 +101,7 @@ This release adds data-derived valid filter combinations, incompatible-filter 42
 ./.venv/bin/python scripts/build_miniso_case.py --check
 cd web
 npm run lint
+npx tsc -p tsconfig.app.json --noEmit
 npm run build
 npm run e2e:preflight
 ```

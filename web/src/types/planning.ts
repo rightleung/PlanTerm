@@ -2,6 +2,31 @@ export type BrandFilter = 'all' | 'MINISO' | 'TOP_TOY'
 export type MarketFilter = 'all' | 'mainland' | 'overseas' | 'global'
 export type Status = 'Favorable' | 'Unfavorable' | 'Neutral'
 
+export type ProvenanceLabel = 'public_reported' | 'synthetic_allocation' | 'synthetic_plan' | 'calculated'
+
+export interface GovernanceEvidence {
+  metric: string
+  value?: number | null
+  formula: string
+  source: string
+  provenance: ProvenanceLabel
+  reconciliation_status: string
+}
+
+export interface DecisionLogRow {
+  decision_id: string
+  date: string
+  context: string
+  options: string[] | string
+  decision: string
+  rationale: string
+  owner_role: string
+  affected_contracts: string[] | string
+  evidence: GovernanceEvidence[] | string
+  supersedes: string | null
+  status: 'Proposed' | 'Approved' | 'Superseded' | 'Closed'
+}
+
 export interface KpiSnapshot {
   metric: string
   label: string
@@ -67,6 +92,24 @@ export interface PvmBridge {
   unit: string
 }
 
+export type ProfitBridgeDirection = 'favorable' | 'unfavorable' | 'neutral'
+export interface ProfitBridgeItem {
+  driver: 'PVM profit effect' | 'Gross Margin' | 'Opex'
+  amount: number | null
+  pct_of_variance: number | null
+  direction: ProfitBridgeDirection | null
+  provenance: 'calculated'
+  action_owner: string
+}
+export interface ProfitBridge {
+  actual_operating_profit: number | null
+  budget_operating_profit: number | null
+  operating_profit_variance: number | null
+  items: ProfitBridgeItem[]
+  reconciliation_difference: number | null
+  unit: string
+}
+
 export interface ManagementInsight {
   title: string
   business_unit: string
@@ -99,6 +142,8 @@ export interface DashboardResponse {
     unit: string
     accounting_standard: string
     business_units: string[]
+    assumption_version?: string
+    git_sha?: string
   }
   assumptions: {
     budget_assumptions: Record<string, { revenue_growth_vs_fy2025: number; budget_gross_margin: number; budget_operating_margin: number; average_ticket: number }>
@@ -114,6 +159,7 @@ export interface DashboardResponse {
   monthly_trend: MonthlyTrendPoint[]
   business_unit_variances: VarianceRow[]
   pvm_bridge: PvmBridge
+  profit_bridge: ProfitBridge
   management_insights: ManagementInsight[]
   data_sources: DataSource[]
   provenance_legend: Record<string, string>
@@ -376,6 +422,24 @@ export interface OperatingPlanResponse {
   actions: ActionRegisterRow[]
   decision_table: ScenarioDecisionRow[]
   reconciliation: ReconciliationStatus
+  decision_log?: DecisionLogRow[]
+  assumption_registry?: {
+    case_id: string
+    assumption_version: string
+    git_sha: string
+    provenance_labels: Record<string, string>
+    as_of_date: string
+    currency: string
+    unit: string
+  }
+  assumption_version?: string
+  git_sha?: string
+  governance?: {
+    scope: string
+    persistence: string
+    decision_log: DecisionLogRow[]
+    assumption_registry: OperatingPlanResponse['assumption_registry']
+  }
   headcount_rows?: WorkforceCapacityRow[]
   workforce_capacity?: WorkforceCapacityResponse
   headcount_capacity?: WorkforceCapacityResponse
