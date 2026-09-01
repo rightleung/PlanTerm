@@ -23,9 +23,9 @@ Implemented in the working tree: Operating Decision frontend, governance decisio
 - Session-only immutable decision log with exportable evidence
 - Conclusion-level metric, formula, source and reconciliation provenance
 
-Completion evidence is recorded in `docs/release-evidence.md`; the final release gate remains direct CI on the matching commit. Workforce/headcount capacity is implemented as v0.4 scope.
+Completion evidence and the matching direct CI result are recorded in `docs/release-evidence.md`. Workforce/headcount capacity is implemented as v0.4 scope.
 
-CI, Git tags and release publication remain future release-owner actions; this roadmap does not claim those results.
+Matching direct CI is complete; Git tags and release publication remain explicit release-owner actions and are not claimed here.
 
 ## v0.4 — Workforce capacity
 
@@ -33,11 +33,11 @@ Implemented in the working tree: bounded H2 role-group workforce inputs, require
 
 ## v0.5 — Governance and portfolio pack
 
-Implemented in the working tree: session-only immutable decision events, assumption version/git SHA metadata, conclusion-level provenance and release/demo evidence for the deterministic MINISO case. Direct CI, Git tag and publication remain release-owner actions.
+Implemented and pushed: session-only immutable decision events, assumption version/git SHA metadata, conclusion-level provenance and release/demo evidence for the deterministic MINISO case. Direct CI is recorded; the Git tag and publication remain release-owner actions.
 
 ## v1.0 — Integrated release
 
-Local integration is frozen across the OpenAPI endpoint surface, TypeScript types, deterministic UI state and eight-sheet workbook. The release is not declared until matching direct CI evidence is available and the repository owner authorizes the final tag/publication.
+Local integration is frozen across the OpenAPI endpoint surface, TypeScript types, deterministic UI state and eight-sheet workbook. Matching direct CI evidence is available; the release is not declared because the repository owner still controls the final tag/publication.
 
 ## Future — Reporting and benchmarks
 

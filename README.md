@@ -57,7 +57,7 @@ The v0.3 operating-decision view extends the selected `base`, `upside` or `downs
 
 AR/AP/inventory days, opening cash, CAPEX proxy, other cash assumptions, actions and forecast snapshots are synthetic planning inputs. Balances, cash effects, NWC, CCC, headroom, accuracy metrics and reconciliations are calculated. The product does not report actual company cash, working-capital balances, internal forecasts or action records. Browser action edits are session-only and are never persisted.
 
-Governance evidence adds a session-only immutable decision log and conclusion-level provenance links. Each conclusion identifies its metric, formula, source label and reconciliation status; `public_reported`, `synthetic_allocation`, `synthetic_plan` and `calculated` remain explicit. Assumption version and git SHA are surfaced in the UI and workbook. See [v0.5 release evidence](./docs/release-evidence.md) for the deterministic review edit and pending release gates.
+Governance evidence adds a session-only immutable decision log and conclusion-level provenance links. Each conclusion identifies its metric, formula, source label and reconciliation status; `public_reported`, `synthetic_allocation`, `synthetic_plan` and `calculated` remain explicit. Assumption version and git SHA are surfaced in the UI and workbook. See [v0.5 release evidence](./docs/release-evidence.md) for the deterministic review edit, clean-checkout CI evidence and remaining owner-controlled publication action.
 
 ## Excel management pack
 
@@ -80,7 +80,7 @@ This release adds deterministic product-category planning allocations, a strict 
 
 ## v0.3 status
 
-Operating Decision, workforce capacity and governance evidence are implemented in the working tree. The v1.0 integration contract is frozen locally across the API, TypeScript surface, UI and eight-sheet workbook. CI, tags and release publication are not claimed here; those remain release-owner actions.
+Operating Decision, workforce capacity and governance evidence are implemented and pushed. The v1.0 integration contract is frozen across the API, TypeScript surface, UI and eight-sheet workbook; matching direct CI is recorded in the release evidence. Git tags and release publication remain release-owner actions.
 
 ### Implemented versus future scope
 

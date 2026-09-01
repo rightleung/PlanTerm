@@ -23,7 +23,7 @@ The product does not claim internal MINISO cash, working capital, payroll, HRIS,
 - TypeScript surface: `OperatingPlanResponse` carries `decision_log`, `assumption_registry`, `assumption_version`, `git_sha` and the eleven decision-event fields.
 - Deterministic parity: `miniso-2026`, `2026-06-30`, RMB millions, selected variant and locked horizon are shared by API, UI and Excel. Revenue PVM and the three-part Operating Profit bridge (`PVM profit effect`, `Gross Margin`, `Opex`) reconcile at the `0.01` RMB million tolerance; the scenario decision table carries portfolio CCC at each variant's minimum-cash month; workforce capacity is embedded in `Operating Decision`, preserving the seven existing sheets plus that one additive sheet.
 - Local checks: the verification ledger below records the current Python suite, `pip check`, generator, frontend lint, TypeScript and production build; terminal Playwright remains environment-limited by Chromium launch permissions, while the in-app browser session check confirmed seeded read-only events, required-field gating, add flow and reload-clearing (`beforeAdd=true`, `afterAdd=1`, `afterReload=0`).
-- Clean-checkout demo: not claimed in this working-tree evidence; run it from a clean checkout before publication.
+- Clean-checkout demo: the [matching direct CI run](https://github.com/rightleung/PlanTerm/actions/runs/33511921647) checked out the pushed implementation commit and ran all 16 Playwright tests successfully in the frontend job.
 - Screenshot: [Operating Decision evidence](./assets/planterm-operating-decision.png) captured from the integrated local build; it contains no sensitive data.
 
 ## Verification ledger
@@ -37,6 +37,13 @@ The product does not claim internal MINISO cash, working capital, payroll, HRIS,
 | Frontend type checks | `tsc -p tsconfig.app.json --noEmit` and `tsc -p tsconfig.node.json --noEmit` | Exit 0 for both |
 | Production build | `cd web && npm run build` | Exit 0 · 2,341 modules transformed |
 | Browser acceptance | Terminal preflight is blocked before test execution by Chromium launch permissions; focused governance checks and the earlier in-app browser session passed seeded/read-only, required-field, add, provenance and reload-clearing flows. | Environment-limited; no full terminal E2E PASS is claimed |
+
+## Direct CI evidence
+
+- Implementation commit: `99f5817fa878f94fba00ebe44a072dc5007d54b2` (`test: align browser assertions with integrated data`).
+- Run: [GitHub Actions CI run 33511921647](https://github.com/rightleung/PlanTerm/actions/runs/33511921647).
+- Head SHA: `99f5817fa878f94fba00ebe44a072dc5007d54b2`; status: `completed`; conclusion: `success`.
+- All three jobs passed: Python package and tests, frontend lint/build/browser tests, and dependency security audit. The frontend job ran from a clean checkout and completed 16/16 Playwright tests.
 
 ## Immutable baseline hashes
 
@@ -72,7 +79,7 @@ All successful delegation starts used a fresh harmless probe followed by a start
 | Independent QA | ITSSX / `gpt-5.6-luna` / xhigh | Found issues; root fixes are present and current local checks are green |
 | Independent reviewer | ITSSX / `gpt-5.6-sol` / high | Final post-fix review PASS; no code-level High/Blocker/strict Medium. CCC, Decimal aggregation, filtered-view Excel provenance, generated-directory lint, profit bridge, workforce variant isolation and version consistency were verified |
 
-This is therefore an evidence boundary, not a release declaration. P4 remains pending matching direct CI on the final commit and explicit release-owner tag/publication authorization.
+Matching direct CI evidence is complete for the pushed implementation commit. Existing tags are preserved; the v1.0.0 tag and release publication remain explicit release-owner actions and were not performed by Codex.
 
 ## Checklist
 
@@ -84,4 +91,5 @@ This is therefore an evidence boundary, not a release declaration. P4 remains pe
 - [x] Spreadsheet text is neutralized while numeric cells, including negative values, remain numeric.
 - [x] Frontend lint, typecheck, build and focused browser checks pass locally; the full terminal preflight is environment-limited by Chromium launch permissions.
 - [x] P1 API/UI/Excel parity and RMB 0.01m reconciliation gates are covered by backend tests, Excel assertions and in-app browser verification.
-- [ ] CI result, Git tag and release publication are supplied by the repository owner.
+- [x] Matching direct CI result is recorded for the pushed implementation commit; the clean-checkout browser job completed 16/16 tests.
+- [ ] v1.0.0 Git tag and release publication — explicit release-owner action; not performed by Codex.
