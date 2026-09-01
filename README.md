@@ -1,6 +1,6 @@
 # PlanTerm
 
-PlanTerm is an FP&A planning and performance management workbench. The v0.1.1 credibility-hardening release uses MINISO Group as a public-data case and presents Actual, Budget, Forecast and Prior Year across:
+PlanTerm is an FP&A planning and performance management workbench. The v0.2.0 release uses MINISO Group as a public-data case and adds a stateless planning-input workflow to the v0.1.1 dashboard. It presents Actual, Budget, Forecast and Prior Year across:
 
 - MINISO — Chinese Mainland
 - MINISO — Overseas
@@ -28,6 +28,9 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000). The application reads the c
 | GET | `/health` | Service health and version |
 | GET | `/api/v1/cases` | Available planning cases |
 | GET | `/api/v1/cases/{case_id}/dashboard` | Dashboard aggregation with `brand` and `market` filters |
+| GET | `/api/v1/cases/{case_id}/planning-input-template` | Deterministic 252-row CSV template |
+| POST | `/api/v1/cases/{case_id}/planning-inputs/import` | Strict, non-persistent CSV validation |
+| POST | `/api/v1/cases/{case_id}/dashboard/preview` | Independent 252-row scenario preview |
 
 The API uses a consistent error shape: `error`, `error_type` and `details`. Unknown cases return 404, invalid filters return 422, and internal errors do not expose stack traces.
 
@@ -39,6 +42,12 @@ The committed public snapshot is anchored to MINISO's 2025 Form 20-F and officia
 
 `scripts/build_miniso_case.py --check` verifies that the committed `planning_records.csv` is exactly reproducible from the snapshot and assumptions.
 
+## Planning inputs
+
+The editor accepts a complete 252-row matrix: three plan variants (`base`, `upside`, `downside`), six editable H2 months from 2026-07 through 2026-12, and 14 business-unit/category leaves. Actual, Budget, Prior Year and H1 Actual remain locked. `Discard All` clears browser-session inputs and restores the committed Base seed. The server independently validates CSV and JSON boundaries, recomputes all financial values with Decimal arithmetic, and never persists uploaded content.
+
+Product-category figures are synthetic planning allocations, not public category reporting. The UI and export disclose this distinction and retain official taxonomy labels only as source-backed taxonomy provenance.
+
 ## Excel management pack
 
 The dashboard export produces `PlanTerm_MINISO_2026H1_Management_Pack.xlsx` with:
@@ -48,8 +57,14 @@ The dashboard export produces `PlanTerm_MINISO_2026H1_Management_Pack.xlsx` with
 3. Business Unit Variance
 4. PVM Bridge
 5. Assumptions & Sources
+6. Product Category Detail
+7. Scenario Inputs & Provenance
 
-The export follows the active dashboard filters and uses RMB millions as the default unit.
+The export follows the active dashboard filters and selected plan variant, uses RMB millions as the default unit, and includes the exact 252-row input matrix plus taxonomy and source disclosure.
+
+## v0.2.0 planning inputs
+
+This release adds deterministic product-category planning allocations, a strict CSV template/import contract, complete Base/Upside/Downside H2 scenario editing, stateless dashboard previews, scenario comparison, category detail, and a seven-sheet Excel management pack. Public reported Actual/Prior Year anchors remain distinct from synthetic allocation and scenario-input data.
 
 ## v0.1.1 hardening
 
@@ -58,9 +73,9 @@ This release adds data-derived valid filter combinations, incompatible-filter 42
 ## Validation
 
 ```bash
-python -m pip check
-python -m pytest -q
-python scripts/build_miniso_case.py --check
+./.venv/bin/python -m pip check
+./.venv/bin/python -m pytest -q
+./.venv/bin/python scripts/build_miniso_case.py --check
 cd web
 npm run lint
 npm run build
@@ -69,4 +84,4 @@ npm run e2e:preflight
 
 ## Project history and license
 
-PlanTerm is an independent repository. Its FastAPI error handling, configuration patterns and selected React UI primitives were adapted from the author's earlier project; no historical Git history is copied into this repository. PlanTerm v0.1.1 is released under the [MIT License](./LICENSE).
+PlanTerm is an independent repository. Its FastAPI error handling, configuration patterns and selected React UI primitives were adapted from the author's earlier project; no historical Git history is copied into this repository. PlanTerm v0.2.0 is released under the [MIT License](./LICENSE).

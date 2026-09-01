@@ -1,0 +1,4 @@
+{
+  "category_index_normalization": {"ticket": {"method": "harmonic_volume_preserving"}},
+  "category_index_normalization": "silently overwritten by permissive parsers"
+}

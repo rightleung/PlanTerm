@@ -14,5 +14,20 @@
   "h2_forecast_adjustment_vs_budget": {"MINISO - Chinese Mainland": 0.03, "MINISO - Overseas": -0.05, "TOP TOY - Global": -0.08},
   "monthly_seasonality": {"2026-01": 0.075, "2026-02": 0.065, "2026-03": 0.08, "2026-04": 0.08, "2026-05": 0.085, "2026-06": 0.095, "2026-07": 0.08, "2026-08": 0.08, "2026-09": 0.095, "2026-10": 0.08, "2026-11": 0.085, "2026-12": 0.1},
   "actual_ticket_factors_vs_budget": {"MINISO - Chinese Mainland": 0.968, "MINISO - Overseas": 1.034, "TOP TOY - Global": 0.962},
-  "note": "All budget, forecast, volume, ticket, cost and business-unit profit allocations are illustrative and are not MINISO internal data. Profit allocation indices are normalized synthetic allocation controls, not reported segment margins."
+  "category_revenue_shares": {
+    "MINISO - Chinese Mainland": {"miniso_ip_toys": {"actual": 0.30, "budget": 0.28}, "miniso_home_lifestyle": {"actual": 0.23, "budget": 0.24}, "miniso_beauty_personal_care": {"actual": 0.19, "budget": 0.20}, "miniso_electronics_accessories": {"actual": 0.13, "budget": 0.14}, "miniso_stationery_food_other": {"actual": 0.15, "budget": 0.14}},
+    "MINISO - Overseas": {"miniso_ip_toys": {"actual": 0.36, "budget": 0.34}, "miniso_home_lifestyle": {"actual": 0.21, "budget": 0.22}, "miniso_beauty_personal_care": {"actual": 0.17, "budget": 0.18}, "miniso_electronics_accessories": {"actual": 0.12, "budget": 0.12}, "miniso_stationery_food_other": {"actual": 0.14, "budget": 0.14}},
+    "TOP TOY - Global": {"toptoy_blind_boxes_figures": {"actual": 0.38, "budget": 0.35}, "toptoy_building_blocks_kits": {"actual": 0.28, "budget": 0.30}, "toptoy_plush_dolls_sculptures": {"actual": 0.19, "budget": 0.20}, "toptoy_other": {"actual": 0.15, "budget": 0.15}}
+  },
+  "category_ticket_indices": {"miniso_ip_toys": 0.98, "miniso_home_lifestyle": 0.92, "miniso_beauty_personal_care": 1.05, "miniso_electronics_accessories": 1.10, "miniso_stationery_food_other": 0.88, "toptoy_blind_boxes_figures": 0.96, "toptoy_building_blocks_kits": 1.02, "toptoy_plush_dolls_sculptures": 1.08, "toptoy_other": 0.94},
+  "category_gross_margin_indices": {"miniso_ip_toys": 1.0, "miniso_home_lifestyle": 1.0, "miniso_beauty_personal_care": 1.0, "miniso_electronics_accessories": 1.0, "miniso_stationery_food_other": 1.0, "toptoy_blind_boxes_figures": 1.0, "toptoy_building_blocks_kits": 1.0, "toptoy_plush_dolls_sculptures": 1.0, "toptoy_other": 1.0},
+  "category_opex_ratio_indices": {"miniso_ip_toys": 1.0, "miniso_home_lifestyle": 1.0, "miniso_beauty_personal_care": 1.0, "miniso_electronics_accessories": 1.0, "miniso_stationery_food_other": 1.0, "toptoy_blind_boxes_figures": 1.0, "toptoy_building_blocks_kits": 1.0, "toptoy_plush_dolls_sculptures": 1.0, "toptoy_other": 1.0},
+  "category_index_normalization": {
+    "ticket": {"method": "harmonic_volume_preserving", "index": "category_ticket_indices"},
+    "gross_margin": {"method": "revenue_share_weighted", "index": "category_gross_margin_indices"},
+    "opex_ratio": {"method": "revenue_share_weighted", "index": "category_opex_ratio_indices"},
+    "residual_tolerance_rmb_millions": 0.01
+  },
+  "variant_driver_adjustments": {"base": {"volume_change_pct": 0, "average_ticket_change_pct": 0, "gross_margin_delta_pp": 0, "opex_ratio_delta_pp": 0}, "upside": {"volume_change_pct": 0.05, "average_ticket_change_pct": 0.02, "gross_margin_delta_pp": 0.005, "opex_ratio_delta_pp": -0.003}, "downside": {"volume_change_pct": -0.07, "average_ticket_change_pct": -0.02, "gross_margin_delta_pp": -0.007, "opex_ratio_delta_pp": 0.005}},
+  "note": "All budget, forecast, volume, ticket, cost and business-unit profit allocations are illustrative and are not MINISO internal data. Ticket indices use harmonic volume-preserving normalization; profit allocation indices use revenue-share-weighted normalization. Category shares and scenario drivers are synthetic assumptions, never public reported category values."
 }

@@ -5,7 +5,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class Scenario(str, Enum):
@@ -13,6 +13,18 @@ class Scenario(str, Enum):
     BUDGET = "budget"
     FORECAST = "forecast"
     PRIOR_YEAR = "prior_year"
+
+
+class PlanVariant(str, Enum):
+    BASE = "base"
+    UPSIDE = "upside"
+    DOWNSIDE = "downside"
+
+
+class PlanningInputSource(str, Enum):
+    SEED = "seed"
+    UPLOAD = "upload"
+    EDITOR = "editor"
 
 
 class Provenance(str, Enum):
@@ -113,6 +125,30 @@ class MonthlyTrendPoint(BaseModel):
     prior_year: float | None
 
 
+class CategoryFinancialContext(BaseModel):
+    revenue: float
+    volume: float
+    average_ticket: float | None
+    gross_profit: float
+    cost_of_sales: float
+    operating_expense: float
+    operating_profit: float
+    gross_margin_pct: float | None
+    opex_ratio_pct: float | None
+    operating_margin_pct: float | None
+
+
+class CategoryDetailContext(BaseModel):
+    business_unit: str
+    category_id: str
+    category_name: str
+    provenance: Literal["synthetic_allocation"]
+    allocation_basis: Literal["committed_category_revenue_share"]
+    h1_actual: CategoryFinancialContext
+    h1_prior_year: CategoryFinancialContext
+    fy_budget: CategoryFinancialContext
+
+
 class DataSource(BaseModel):
     name: str
     url: str
@@ -132,3 +168,10 @@ class PlanningDashboardResponse(BaseModel):
     management_insights: list[ManagementInsight]
     data_sources: list[DataSource]
     provenance_legend: dict[str, str]
+    selected_plan_variant: PlanVariant = PlanVariant.BASE
+    planning_input_source: PlanningInputSource = PlanningInputSource.SEED
+    planning_horizon: dict = Field(default_factory=lambda: {"locked_through": "2026-06", "editable_from": "2026-07", "editable_to": "2026-12"})
+    category_detail: list[dict] = Field(default_factory=list)
+    category_detail_context: list[CategoryDetailContext] = Field(default_factory=list)
+    scenario_comparison: dict = Field(default_factory=dict)
+    category_taxonomy_disclosure: dict = Field(default_factory=dict)

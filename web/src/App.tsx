@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { fetchDashboard, ApiError } from '@/api/client'
+import { useEffect, useRef, useState } from 'react'
+import { fetchDashboard, fetchPlanningTemplate, previewDashboard, ApiError } from '@/api/client'
 import { exportManagementPack } from '@/export/managementPack'
 import { DataProvenance } from '@/features/dashboard/DataProvenance'
 import { FilterBar } from '@/features/dashboard/FilterBar'
@@ -8,6 +8,7 @@ import { ManagementInsights } from '@/features/dashboard/ManagementInsights'
 import { MonthlyTrendChart } from '@/features/dashboard/MonthlyTrendChart'
 import { PvmBridge } from '@/features/dashboard/PvmBridge'
 import { VarianceTable } from '@/features/dashboard/VarianceTable'
+import { parsePlanningInputCsv, PlanningInputs, type PlanningSession } from '@/features/planning-inputs/PlanningInputs'
 import type { BrandFilter, DashboardResponse, MarketFilter } from '@/types/planning'
 
 const CASE_ID = 'miniso-2026'
@@ -20,6 +21,12 @@ export default function App() {
   const [error, setError] = useState<ApiError | Error | null>(null)
   const [exporting, setExporting] = useState(false)
   const [retryCount, setRetryCount] = useState(0)
+  const [planningSession, setPlanningSession] = useState<PlanningSession | null>(null)
+  const [sessionRevision, setSessionRevision] = useState(0)
+  const requestId = useRef(0)
+  const dashboardController = useRef<AbortController | null>(null)
+  const planningSessionRef = useRef<PlanningSession | null>(null)
+  planningSessionRef.current = planningSession
 
   const marketIsAllowed = (nextBrand: BrandFilter, nextMarket: MarketFilter) => {
     if (nextMarket === 'all' || !dashboard) return true
@@ -33,23 +40,58 @@ export default function App() {
 
   useEffect(() => {
     let active = true
+    const id = ++requestId.current
+    const controller = new AbortController()
+    dashboardController.current = controller
     setLoading(true)
     setError(null)
-    fetchDashboard(CASE_ID, brand, market).then((result) => {
-      if (active) setDashboard(result)
+    const activeSession = planningSessionRef.current
+    const load = activeSession
+      ? previewDashboard(CASE_ID, activeSession.rows, activeSession.variant, activeSession.source, brand, market, controller.signal)
+      : fetchDashboard(CASE_ID, brand, market, controller.signal)
+    load.then((result) => {
+      if (active && id === requestId.current) setDashboard(result)
     }).catch((reason: unknown) => {
-      if (active) setError(reason instanceof Error ? reason : new Error('Unable to load dashboard'))
-    }).finally(() => { if (active) setLoading(false) })
-    return () => { active = false }
-  }, [brand, market, retryCount])
+      if (active && id === requestId.current && (reason as Error).name !== 'AbortError') setError(reason instanceof Error ? reason : new Error('Unable to load dashboard'))
+    }).finally(() => { if (active && id === requestId.current) setLoading(false) })
+    return () => {
+      active = false
+      controller.abort()
+      if (dashboardController.current === controller) dashboardController.current = null
+    }
+  }, [brand, market, retryCount, sessionRevision])
+
+  const applyPreview = (next: DashboardResponse, nextSession: PlanningSession) => {
+    // A preview is browser-session state, while dashboard GET reads committed
+    // seed data. Invalidate and cancel any in-flight seed request before using
+    // the preview so an older GET cannot replace the selected scenario.
+    requestId.current += 1
+    dashboardController.current?.abort()
+    dashboardController.current = null
+    setPlanningSession(nextSession)
+    setSessionRevision((revision) => revision + 1)
+    setDashboard(next)
+    setError(null)
+    setLoading(false)
+  }
+
+  const discardAll = () => {
+    requestId.current += 1
+    dashboardController.current?.abort()
+    dashboardController.current = null
+    setPlanningSession(null)
+    setSessionRevision((revision) => revision + 1)
+    setError(null)
+  }
 
   const resetFilters = () => { setBrand('all'); setMarket('all') }
 
   const download = async () => {
     if (!dashboard || dashboard.business_unit_variances.length === 0) return
     setExporting(true)
-    try { await exportManagementPack(dashboard) } catch (reason: unknown) { setError(reason instanceof Error ? reason : new Error('Excel export failed')) } finally { setExporting(false) }
+    try { const rows = planningSession?.rows || parsePlanningInputCsv(await fetchPlanningTemplate(CASE_ID)); await exportManagementPack(dashboard, rows) } catch (reason: unknown) { setError(reason instanceof Error ? reason : new Error('Excel export failed')) } finally { setExporting(false) }
   }
+  const selectedCategoryDetail = dashboard?.category_detail?.filter((row) => row.plan_variant === (dashboard.selected_plan_variant || 'base')) || []
 
   return (
     <main className="app-shell">
@@ -66,6 +108,7 @@ export default function App() {
 
         <div className="callout"><span className="callout-icon">i</span><span>Public reported data anchors H1 Actual and Prior Year. Budget, Forecast, monthly allocations and business-unit cost/profit views are clearly marked synthetic planning assumptions.</span></div>
         <FilterBar brand={brand} market={market} availableFilters={dashboard?.available_filters} onBrandChange={handleBrandChange} onMarketChange={setMarket} onReset={resetFilters} />
+        <PlanningInputs dashboard={dashboard} brand={brand} market={market} session={planningSession} onPreview={applyPreview} onDiscardAll={discardAll} />
 
         {loading && <div className="state-card" role="status"><div className="spinner" />Loading planning case…</div>}
         {!loading && error && <div className="state-card error-state" role="alert"><div><strong>Dashboard unavailable</strong><p>{error.message}</p></div><button className="button" type="button" onClick={() => setRetryCount((count) => count + 1)}>Retry</button></div>}
@@ -77,12 +120,14 @@ export default function App() {
               <VarianceTable rows={dashboard.business_unit_variances} />
               <div className="two-column"><PvmBridge bridge={dashboard.pvm_bridge} /><ManagementInsights insights={dashboard.management_insights} /></div>
             </> : <div className="state-card empty-dashboard" role="status"><div><strong>No business unit matches the selected filters</strong><p>Choose a valid brand and market combination to view planning metrics.</p></div></div>}
+            {dashboard.scenario_comparison && <section className="panel scenario-panel"><div className="section-heading"><h2>Scenario comparison</h2><span className="unit-note">Selected FY Forecast vs Base FY Forecast</span></div><div className="scenario-grid">{(['revenue', 'gross_profit', 'operating_profit'] as const).map((metric) => { const item = dashboard.scenario_comparison![metric]; return <div key={metric}><span>{metric.replaceAll('_', ' ')}</span><strong>{item.selected_fy_forecast.toFixed(1)}</strong><em className={item.delta >= 0 ? 'positive' : 'negative'}>{item.delta >= 0 ? '+' : ''}{item.delta.toFixed(1)} vs base</em></div> })}</div></section>}
+            {dashboard.category_detail && <section className="panel table-panel category-detail-panel"><div className="section-heading"><div><h2>Product Category Detail</h2><span className="unit-note">Filtered synthetic allocation · selected {dashboard.selected_plan_variant || 'base'}</span></div></div><div className="synthetic-disclosure">Synthetic planning input — not reported category data</div><div className="table-scroll"><table><thead><tr><th>Period</th><th>Business unit</th><th>Category</th><th>Revenue</th><th>Revenue mix</th><th>Gross margin</th><th>Opex ratio</th><th>Operating margin</th><th>Provenance</th></tr></thead><tbody>{selectedCategoryDetail.map((row) => <tr key={`${row.plan_variant}-${row.period}-${row.business_unit}-${row.category_id}`}><td>{row.period}</td><td>{row.business_unit}</td><td className="table-primary">{row.category_name}</td><td>{row.revenue.toFixed(1)}</td><td>{(row.revenue_mix_pct * 100).toFixed(1)}%</td><td>{(row.gross_margin_pct * 100).toFixed(1)}%</td><td>{(row.opex_ratio_pct * 100).toFixed(1)}%</td><td>{(row.operating_margin_pct * 100).toFixed(1)}%</td><td>{row.provenance}</td></tr>)}</tbody></table></div></section>}
             <DataProvenance dashboard={dashboard} />
-            <div className="export-row"><div><strong>Take this view to your next review</strong><span>Exports the current brand and market filters into a five-sheet Excel management pack.</span></div><button className="button button-primary" type="button" onClick={download} disabled={exporting || dashboard.business_unit_variances.length === 0}>{exporting ? 'Building workbook…' : 'Export Excel management pack'}</button></div>
+            <div className="export-row"><div><strong>Take this view to your next review</strong><span>Exports the current filters and selected plan variant into a seven-sheet Excel management pack.</span></div><button className="button button-primary" type="button" onClick={download} disabled={exporting || dashboard.business_unit_variances.length === 0}>{exporting ? 'Building workbook…' : 'Export Excel management pack'}</button></div>
           </div>
         )}
       </div>
-      <footer className="app-footer"><span>PlanTerm v0.1.1</span><span>FP&amp;A Planning and Performance Management Workbench</span><span>Public case study · not internal company data</span></footer>
+      <footer className="app-footer"><span>PlanTerm v0.2.0</span><span>FP&amp;A Planning and Performance Management Workbench</span><span>Public case study · not internal company data</span></footer>
     </main>
   )
 }

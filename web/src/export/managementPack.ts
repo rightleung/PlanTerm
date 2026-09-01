@@ -1,5 +1,5 @@
 import type { Worksheet } from 'exceljs'
-import type { DashboardResponse, KpiSnapshot, VarianceRow } from '@/types/planning'
+import type { DashboardResponse, KpiSnapshot, PlanningInputRow, VarianceRow } from '@/types/planning'
 
 const FILE_NAME = 'PlanTerm_MINISO_2026H1_Management_Pack.xlsx'
 const COLORS = {
@@ -124,7 +124,7 @@ function addVarianceRows(sheet: Worksheet, rows: VarianceRow[]) {
   })
 }
 
-export async function exportManagementPack(dashboard: DashboardResponse) {
+export async function exportManagementPack(dashboard: DashboardResponse, scenarioRows: PlanningInputRow[]) {
   const [{ Workbook }, { saveAs }] = await Promise.all([import('exceljs'), import('file-saver')])
   const workbook = new Workbook()
   workbook.creator = 'PlanTerm'
@@ -184,9 +184,42 @@ export async function exportManagementPack(dashboard: DashboardResponse) {
   const assumptionRows = Array.from({ length: assumptions.rowCount - 2 }, (_, index) => index + 3)
   formatColumns(assumptions, assumptionRows, [3])
 
+  const category = workbook.addWorksheet('Product Category Detail')
+  const selectedVariant = dashboard.selected_plan_variant || 'base'
+  const selectedCategoryRows = (dashboard.category_detail || []).filter((row) => row.plan_variant === selectedVariant)
+  setTitle(category, `Product Category Detail · ${selectedVariant} · synthetic planning allocation`, 10)
+  category.addRow(['Period', 'Plan Variant', 'Business Unit', 'Category', 'Revenue', 'Revenue Mix %', 'Gross Margin %', 'Opex Ratio %', 'Operating Margin %', 'Provenance'])
+  selectedCategoryRows.forEach((row) => category.addRow([row.period, row.plan_variant, row.business_unit, row.category_name, nullableNumber(row.revenue), row.revenue_mix_pct, row.gross_margin_pct, row.opex_ratio_pct, row.operating_margin_pct, row.provenance]))
+  configureSheet(category, 2, [14, 14, 28, 28, 15, 15, 15, 15, 18, 24])
+  formatColumns(category, selectedCategoryRows.map((_, index) => index + 3), [5], [6, 7, 8, 9])
+
+  const provenance = workbook.addWorksheet('Scenario Inputs & Provenance')
+  setTitle(provenance, `Scenario Inputs & Provenance · selected ${dashboard.selected_plan_variant || 'base'}`, 9)
+  provenance.addRow(['Planning context', 'Value', 'Source / disclosure'])
+  provenance.addRow(['Selected plan variant', dashboard.selected_plan_variant || 'base', 'User-selected scenario; applies to H2 Forecast only'])
+  provenance.addRow(['Locked horizon', dashboard.planning_horizon ? `through ${dashboard.planning_horizon.locked_through}` : 'through 2026-06', dashboard.planning_horizon ? `Editable ${dashboard.planning_horizon.editable_from} to ${dashboard.planning_horizon.editable_to}` : 'Editable 2026-07 to 2026-12'])
+  provenance.addRow(['Planning input source', dashboard.planning_input_source || 'seed', 'Stateless browser session; server validation authoritative'])
+  provenance.addRow(['Synthetic-data disclosure', dashboard.assumptions.note, 'Synthetic allocation/plan; not category-level public reporting'])
+  provenance.addRow([])
+  provenance.addRow(['Category ID', 'Planning Category', 'Brand', 'Market', 'Business Unit mapping', 'Provenance'])
+  ;(dashboard.category_taxonomy_disclosure?.categories || []).forEach((item) => provenance.addRow([item.category_id, item.category_name, item.brand, item.market, item.business_unit, item.provenance]))
+  provenance.addRow([]); provenance.addRow(['Official label registry'])
+  provenance.addRow(['Official source label', 'Brand', 'Planning category ID', 'Source URL', 'Source period', 'Taxonomy provenance'])
+  ;(dashboard.category_taxonomy_disclosure?.official_label_registry || []).forEach((item) => provenance.addRow([item.source_label, item.brand, item.planning_category_id, item.source_url, item.source_period, dashboard.category_taxonomy_disclosure?.taxonomy_provenance || 'official_product_taxonomy_labels']))
+  const officialSource = dashboard.category_taxonomy_disclosure?.official_source
+  provenance.addRow([]); provenance.addRow(['Official taxonomy note', dashboard.category_taxonomy_disclosure?.official_taxonomy_note || 'Official labels are taxonomy provenance only.'])
+  provenance.addRow(['Official source', officialSource ? `${officialSource.publisher} · ${officialSource.document_title} · ${officialSource.source_period} · ${officialSource.source_url}` : 'Not supplied'])
+  provenance.addRow(['Disclosure', dashboard.category_taxonomy_disclosure?.disclosure || 'Synthetic planning allocation; not reported category data.'])
+  provenance.addRow([]); provenance.addRow(['Canonical 252-row scenario input matrix'])
+  provenance.addRow(['case_id', 'plan_variant', 'period', 'business_unit', 'category_id', 'volume_change_pct', 'average_ticket_change_pct', 'gross_margin_delta_pp', 'opex_ratio_delta_pp'])
+  scenarioRows.forEach((row) => provenance.addRow([row.case_id, row.plan_variant, row.period, row.business_unit, row.category_id, row.volume_change_pct, row.average_ticket_change_pct, row.gross_margin_delta_pp, row.opex_ratio_delta_pp]))
+  const matrixHeader = provenance.rowCount - scenarioRows.length
+  configureSheet(provenance, matrixHeader, [18, 16, 14, 30, 34, 22, 28, 24, 22])
+  formatColumns(provenance, scenarioRows.map((_, index) => matrixHeader + 1 + index), [], [6, 7, 8, 9])
   const percentColumns = new Map<string, number[]>([
     ['Executive Summary', [5, 7]],
     ['Business Unit Variance', [5, 6, 7]],
+    ['Product Category Detail', [6, 7, 8, 9]],
   ])
   for (const [sheetName, columns] of percentColumns) {
     const sheet = workbook.getWorksheet(sheetName)

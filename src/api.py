@@ -8,12 +8,15 @@ from typing import Literal
 
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 from src.config import ROOT_DIR, settings
 from src.repositories.case_repository import CaseNotFoundError, CaseRepository
+from src.models.planning import PlanningInputSource
 from src.services.planning_service import build_dashboard, filters_are_compatible, valid_combinations
+from src.services.csv_input_service import InputError, HEADERS, parse_csv, parse_json_rows
+from src.services.committed_json import DuplicateJsonKeyError, loads_json
 
 
 logger = logging.getLogger(__name__)
@@ -38,8 +41,8 @@ app.add_middleware(
     __import__("fastapi.middleware.cors", fromlist=["CORSMiddleware"]).CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["GET"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type"],
 )
 
 
@@ -82,6 +85,7 @@ def dashboard(
     case_id: str,
     brand: Literal["all", "MINISO", "TOP_TOY"] = Query("all"),
     market: Literal["all", "mainland", "overseas", "global"] = Query("all"),
+    plan_variant: Literal["base", "upside", "downside"] = Query("base"),
 ):
     try:
         case = repository.get_case(case_id)
@@ -95,7 +99,73 @@ def dashboard(
             "market": market,
             "valid_combinations": valid_combinations(case),
         })
-    return build_dashboard(case, brand, market)
+    try:
+        return build_dashboard(case, brand, market, plan_variant)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail={"error": str(exc), "error_type": "rollup_reconciliation_failed"})
+
+
+def _input_error(exc: InputError):
+    return JSONResponse(content=api_error(exc.message, exc.error_type, exc.details), status_code=413 if exc.error_type == "upload_too_large" else 400 if exc.error_type in {"malformed_csv", "unsupported_encoding"} else 422)
+
+
+@app.get("/api/v1/cases/{case_id}/planning-input-template")
+def planning_input_template(case_id: str):
+    try: case = repository.get_case(case_id)
+    except CaseNotFoundError: raise HTTPException(status_code=404, detail={"error":"Case not found", "error_type":"case_not_found", "case_id":case_id})
+    import csv, io
+    out = io.StringIO(); writer = csv.DictWriter(out, fieldnames=HEADERS, lineterminator="\n"); writer.writeheader(); writer.writerows(case.category_seed)
+    return Response(content=out.getvalue(), media_type="text/csv", headers={"Content-Disposition": f'attachment; filename="{case_id}-planning-input-template.csv"'})
+
+
+@app.post("/api/v1/cases/{case_id}/planning-inputs/import")
+async def planning_inputs_import(case_id: str, request: Request):
+    try: case = repository.get_case(case_id)
+    except CaseNotFoundError: raise HTTPException(status_code=404, detail={"error":"Case not found", "error_type":"case_not_found", "case_id":case_id})
+    try:
+        rows = parse_csv(await request.body(), case_id, case.taxonomy)
+    except InputError as exc: return _input_error(exc)
+    return {"case_id": case_id, "planning_input_source":"upload", "validated":True, "row_count":len(rows), "rows":[r.model_dump(mode="json") for r in rows], "planning_horizon":{"locked_through":"2026-06","editable_from":"2026-07","editable_to":"2026-12"}}
+
+
+@app.post("/api/v1/cases/{case_id}/dashboard/preview")
+async def dashboard_preview(
+    case_id: str,
+    request: Request,
+    brand: Literal["all", "MINISO", "TOP_TOY"] | None = Query(None),
+    market: Literal["all", "mainland", "overseas", "global"] | None = Query(None),
+):
+    try: case = repository.get_case(case_id)
+    except CaseNotFoundError: raise HTTPException(status_code=404, detail={"error":"Case not found", "error_type":"case_not_found", "case_id":case_id})
+    try:
+        try:
+            payload = loads_json(await request.body())
+        except (UnicodeDecodeError, ValueError) as exc:
+            raise InputError("malformed_csv", "Malformed JSON preview payload") from exc
+        if not isinstance(payload, dict):
+            raise InputError("incomplete_input_matrix", "Complete 252-row matrix is required")
+        selected = payload.get("selected_plan_variant")
+        if selected not in {"base", "upside", "downside"}: raise InputError("scenario_not_found", "Unknown plan variant")
+        source_value = payload.get("planning_input_source", PlanningInputSource.UPLOAD.value)
+        try:
+            source = PlanningInputSource(source_value)
+        except (TypeError, ValueError) as exc:
+            raise InputError("invalid_input_source", "Unknown planning input source") from exc
+        if source is PlanningInputSource.SEED:
+            raise InputError("invalid_input_source", "Preview source must be upload or editor")
+        selected_brand = payload.get("brand", brand or "all")
+        selected_market = payload.get("market", market or "all")
+        if selected_brand not in {"all", "MINISO", "TOP_TOY"} or selected_market not in {"all", "mainland", "overseas", "global"}:
+            raise InputError("incompatible_filters", "Invalid brand or market filter", {"brand": selected_brand, "market": selected_market})
+        if not filters_are_compatible(case, selected_brand, selected_market):
+            raise InputError("incompatible_filters", "Brand and market combination is not supported", {"brand": selected_brand, "market": selected_market, "valid_combinations": valid_combinations(case)})
+        raw_rows = payload.get("rows")
+        if not isinstance(raw_rows, list): raise InputError("incomplete_input_matrix", "Complete 252-row matrix is required")
+        canonical = parse_json_rows(raw_rows, case_id, case.taxonomy)
+        return build_dashboard(case, selected_brand, selected_market, selected, source, [r.model_dump(mode="json") for r in canonical]).model_dump(mode="json")
+    except InputError as exc: return _input_error(exc)
+    except ValueError as exc:
+        return JSONResponse(content=api_error(str(exc), "rollup_reconciliation_failed", None), status_code=422)
 
 
 frontend = ROOT_DIR / "web" / "dist"
