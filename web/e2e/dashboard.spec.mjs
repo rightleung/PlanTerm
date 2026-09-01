@@ -67,6 +67,35 @@ function findRowByValues(sheet, expected) {
   return found;
 }
 
+function workforceFixture(variant = 'base') {
+  const requiredRatio = variant === 'upside' ? 1.08 : variant === 'downside' ? 0.92 : 1;
+  const roleRows = [
+    ['store operations', 12, 0.12, 120],
+    ['commercial', 4, 0.2, 60],
+    ['supply chain', 3, 0.18, 40],
+    ['finance/support', 2, 0.22, 25],
+  ];
+  const headcountRows = roleRows.map(([role, planned, monthlyCost, revenue]) => ({
+    case_id: 'miniso-2026', plan_variant: variant, period: '2026-07', business_unit: 'MINISO - Chinese Mainland', role_group: role,
+    planned_fte: planned, required_fte: planned * requiredRatio, monthly_loaded_cost: monthlyCost, loaded_cost: planned * monthlyCost,
+    revenue, revenue_per_fte: planned > 0 ? revenue / planned : null, capacity_gap: planned * (requiredRatio - 1), productivity_basis: 'Revenue / planned FTE (RMB millions per FTE)',
+    status: requiredRatio > 1 ? 'capacity_gap' : requiredRatio < 1 ? 'over_capacity' : 'balanced', provenance: 'calculated', input_provenance: 'synthetic_plan',
+  })) ;
+  const rollups = Object.fromEntries(roleRows.map(([role, planned, monthlyCost]) => [role, {
+    planned_fte: planned, required_fte: planned * requiredRatio, loaded_cost: planned * monthlyCost, capacity_gap: planned * (requiredRatio - 1), row_count: 1, provenance: 'calculated',
+  }]));
+  const total = roleRows.reduce((acc, [, planned, monthlyCost]) => ({
+    planned_fte: acc.planned_fte + planned, required_fte: acc.required_fte + planned * requiredRatio, loaded_cost: acc.loaded_cost + planned * monthlyCost, capacity_gap: acc.capacity_gap + planned * (requiredRatio - 1),
+  }), { planned_fte: 0, required_fte: 0, loaded_cost: 0, capacity_gap: 0 });
+  return {
+    case_id: 'miniso-2026', as_of_date: '2026-06-30', currency: 'RMB', unit: 'RMB millions unless stated otherwise', plan_variant: variant,
+    headcount_rows: headcountRows, locked_rows: [{ period: '2026-06', business_unit: 'MINISO - Chinese Mainland', role_group: 'store operations', planned_fte: 12, provenance: 'synthetic_plan' }],
+    rollups: { role_group: rollups, business_unit: { 'MINISO - Chinese Mainland': { ...total, row_count: 4, provenance: 'calculated' } }, role_group_business_unit: {}, portfolio: { ...total, row_count: 4, provenance: 'calculated' } },
+    selected_vs_base_delta: { planned_fte: 0, required_fte: total.planned_fte * (requiredRatio - 1), loaded_cost: 0, capacity_gap: total.capacity_gap, 'store operations.loaded_cost': 0, 'commercial.loaded_cost': 0, 'supply chain.loaded_cost': 0, 'finance/support.loaded_cost': 0 },
+    reconciliation_evidence: { status: 'reconciled', tolerance_rmb_millions: 0.01, residual: 0, max_residual: 0, no_double_counting: true }, provenance: 'calculated', input_provenance: 'synthetic_plan', disclosure: 'Headcount, payroll cost, and capacity are deterministic synthetic planning data; not MINISO reported or internal payroll/HRIS data.',
+  };
+}
+
 function operatingPlanFixture(variant = 'base', reconciliation = { status: 'reconciled', tolerance_rmb_millions: 0.01, cash_bridge: { status: 'reconciled', max_residual: 0, }, category_rollup: { status: 'reconciled', revenue_residual: 0 } }) {
   const delta = variant === 'upside' ? 18.5 : variant === 'downside' ? -21.5 : 0;
   return {
@@ -79,6 +108,7 @@ function operatingPlanFixture(variant = 'base', reconciliation = { status: 'reco
     forecast_accuracy: { wape: null, bias: null, directional_hit_rate: null, eligible_periods: 0, status: 'not_eligible', provenance: 'calculated' },
     actions: [{ observation: 'Inventory cover elevated', driver: 'Inventory days', impact: -3.2, risk: 'Cash buffer pressure', action: '=Review purchase cadence', owner: 'Supply Chain', due_period: '2026-07-31', cadence: 'Monthly', provenance: 'synthetic_plan' }],
     decision_table: ['base', 'upside', 'downside'].map((planVariant) => { const planDelta = planVariant === 'upside' ? 18.5 : planVariant === 'downside' ? -21.5 : 0; return { plan_variant: planVariant, fy_revenue_delta: planDelta, fy_operating_profit_delta: planDelta, minimum_cash_month: planVariant === variant ? '2026-12' : null, cash_headroom: planVariant === variant ? 12.6 + planDelta : null, ccc: null, top_revenue_driver: 'H2 category drivers', top_profit_driver: 'Operating profit', top_cash_driver: 'Working capital', owner: 'Group FP&A', next_review_date: '2026-07-31', provenance: 'calculated' }; }),
+    workforce_capacity: workforceFixture(variant),
     reconciliation,
   };
 }
@@ -284,7 +314,7 @@ test('valid upload previews all variants, supports edits and discard, and export
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.load(await fs.readFile(await download.path()));
   expect(workbook.worksheets.map((sheet) => sheet.name)).toEqual([
-    'Executive Summary', 'Monthly Trend', 'Business Unit Variance', 'PVM Bridge', 'Assumptions & Sources', 'Product Category Detail', 'Scenario Inputs & Provenance', 'Operating Decision',
+    'Executive Summary', 'Monthly Trend', 'Business Unit Variance', 'PVM Bridge', 'Product Category Detail', 'Scenario Inputs & Provenance', 'Workforce Capacity', 'Operating Decision',
   ]);
   const provenance = workbook.getWorksheet('Scenario Inputs & Provenance');
   const selectedVariant = findRowByFirstValue(provenance, 'Selected plan variant');
@@ -347,7 +377,7 @@ test('operating decision loads, previews selected variants, and exports safe ill
   expect(operatingPlanVariants).toContain('downside');
   expect(previewBodies[0].working_capital_rows.every((row) => row.plan_variant === 'downside')).toBe(true);
   expect(previewBodies[0].cash_assumption_rows.every((row) => row.plan_variant === 'downside')).toBe(true);
-  await expect(page.getByText('Selected downside · RMB millions')).toBeVisible();
+  await expect(page.getByText('Selected downside · RMB millions', { exact: true })).toBeVisible();
 
   const downloadPromise = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Export Excel management pack' }).click();
@@ -393,6 +423,29 @@ test('evidence-object reconciliation renders and exports residual status', async
   expect(row.values).not.toContain('[object Object]');
 });
 
+test('workforce capacity renders bounded role groups and exports parity sheet', async ({ page }) => {
+  await mockOperatingPlan(page);
+  await page.goto('/');
+  await expect(page.getByRole('heading', { name: 'Workforce Capacity' })).toBeVisible();
+  for (const role of ['store operations', 'commercial', 'supply chain', 'finance/support']) await expect(page.getByText(role, { exact: true })).toBeVisible();
+  await expect(page.getByText(/Locked horizon through 2026-06; editable workforce planning begins 2026-07/)).toBeVisible();
+  await expect(page.locator('section[aria-labelledby="workforce-capacity-title"] .reconciliation')).toContainText('no double counting');
+
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Export Excel management pack' }).click();
+  const download = await downloadPromise;
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(await fs.readFile(await download.path()));
+  expect(workbook.worksheets).toHaveLength(8);
+  const workforce = workbook.getWorksheet('Workforce Capacity');
+  expect(workforce).toBeTruthy();
+  expect(findRowByFirstValue(workforce, 'Portfolio total').row.getCell(2).value).toBe(21);
+  expect(findRowByFirstValue(workforce, 'Reconciliation status').row.getCell(2).value).toBe('reconciled');
+  expect(workforce.getCell(9, 2).value).toBe(12);
+  expect(typeof workforce.getCell(9, 2).value).toBe('number');
+  expect(workforce.getRows(1, workforce.rowCount).flatMap((row) => row.values)).not.toContain('[object Object]');
+});
+
 test('an older operating preview response cannot overwrite a newer selected variant', async ({ page }) => {
   let resolveFirstPreview;
   const firstPreviewReleased = new Promise((resolve) => { resolveFirstPreview = resolve; });
@@ -418,7 +471,7 @@ test('an older operating preview response cannot overwrite a newer selected vari
   await page.getByRole('button', { name: /Apply & preview/ }).click();
   await expect.poll(() => previews).toBe(2);
   resolveFirstPreview();
-  await expect(page.getByText('Selected upside · RMB millions')).toBeVisible();
+  await expect(page.getByText('Selected upside · RMB millions', { exact: true })).toBeVisible();
 });
 
 test('an older committed dashboard response cannot replace an applied preview', async ({ page }) => {

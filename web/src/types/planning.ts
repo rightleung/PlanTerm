@@ -289,6 +289,82 @@ export interface ReconciliationStatus {
   category_rollup: CategoryRollupReconciliationEvidence
 }
 
+export type WorkforceRoleGroup = 'store operations' | 'commercial' | 'supply chain' | 'finance/support'
+
+export interface WorkforceCapacityRow {
+  case_id: string
+  plan_variant: PlanVariant
+  period: string
+  business_unit: string
+  role_group: WorkforceRoleGroup
+  planned_fte: number
+  required_fte: number
+  monthly_loaded_cost: number
+  loaded_cost: number
+  revenue: number
+  revenue_per_fte: number | null
+  capacity_gap: number
+  productivity_basis: string
+  status: string
+  provenance: string
+  input_provenance?: string
+}
+
+export interface WorkforceCapacityRollup {
+  planned_fte: number
+  required_fte: number
+  loaded_cost: number
+  capacity_gap: number
+  revenue?: number
+  revenue_per_fte?: number | null
+  row_count: number
+  provenance: string
+  variant_delta?: number
+}
+
+export interface WorkforceReconciliationEvidence {
+  status: string
+  tolerance_rmb_millions?: number | null
+  residual?: number | null
+  max_residual?: number | null
+  no_double_counting?: boolean
+  portfolio_equals_business_units?: boolean
+  business_units_equal_role_groups?: boolean
+  [key: string]: unknown
+}
+
+export interface WorkforceCapacityResponse {
+  case_id: string
+  as_of_date: string
+  currency: string
+  unit: string
+  plan_variant: PlanVariant
+  headcount_rows: WorkforceCapacityRow[]
+  locked_rows: Array<Record<string, unknown>>
+  rollups: {
+    role_group: Record<WorkforceRoleGroup, WorkforceCapacityRollup>
+    business_unit: Record<string, WorkforceCapacityRollup>
+    role_group_business_unit: Record<WorkforceRoleGroup, Record<string, WorkforceCapacityRollup>>
+    portfolio: WorkforceCapacityRollup
+  }
+  selected_vs_base_delta: Record<string, number>
+  reconciliation_evidence: WorkforceReconciliationEvidence
+  provenance: string
+  input_provenance: string
+  disclosure: string
+}
+
+export interface WorkforceCapacityInputRow {
+  case_id: string
+  plan_variant: PlanVariant
+  period: string
+  business_unit: string
+  role_group: WorkforceRoleGroup
+  planned_fte: number
+  monthly_loaded_cost: number
+  provenance: 'synthetic_plan'
+}
+
 export interface OperatingPlanResponse {
   as_of_date: string
   planning_horizon: PlanningHorizon
@@ -300,6 +376,9 @@ export interface OperatingPlanResponse {
   actions: ActionRegisterRow[]
   decision_table: ScenarioDecisionRow[]
   reconciliation: ReconciliationStatus
+  headcount_rows?: WorkforceCapacityRow[]
+  workforce_capacity?: WorkforceCapacityResponse
+  headcount_capacity?: WorkforceCapacityResponse
 }
 
 export interface OperatingPlanPreviewRequest {
@@ -309,6 +388,7 @@ export interface OperatingPlanPreviewRequest {
   rows: PlanningInputRow[]
   working_capital_rows: WorkingCapitalInputRow[]
   cash_assumption_rows: CashAssumptionRow[]
+  headcount_rows?: WorkforceCapacityInputRow[]
   actions?: Array<{
     case_id: string
     observation: string

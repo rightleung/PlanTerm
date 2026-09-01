@@ -13,6 +13,7 @@ import { ActionRegister } from '@/features/operating-plan/ActionRegister'
 import { CashBridge } from '@/features/operating-plan/CashBridge'
 import { ForecastAccuracy } from '@/features/operating-plan/ForecastAccuracy'
 import { ScenarioDecisionTable } from '@/features/operating-plan/ScenarioDecisionTable'
+import { HeadcountCapacity } from '@/features/operating-plan/HeadcountCapacity'
 import type { ActionRegisterRow, BrandFilter, DashboardResponse, MarketFilter, OperatingPlanResponse } from '@/types/planning'
 
 const CASE_ID = 'miniso-2026'
@@ -201,6 +202,7 @@ export default function App() {
             {!operatingLoading && operatingError && <div className="state-card error-state" role="alert"><div><strong>Operating decision plan unavailable</strong><p>{operatingError.message}</p></div><button className="button" type="button" onClick={() => setOperatingRetryCount((count) => count + 1)}>Retry</button></div>}
             {!operatingLoading && !operatingError && operatingPlan && <div className="dashboard-stack">
               <CashBridge workingCapital={operatingPlan.working_capital} cashBridge={operatingPlan.cash_bridge} reconciliation={operatingPlan.reconciliation} />
+              {(operatingPlan.workforce_capacity || operatingPlan.headcount_capacity) && <HeadcountCapacity capacity={(operatingPlan.workforce_capacity || operatingPlan.headcount_capacity)!} />}
               <div className="two-column"><ForecastAccuracy accuracy={operatingPlan.forecast_accuracy} /><ScenarioDecisionTable decisionTable={operatingPlan.decision_table} selectedVariant={operatingPlan.plan_variant} /></div>
               <ActionRegister actions={sessionActions} onChange={setSessionActions} />
             </div>}

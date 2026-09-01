@@ -218,7 +218,7 @@ async def operating_plan_preview(case_id: str, request: Request):
         missing = sorted(required - set(payload))
         if missing:
             raise InputError("validation_error", "Operating-plan request is incomplete", {"missing": missing})
-        unknown = sorted(set(payload) - (required | {"actions"}))
+        unknown = sorted(set(payload) - (required | {"actions", "headcount_rows"}))
         if unknown:
             raise InputError("unexpected_input_key", "Unexpected operating-plan request field", {"fields": unknown})
         if payload["case_id"] != case_id:
@@ -229,7 +229,7 @@ async def operating_plan_preview(case_id: str, request: Request):
             raise InputError("invalid_variant", "Unknown plan variant")
         if "actions" in payload and not isinstance(payload["actions"], list):
             raise InputError("validation_error", "actions must be a list")
-        return build_operating_decision(case, payload["selected_plan_variant"], payload["planning_input_source"], payload["rows"], payload["working_capital_rows"], payload["cash_assumption_rows"], payload.get("actions"))
+        return build_operating_decision(case, payload["selected_plan_variant"], payload["planning_input_source"], payload["rows"], payload["working_capital_rows"], payload["cash_assumption_rows"], payload.get("actions"), payload.get("headcount_rows"))
     except InputError as exc:
         return _input_error(exc)
     except ValueError as exc:

@@ -28,7 +28,8 @@ def _preview_payload():
     rows = [row.model_dump(mode="json") for row in seed_rows(case)]
     wc = [dict(row) for row in case.working_capital_seed if row["plan_variant"] == "base"]
     cash = [dict(row, opening_cash=case.cash_assumptions["opening_cash"], minimum_cash_buffer=case.cash_assumptions["minimum_cash_buffer"]) for row in case.cash_assumptions["rows"] if row["plan_variant"] == "base"]
-    return {"case_id": case.case_id, "selected_plan_variant": "base", "planning_input_source": "editor", "rows": rows, "working_capital_rows": wc, "cash_assumption_rows": cash}
+    headcount = [dict(row) for row in case.headcount_seed if row["plan_variant"] == "base"]
+    return {"case_id": case.case_id, "selected_plan_variant": "base", "planning_input_source": "editor", "rows": rows, "working_capital_rows": wc, "cash_assumption_rows": cash, "headcount_rows": headcount}
 
 
 def test_preview_rejects_null_missing_extra_and_non_object_rows():
@@ -50,3 +51,13 @@ def test_preview_rejects_huge_decimal_and_malformed_action():
     response = client.post("/api/v1/cases/miniso-2026/operating-plan/preview", json=malformed)
     assert response.status_code == 422
     assert response.json()["error_type"] == "validation_error"
+
+
+def test_preview_headcount_contract_is_additive_and_reconciled():
+    response = client.post("/api/v1/cases/miniso-2026/operating-plan/preview", json=_preview_payload())
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["workforce_capacity"]["plan_variant"] == "base"
+    assert len(payload["workforce_capacity"]["headcount_rows"]) == 72
+    assert payload["workforce_capacity"]["reconciliation_evidence"]["status"] == "reconciled"
+    assert payload["reconciliation"]["headcount"]["no_double_counting"] is True

@@ -23,6 +23,8 @@ class CaseData:
     working_capital_seed: tuple[dict, ...] = ()
     cash_assumptions: dict = field(default_factory=dict)
     forecast_snapshots: tuple[dict, ...] = ()
+    headcount_seed: tuple[dict, ...] = ()
+    headcount_assumptions: dict = field(default_factory=dict)
 
 
 class CaseNotFoundError(LookupError):
@@ -113,4 +115,8 @@ class CaseRepository:
         cash_assumptions = load_committed_json(cash_path) if cash_path.exists() else {}
         snapshot_path = case_path / "forecast_snapshots.csv"
         forecast_snapshots = tuple(csv.DictReader(snapshot_path.open(newline="", encoding="utf-8"))) if snapshot_path.exists() else ()
-        return CaseData(metadata["case_id"], metadata, assumptions, tuple(records), taxonomy, tuple(category_seed), working_capital_seed, cash_assumptions, forecast_snapshots)
+        headcount_seed_path = case_path / "headcount_seed.csv"
+        headcount_seed = tuple(csv.DictReader(headcount_seed_path.open(newline="", encoding="utf-8"))) if headcount_seed_path.exists() else ()
+        headcount_assumptions_path = case_path / "headcount_assumptions.json"
+        headcount_assumptions = load_committed_json(headcount_assumptions_path) if headcount_assumptions_path.exists() else {}
+        return CaseData(metadata["case_id"], metadata, assumptions, tuple(records), taxonomy, tuple(category_seed), working_capital_seed, cash_assumptions, forecast_snapshots, headcount_seed, headcount_assumptions)

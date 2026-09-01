@@ -39,6 +39,27 @@ class CashAssumptionRow(BaseModel):
     input_provenance: Literal["synthetic_plan", "calculated"] | None = None
 
 
+class HeadcountRow(BaseModel):
+    """Calculated workforce capacity row; FTE is role-group level only."""
+    model_config = ConfigDict(extra="forbid")
+    case_id: str
+    plan_variant: PlanVariant
+    period: str
+    business_unit: str
+    role_group: Literal["store operations", "commercial", "supply chain", "finance/support"]
+    planned_fte: Decimal
+    required_fte: Decimal
+    monthly_loaded_cost: Decimal
+    loaded_cost: Decimal
+    revenue: Decimal
+    revenue_per_fte: Decimal | None
+    capacity_gap: Decimal
+    productivity_basis: str
+    status: str
+    provenance: Literal["calculated"] = "calculated"
+    input_provenance: Literal["synthetic_plan"] = "synthetic_plan"
+
+
 class ActionItem(BaseModel):
     model_config = ConfigDict(extra="forbid")
     case_id: str
@@ -62,6 +83,7 @@ class OperatingPlanRequest(BaseModel):
     rows: list[dict[str, Any]] = Field(min_length=1)
     working_capital_rows: list[dict[str, Any]] = Field(min_length=1)
     cash_assumption_rows: list[dict[str, Any]] = Field(min_length=1)
+    headcount_rows: list[dict[str, Any]] = Field(default_factory=list)
     actions: list[dict[str, Any]] = Field(default_factory=list)
 
 

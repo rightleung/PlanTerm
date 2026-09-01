@@ -18,6 +18,7 @@ from src.services.working_capital_service import calculate_working_capital, dec,
 from src.services.cash_forecast_service import calculate_cash_bridge
 from src.services.forecast_accuracy_service import calculate_forecast_accuracy
 from src.services.action_service import build_actions
+from src.services.headcount_service import build_headcount
 
 
 MONTHS = [f"2026-{month:02d}" for month in range(1, 13)]
@@ -190,9 +191,9 @@ def build_dashboard(case: CaseData, brand: str, market: str, plan_variant: str =
     )
 
 
-def build_operating_decision(case: CaseData, plan_variant: str = "base", planning_input_source: str = "seed", planning_rows=None, working_capital_rows=None, cash_assumption_rows=None, actions=None) -> dict:
+def build_operating_decision(case: CaseData, plan_variant: str = "base", planning_input_source: str = "seed", planning_rows=None, working_capital_rows=None, cash_assumption_rows=None, actions=None, headcount_rows=None) -> dict:
     """Compose the additive v0.3 operating-decision fields."""
-    return build_operating_plan(case, plan_variant, planning_input_source, planning_rows, working_capital_rows, cash_assumption_rows, actions)
+    return build_operating_plan(case, plan_variant, planning_input_source, planning_rows, working_capital_rows, cash_assumption_rows, actions, headcount_rows)
 
 
 OD_MONTHS = [f"2026-{month:02d}" for month in range(7, 13)]
@@ -292,7 +293,7 @@ def _metric_detail(details, variant, period, unit, metric):
     return sum((dec(item.get(metric)) or Decimal(0) for item in details if item.get("plan_variant") == variant and item.get("period") == period and item.get("business_unit") == unit), Decimal(0))
 
 
-def build_operating_plan(case, plan_variant="base", planning_input_source="seed", planning_rows=None, working_capital_rows=None, cash_assumption_rows=None, actions=None):
+def build_operating_plan(case, plan_variant="base", planning_input_source="seed", planning_rows=None, working_capital_rows=None, cash_assumption_rows=None, actions=None, headcount_rows=None):
     if plan_variant not in VARIANTS:
         raise InputError("invalid_variant", "Unknown plan variant")
     rows = seed_rows(case) if planning_rows is None else parse_json_rows(planning_rows, case.case_id, case.taxonomy)
@@ -370,4 +371,5 @@ def build_operating_plan(case, plan_variant="base", planning_input_source="seed"
     max_cash_residual = max((abs(x) for x in cash_residuals), default=None)
     category_ok = abs(base_h2_residual) <= Decimal("0.01")
     cash_ok = max_cash_residual is not None and max_cash_residual <= Decimal("0.01")
-    return {"as_of_date": case.metadata["as_of_date"], "planning_horizon": {"locked_through": "2026-06", "editable_from": "2026-07", "editable_to": "2026-12"}, "plan_variant": plan_variant, "provenance_legend": case.metadata["provenance_legend"], "working_capital": {"rows": working_capital, "unit": "RMB millions", "input_provenance": "synthetic_plan", "disclosure": "Synthetic planning assumption; not public reported working capital."}, "cash_bridge": {"rows": cash_bridge, "closing_illustrative_cash": closing_values[-1] if closing_values else None, "minimum_headroom": min(headrooms) if headrooms else None, "input_provenance": "synthetic_plan", "disclosure": "Illustrative cash balance; not a bank-reported cash balance."}, "forecast_accuracy": accuracy, "actions": actions_out, "decision_table": decision_table, "reconciliation": {"status": "reconciled" if category_ok and cash_ok else "not_reconciled", "tolerance_rmb_millions": 0.01, "cash_bridge": {"status": "reconciled" if cash_ok else "not_reconciled", "max_residual": json_float(max_cash_residual)}, "category_rollup": {"status": "reconciled" if category_ok else "not_reconciled", "revenue_residual": json_float(base_h2_residual)}}}
+    headcount = build_headcount(case, plan_variant, headcount_rows)
+    return {"as_of_date": case.metadata["as_of_date"], "planning_horizon": {"locked_through": "2026-06", "editable_from": "2026-07", "editable_to": "2026-12"}, "plan_variant": plan_variant, "provenance_legend": case.metadata["provenance_legend"], "working_capital": {"rows": working_capital, "unit": "RMB millions", "input_provenance": "synthetic_plan", "disclosure": "Synthetic planning assumption; not public reported working capital."}, "cash_bridge": {"rows": cash_bridge, "closing_illustrative_cash": closing_values[-1] if closing_values else None, "input_provenance": "synthetic_plan", "disclosure": "Illustrative cash balance; not a bank-reported cash balance."}, "forecast_accuracy": accuracy, "actions": actions_out, "decision_table": decision_table, "headcount_rows": headcount["headcount_rows"], "workforce_capacity": headcount, "reconciliation": {"status": "reconciled" if category_ok and cash_ok and headcount["reconciliation_evidence"]["status"] == "reconciled" else "not_reconciled", "tolerance_rmb_millions": 0.01, "cash_bridge": {"status": "reconciled" if cash_ok else "not_reconciled", "max_residual": json_float(max_cash_residual)}, "category_rollup": {"status": "reconciled" if category_ok else "not_reconciled", "revenue_residual": json_float(base_h2_residual)}, "headcount": headcount["reconciliation_evidence"]}}
