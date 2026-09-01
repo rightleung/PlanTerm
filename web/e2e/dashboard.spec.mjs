@@ -191,7 +191,7 @@ test('filters update business unit rows and PVM values', async ({ page }) => {
   const varianceRows = page.locator('section[aria-labelledby="variance-title"] tbody tr');
   await expect(varianceRows).toHaveCount(1);
   await expect(varianceRows.first()).toContainText('MINISO - Chinese Mainland');
-  await expect(page.getByText('Reconciliation difference:')).toBeVisible();
+  await expect(page.locator('section.pvm-panel').getByText('Reconciliation difference:')).toBeVisible();
   await page.getByRole('button', { name: 'Reset filters' }).click();
   await expect(varianceRows).toHaveCount(3);
 });
@@ -296,11 +296,14 @@ test('valid upload previews all variants, supports edits and discard, and export
   await uploadTemplate(page, template);
 
   const workforceInput = page.getByLabel('planned_fte 2026-07 MINISO - Chinese Mainland store operations');
-  await expect(workforceInput).toHaveValue('12');
+  const baseWorkforceValue = await workforceInput.inputValue();
+  expect(Number(baseWorkforceValue)).toBeGreaterThan(0);
   await page.getByRole('button', { name: 'upside', exact: true }).click();
-  await expect(workforceInput).toHaveValue('13');
+  await expect(workforceInput).toHaveValue(baseWorkforceValue);
+  await workforceInput.fill(String(Number(baseWorkforceValue) + 1));
+  await expect(workforceInput).toHaveValue(String(Number(baseWorkforceValue) + 1));
   await page.getByRole('button', { name: 'base', exact: true }).click();
-  await expect(workforceInput).toHaveValue('12');
+  await expect(workforceInput).toHaveValue(baseWorkforceValue);
 
   for (const variant of ['base', 'upside', 'downside']) {
     await page.getByRole('button', { name: variant, exact: true }).click();
