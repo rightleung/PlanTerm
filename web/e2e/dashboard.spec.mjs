@@ -48,6 +48,14 @@ function parseCsvLine(line) {
   return values;
 }
 
+function withFirstNumericValue(template, value) {
+  const lines = template.toString('utf8').trim().split(/\r?\n/);
+  const fields = parseCsvLine(lines[1]);
+  fields[5] = String(value);
+  lines[1] = fields.join(',');
+  return Buffer.from(lines.join('\n'));
+}
+
 function findRowByFirstValue(sheet, value) {
   let found;
   sheet.eachRow((row, rowNumber) => {
@@ -162,7 +170,8 @@ test('browser CSV parser rejects empty numeric cells', async ({ page }) => {
     await route.fulfill({ response, body: lines.join('\n') });
   });
   await page.goto('/');
-  await openPlanningEditor(page);
+  await page.getByRole('button', { name: 'Open editor' }).click();
+  await expect(page.getByRole('dialog', { name: 'Planning Inputs' })).toBeVisible();
   await expect(page.getByRole('alert')).toContainText('Invalid CSV row values');
 });
 
@@ -204,8 +213,9 @@ test('valid upload previews all variants, supports edits and discard, and export
   await page.getByRole('button', { name: 'base', exact: true }).click();
   await expect(page.locator('input[type=number]').first()).not.toHaveValue('0.123456');
   await expect(page.locator('input[type=number]').first()).toHaveValue(originalValue);
+  const negativeTemplate = withFirstNumericValue(template, -0.25);
+  await uploadTemplate(page, negativeTemplate);
   await page.getByRole('button', { name: 'upside', exact: true }).click();
-  await page.locator('input[type=number]').first().fill('-0.25');
   const previewResponse = page.waitForResponse((response) => response.url().includes('/dashboard/preview') && response.status() === 200);
   await page.getByRole('button', { name: /Apply & preview/ }).click();
   await previewResponse;
