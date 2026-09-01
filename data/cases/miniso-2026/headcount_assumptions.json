@@ -1,0 +1,27 @@
+{
+  "role_groups": ["store operations", "commercial", "supply chain", "finance/support"],
+  "business_units": ["MINISO - Chinese Mainland", "MINISO - Overseas", "TOP TOY - Global"],
+  "periods": ["2026-07", "2026-08", "2026-09", "2026-10", "2026-11", "2026-12"],
+  "required_fte_per_planned_fte": {
+    "base": 1.0,
+    "upside": 1.08,
+    "downside": 0.92
+  },
+  "productivity_basis": "Revenue / planned FTE (RMB millions per FTE)",
+  "locked_h1": [
+    {"period": "2026-06", "business_unit": "MINISO - Chinese Mainland", "role_group": "store operations", "planned_fte": 140, "monthly_loaded_cost": 0.012},
+    {"period": "2026-06", "business_unit": "MINISO - Chinese Mainland", "role_group": "commercial", "planned_fte": 10, "monthly_loaded_cost": 0.020},
+    {"period": "2026-06", "business_unit": "MINISO - Chinese Mainland", "role_group": "supply chain", "planned_fte": 12, "monthly_loaded_cost": 0.018},
+    {"period": "2026-06", "business_unit": "MINISO - Chinese Mainland", "role_group": "finance/support", "planned_fte": 8, "monthly_loaded_cost": 0.022},
+    {"period": "2026-06", "business_unit": "MINISO - Overseas", "role_group": "store operations", "planned_fte": 90, "monthly_loaded_cost": 0.011},
+    {"period": "2026-06", "business_unit": "MINISO - Overseas", "role_group": "commercial", "planned_fte": 8, "monthly_loaded_cost": 0.019},
+    {"period": "2026-06", "business_unit": "MINISO - Overseas", "role_group": "supply chain", "planned_fte": 10, "monthly_loaded_cost": 0.017},
+    {"period": "2026-06", "business_unit": "MINISO - Overseas", "role_group": "finance/support", "planned_fte": 6, "monthly_loaded_cost": 0.021},
+    {"period": "2026-06", "business_unit": "TOP TOY - Global", "role_group": "store operations", "planned_fte": 55, "monthly_loaded_cost": 0.010},
+    {"period": "2026-06", "business_unit": "TOP TOY - Global", "role_group": "commercial", "planned_fte": 7, "monthly_loaded_cost": 0.018},
+    {"period": "2026-06", "business_unit": "TOP TOY - Global", "role_group": "supply chain", "planned_fte": 8, "monthly_loaded_cost": 0.016},
+    {"period": "2026-06", "business_unit": "TOP TOY - Global", "role_group": "finance/support", "planned_fte": 5, "monthly_loaded_cost": 0.020}
+  ],
+  "provenance": "synthetic_plan",
+  "disclosure": "Deterministic role-group workforce capacity assumptions; not MINISO reported or internal payroll/HRIS data."
+}

@@ -1,0 +1,55 @@
+case_id,plan_variant,period,business_unit,ar_days,inventory_days,ap_days,provenance
+miniso-2026,base,2026-07,MINISO - Chinese Mainland,18,48,35,synthetic_plan
+miniso-2026,base,2026-08,MINISO - Chinese Mainland,18,48,35,synthetic_plan
+miniso-2026,base,2026-09,MINISO - Chinese Mainland,18,48,35,synthetic_plan
+miniso-2026,base,2026-10,MINISO - Chinese Mainland,18,48,35,synthetic_plan
+miniso-2026,base,2026-11,MINISO - Chinese Mainland,18,48,35,synthetic_plan
+miniso-2026,base,2026-12,MINISO - Chinese Mainland,18,48,35,synthetic_plan
+miniso-2026,base,2026-07,MINISO - Overseas,32,62,44,synthetic_plan
+miniso-2026,base,2026-08,MINISO - Overseas,32,62,44,synthetic_plan
+miniso-2026,base,2026-09,MINISO - Overseas,32,62,44,synthetic_plan
+miniso-2026,base,2026-10,MINISO - Overseas,32,62,44,synthetic_plan
+miniso-2026,base,2026-11,MINISO - Overseas,32,62,44,synthetic_plan
+miniso-2026,base,2026-12,MINISO - Overseas,32,62,44,synthetic_plan
+miniso-2026,base,2026-07,TOP TOY - Global,24,75,50,synthetic_plan
+miniso-2026,base,2026-08,TOP TOY - Global,24,75,50,synthetic_plan
+miniso-2026,base,2026-09,TOP TOY - Global,24,75,50,synthetic_plan
+miniso-2026,base,2026-10,TOP TOY - Global,24,75,50,synthetic_plan
+miniso-2026,base,2026-11,TOP TOY - Global,24,75,50,synthetic_plan
+miniso-2026,base,2026-12,TOP TOY - Global,24,75,50,synthetic_plan
+miniso-2026,upside,2026-07,MINISO - Chinese Mainland,17,46,36,synthetic_plan
+miniso-2026,upside,2026-08,MINISO - Chinese Mainland,17,46,36,synthetic_plan
+miniso-2026,upside,2026-09,MINISO - Chinese Mainland,17,46,36,synthetic_plan
+miniso-2026,upside,2026-10,MINISO - Chinese Mainland,17,46,36,synthetic_plan
+miniso-2026,upside,2026-11,MINISO - Chinese Mainland,17,46,36,synthetic_plan
+miniso-2026,upside,2026-12,MINISO - Chinese Mainland,17,46,36,synthetic_plan
+miniso-2026,upside,2026-07,MINISO - Overseas,30,59,45,synthetic_plan
+miniso-2026,upside,2026-08,MINISO - Overseas,30,59,45,synthetic_plan
+miniso-2026,upside,2026-09,MINISO - Overseas,30,59,45,synthetic_plan
+miniso-2026,upside,2026-10,MINISO - Overseas,30,59,45,synthetic_plan
+miniso-2026,upside,2026-11,MINISO - Overseas,30,59,45,synthetic_plan
+miniso-2026,upside,2026-12,MINISO - Overseas,30,59,45,synthetic_plan
+miniso-2026,upside,2026-07,TOP TOY - Global,22,72,51,synthetic_plan
+miniso-2026,upside,2026-08,TOP TOY - Global,22,72,51,synthetic_plan
+miniso-2026,upside,2026-09,TOP TOY - Global,22,72,51,synthetic_plan
+miniso-2026,upside,2026-10,TOP TOY - Global,22,72,51,synthetic_plan
+miniso-2026,upside,2026-11,TOP TOY - Global,22,72,51,synthetic_plan
+miniso-2026,upside,2026-12,TOP TOY - Global,22,72,51,synthetic_plan
+miniso-2026,downside,2026-07,MINISO - Chinese Mainland,20,53,33,synthetic_plan
+miniso-2026,downside,2026-08,MINISO - Chinese Mainland,20,53,33,synthetic_plan
+miniso-2026,downside,2026-09,MINISO - Chinese Mainland,20,53,33,synthetic_plan
+miniso-2026,downside,2026-10,MINISO - Chinese Mainland,20,53,33,synthetic_plan
+miniso-2026,downside,2026-11,MINISO - Chinese Mainland,20,53,33,synthetic_plan
+miniso-2026,downside,2026-12,MINISO - Chinese Mainland,20,53,33,synthetic_plan
+miniso-2026,downside,2026-07,MINISO - Overseas,35,68,42,synthetic_plan
+miniso-2026,downside,2026-08,MINISO - Overseas,35,68,42,synthetic_plan
+miniso-2026,downside,2026-09,MINISO - Overseas,35,68,42,synthetic_plan
+miniso-2026,downside,2026-10,MINISO - Overseas,35,68,42,synthetic_plan
+miniso-2026,downside,2026-11,MINISO - Overseas,35,68,42,synthetic_plan
+miniso-2026,downside,2026-12,MINISO - Overseas,35,68,42,synthetic_plan
+miniso-2026,downside,2026-07,TOP TOY - Global,28,84,48,synthetic_plan
+miniso-2026,downside,2026-08,TOP TOY - Global,28,84,48,synthetic_plan
+miniso-2026,downside,2026-09,TOP TOY - Global,28,84,48,synthetic_plan
+miniso-2026,downside,2026-10,TOP TOY - Global,28,84,48,synthetic_plan
+miniso-2026,downside,2026-11,TOP TOY - Global,28,84,48,synthetic_plan
+miniso-2026,downside,2026-12,TOP TOY - Global,28,84,48,synthetic_plan

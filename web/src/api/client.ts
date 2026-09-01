@@ -1,4 +1,4 @@
-import type { BrandFilter, DashboardResponse, MarketFilter, PlanVariant, PlanningInputRow } from '@/types/planning'
+import type { BrandFilter, DashboardResponse, ForecastAccuracy, MarketFilter, OperatingPlanPreviewRequest, OperatingPlanResponse, PlanVariant, PlanningInputRow } from '@/types/planning'
 
 export class ApiError extends Error {
   status: number
@@ -61,4 +61,25 @@ export async function importPlanningInputs(caseId: string, csv: string, signal?:
 export async function previewDashboard(caseId: string, rows: PlanningInputRow[], selectedPlanVariant: PlanVariant, planningInputSource: 'upload' | 'editor', brand: BrandFilter = 'all', market: MarketFilter = 'all', signal?: AbortSignal): Promise<DashboardResponse> {
   const response = await fetch(`/api/v1/cases/${encodeURIComponent(caseId)}/dashboard/preview?brand=${encodeURIComponent(brand)}&market=${encodeURIComponent(market)}`, { method: 'POST', body: JSON.stringify({ rows: normalizeRows(rows), selected_plan_variant: selectedPlanVariant, planning_input_source: planningInputSource }), signal, headers: { 'Content-Type': 'application/json' } })
   return parseApiResponse<DashboardResponse>(response)
+}
+
+export async function fetchOperatingPlan(caseId: string, planVariant: PlanVariant = 'base', signal?: AbortSignal): Promise<OperatingPlanResponse> {
+  const params = new URLSearchParams({ plan_variant: planVariant })
+  const response = await fetch(`/api/v1/cases/${encodeURIComponent(caseId)}/operating-plan?${params}`, { signal })
+  return parseApiResponse<OperatingPlanResponse>(response)
+}
+
+export async function previewOperatingPlan(caseId: string, request: OperatingPlanPreviewRequest, signal?: AbortSignal): Promise<OperatingPlanResponse> {
+  const response = await fetch(`/api/v1/cases/${encodeURIComponent(caseId)}/operating-plan/preview`, {
+    method: 'POST',
+    body: JSON.stringify({ ...request, case_id: caseId, rows: normalizeRows(request.rows) }),
+    signal,
+    headers: { 'Content-Type': 'application/json' },
+  })
+  return parseApiResponse<OperatingPlanResponse>(response)
+}
+
+export async function fetchForecastAccuracy(caseId: string, signal?: AbortSignal): Promise<ForecastAccuracy> {
+  const response = await fetch(`/api/v1/cases/${encodeURIComponent(caseId)}/forecast-accuracy`, { signal })
+  return parseApiResponse<ForecastAccuracy>(response)
 }

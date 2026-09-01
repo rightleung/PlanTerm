@@ -65,10 +65,51 @@ def test_preview_rejects_unexpected_json_fields_and_base_tampering():
     assert response.json()['error_type'] == 'unexpected_input_key'
 
     imported = client.post('/api/v1/cases/miniso-2026/planning-inputs/import', content=template.content, headers={'Content-Type':'text/csv'}).json()
-    imported['rows'][0]['volume_change_pct'] = '0.001000'
+    imported['rows'][0]['volume_change_pct'] = '-1.000000'
     response = client.post('/api/v1/cases/miniso-2026/dashboard/preview', json={'selected_plan_variant':'base','rows':imported['rows']})
     assert response.status_code == 422
-    assert response.json()['error_type'] == 'rollup_reconciliation_failed'
+    assert response.json()['error_type'] == 'invalid_input_row'
+
+
+def test_valid_base_h2_driver_edit_recomputes_dashboard_and_operating_plan():
+    case = CaseRepository().get_case('miniso-2026')
+    committed_rows = [row.model_dump(mode='json') for row in seed_rows(case)]
+    rows = [dict(row) for row in committed_rows]
+    target = next(row for row in rows if row['plan_variant'] == 'base' and row['period'] == '2026-07' and row['business_unit'] == 'MINISO - Chinese Mainland' and row['category_id'] == 'miniso_ip_toys')
+    target['volume_change_pct'] = 0.10
+    dashboard_response = client.post('/api/v1/cases/miniso-2026/dashboard/preview', json={'selected_plan_variant': 'base', 'planning_input_source': 'editor', 'rows': rows})
+    assert dashboard_response.status_code == 200
+    dashboard = dashboard_response.json()
+    assert dashboard['scenario_comparison']['revenue']['delta'] > 0
+    assert dashboard['scenario_comparison']['gross_profit']['delta'] > 0
+    assert dashboard['scenario_comparison']['operating_profit']['delta'] > 0
+
+    working_capital_rows = [dict(row) for row in case.working_capital_seed if row['plan_variant'] == 'base']
+    cash_assumption_rows = [dict(row, opening_cash=case.cash_assumptions['opening_cash'], minimum_cash_buffer=case.cash_assumptions['minimum_cash_buffer']) for row in case.cash_assumptions['rows'] if row['plan_variant'] == 'base']
+    headcount_rows = [dict(row) for row in case.headcount_seed if row['plan_variant'] == 'base']
+    operating_payload = {
+        'case_id': case.case_id,
+        'selected_plan_variant': 'base',
+        'planning_input_source': 'editor',
+        'rows': rows,
+        'working_capital_rows': working_capital_rows,
+        'cash_assumption_rows': cash_assumption_rows,
+        'headcount_rows': headcount_rows,
+    }
+    operating_response = client.post('/api/v1/cases/miniso-2026/operating-plan/preview', json=operating_payload)
+    assert operating_response.status_code == 200
+    operating = operating_response.json()
+    assert operating['reconciliation']['status'] == 'reconciled'
+    assert operating['reconciliation']['category_rollup']['anchor'] == 'scenario_internal'
+    assert next(row for row in operating['decision_table'] if row['plan_variant'] == 'base')['fy_revenue_delta'] > 0
+
+    baseline_response = client.post('/api/v1/cases/miniso-2026/operating-plan/preview', json={**operating_payload, 'rows': committed_rows})
+    assert baseline_response.status_code == 200
+    baseline = baseline_response.json()
+    edited_july = next(row for row in operating['cash_bridge']['rows'] if row['period'] == '2026-07')
+    baseline_july = next(row for row in baseline['cash_bridge']['rows'] if row['period'] == '2026-07')
+    assert edited_july['headroom'] > baseline_july['headroom']
+    assert operating['headcount_rows'] == baseline['headcount_rows']
 
 
 def test_preview_accepts_filters_from_query_and_keeps_pvm_unchanged():

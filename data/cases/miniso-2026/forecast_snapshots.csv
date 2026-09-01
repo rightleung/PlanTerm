@@ -1,0 +1,19 @@
+case_id,period,business_unit,metric,actual,forecast,provenance
+miniso-2026,2026-01,MINISO - Chinese Mainland,revenue,1008.595781,1008.595781,synthetic_plan
+miniso-2026,2026-02,MINISO - Chinese Mainland,revenue,874.116344,874.116344,synthetic_plan
+miniso-2026,2026-03,MINISO - Chinese Mainland,revenue,1075.835500,1075.835500,synthetic_plan
+miniso-2026,2026-04,MINISO - Chinese Mainland,revenue,1075.835500,1075.835500,synthetic_plan
+miniso-2026,2026-05,MINISO - Chinese Mainland,revenue,1143.075219,1143.075219,synthetic_plan
+miniso-2026,2026-06,MINISO - Chinese Mainland,revenue,1277.554656,1277.554656,synthetic_plan
+miniso-2026,2026-01,MINISO - Overseas,revenue,634.260937,634.260937,synthetic_plan
+miniso-2026,2026-02,MINISO - Overseas,revenue,549.692813,549.692813,synthetic_plan
+miniso-2026,2026-03,MINISO - Overseas,revenue,676.545000,676.545000,synthetic_plan
+miniso-2026,2026-04,MINISO - Overseas,revenue,676.545000,676.545000,synthetic_plan
+miniso-2026,2026-05,MINISO - Overseas,revenue,718.829063,718.829063,synthetic_plan
+miniso-2026,2026-06,MINISO - Overseas,revenue,803.397187,803.397187,synthetic_plan
+miniso-2026,2026-01,TOP TOY - Global,revenue,153.846563,153.846563,synthetic_plan
+miniso-2026,2026-02,TOP TOY - Global,revenue,133.333688,133.333688,synthetic_plan
+miniso-2026,2026-03,TOP TOY - Global,revenue,164.103000,164.103000,synthetic_plan
+miniso-2026,2026-04,TOP TOY - Global,revenue,164.103000,164.103000,synthetic_plan
+miniso-2026,2026-05,TOP TOY - Global,revenue,174.359438,174.359438,synthetic_plan
+miniso-2026,2026-06,TOP TOY - Global,revenue,194.872313,194.872313,synthetic_plan

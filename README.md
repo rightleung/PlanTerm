@@ -1,12 +1,12 @@
 # PlanTerm
 
-PlanTerm is an FP&A planning and performance management workbench. The v0.2.0 release uses MINISO Group as a public-data case and adds a stateless planning-input workflow to the v0.1.1 dashboard. It presents Actual, Budget, Forecast and Prior Year across:
+PlanTerm is an FP&A planning and performance management workbench. The v0.3 workstream uses the `miniso-2026` public-data case, with an as-of date of `2026-06-30` and RMB millions throughout. It presents Actual, Budget, Forecast and Prior Year across:
 
 - MINISO — Chinese Mainland
 - MINISO — Overseas
 - TOP TOY — Global
 
-The dashboard is an English, local-first application with a deterministic API and an Excel management pack. It covers revenue, gross profit, operating profit, margin, variance analysis, Price / Volume / Mix and Profit Driver bridges. Public reported figures are separated from synthetic allocations and illustrative planning assumptions throughout the product.
+The dashboard is an English, local-first application with a deterministic API and an Excel management pack. It covers revenue, gross profit, operating profit, margin, variance analysis, Price / Volume / Mix and Operating Profit bridges. Public reported figures are separated from synthetic allocations and illustrative planning assumptions throughout the product.
 
 ![PlanTerm dashboard showing the MINISO portfolio planning case](./docs/assets/planterm-dashboard.png)
 
@@ -31,6 +31,9 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000). The application reads the c
 | GET | `/api/v1/cases/{case_id}/planning-input-template` | Deterministic 252-row CSV template |
 | POST | `/api/v1/cases/{case_id}/planning-inputs/import` | Strict, non-persistent CSV validation |
 | POST | `/api/v1/cases/{case_id}/dashboard/preview` | Independent 252-row scenario preview |
+| GET | `/api/v1/cases/{case_id}/operating-plan` | Working capital, illustrative cash, actions and decision data |
+| POST | `/api/v1/cases/{case_id}/operating-plan/preview` | Stateless operating-plan recalculation for a selected plan variant |
+| GET | `/api/v1/cases/{case_id}/forecast-accuracy` | Synthetic-snapshot forecast accuracy metrics |
 
 The API uses a consistent error shape: `error`, `error_type` and `details`. Unknown cases return 404, invalid filters return 422, and internal errors do not expose stack traces.
 
@@ -48,9 +51,17 @@ The editor accepts a complete 252-row matrix: three plan variants (`base`, `upsi
 
 Product-category figures are synthetic planning allocations, not public category reporting. The UI and export disclose this distinction and retain official taxonomy labels only as source-backed taxonomy provenance.
 
+## Operating decision workflow
+
+The v0.3 operating-decision view extends the selected `base`, `upside` or `downside` H2 plan variant with AR, inventory and AP days; calculated balances, NWC and cash-conversion cycle; an illustrative cash bridge; forecast-accuracy metrics; a scenario decision table; and an action register. The v0.4 workforce view adds bounded role-group capacity; the v0.5 governance view adds session-only decisions and portfolio evidence.
+
+AR/AP/inventory days, opening cash, CAPEX proxy, other cash assumptions, actions and forecast snapshots are synthetic planning inputs. Balances, cash effects, NWC, CCC, headroom, accuracy metrics and reconciliations are calculated. The product does not report actual company cash, working-capital balances, internal forecasts or action records. Browser action edits are session-only and are never persisted.
+
+Governance evidence adds a session-only immutable decision log and conclusion-level provenance links. Each conclusion identifies its metric, formula, source label and reconciliation status; `public_reported`, `synthetic_allocation`, `synthetic_plan` and `calculated` remain explicit. Assumption version and git SHA are surfaced in the UI and workbook. See [v0.5 release evidence](./docs/release-evidence.md) for the deterministic review edit, clean-checkout CI evidence and remaining owner-controlled publication action.
+
 ## Excel management pack
 
-The dashboard export produces `PlanTerm_MINISO_2026H1_Management_Pack.xlsx` with:
+The dashboard export produces `PlanTerm_MINISO_2026H1_Management_Pack.xlsx` with the seven existing sheets plus one `Operating Decision` sheet. The active order is:
 
 1. Executive Summary
 2. Monthly Trend
@@ -59,12 +70,24 @@ The dashboard export produces `PlanTerm_MINISO_2026H1_Management_Pack.xlsx` with
 5. Assumptions & Sources
 6. Product Category Detail
 7. Scenario Inputs & Provenance
+8. Operating Decision
 
-The export follows the active dashboard filters and selected plan variant, uses RMB millions as the default unit, and includes the exact 252-row input matrix plus taxonomy and source disclosure.
+The `PVM Bridge` sheet contains both the Revenue PVM and the reconciled Operating Profit bridge. The `Operating Decision` sheet contains working capital, illustrative cash, workforce capacity, forecast accuracy, scenario decisions, actions and governance evidence, so the existing seven-sheet order is preserved. The export follows the active dashboard filters and selected plan variant, uses RMB millions as the default unit, and includes the exact 252-row input matrix plus taxonomy, source and operating-decision disclosures. Numeric cells, including negatives, remain numeric. Formula-backed calculated cells remain auditable; disclosure text is exported as literal, spreadsheet-neutralized text.
 
 ## v0.2.0 planning inputs
 
 This release adds deterministic product-category planning allocations, a strict CSV template/import contract, complete Base/Upside/Downside H2 scenario editing, stateless dashboard previews, scenario comparison, category detail, and a seven-sheet Excel management pack. Public reported Actual/Prior Year anchors remain distinct from synthetic allocation and scenario-input data.
+
+## v0.3 status
+
+Operating Decision, workforce capacity and governance evidence are implemented and pushed. The v1.0 integration contract is frozen across the API, TypeScript surface, UI and eight-sheet workbook; matching direct CI is recorded in the release evidence. Git tags and release publication remain release-owner actions.
+
+### Implemented versus future scope
+
+| Implemented in this case | Explicitly future / out of scope |
+|---|---|
+| Public-data anchored `miniso-2026`, H1 Actual / Budget / Prior Year, H2-only planning, P0–P3 API/UI/Excel workflows, governance provenance and stateless session previews | ERP, bank, HRIS, payroll, database/cloud persistence, PDF pack, peer benchmarks, LLM-generated conclusions, a second case, and bilingual UI |
+| Synthetic allocation, synthetic plan and calculated values are labelled separately from public reported anchors | Production deployment, account management, multi-user persistence and automated release publication |
 
 ## v0.1.1 hardening
 
@@ -78,6 +101,7 @@ This release adds data-derived valid filter combinations, incompatible-filter 42
 ./.venv/bin/python scripts/build_miniso_case.py --check
 cd web
 npm run lint
+npx tsc -p tsconfig.app.json --noEmit
 npm run build
 npm run e2e:preflight
 ```

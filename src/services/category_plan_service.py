@@ -100,20 +100,25 @@ def _close(actual, expected, label):
         raise ReconciliationError(f"{label}: {actual} != {expected}")
 
 
-def _is_committed_seed(case, rows) -> bool:
-    """Whether the full matrix is the exact deterministic committed seed."""
-    if len(rows) != len(case.category_seed):
-        return False
+def is_committed_variant_seed(case, rows, variant: str) -> bool:
+    """Whether one plan variant still matches its deterministic committed seed."""
     fields = ("volume_change_pct", "average_ticket_change_pct", "gross_margin_delta_pp", "opex_ratio_delta_pp")
     committed = {
         (item["plan_variant"], item["period"], item["business_unit"], item["category_id"]): tuple(_dec(item[field]) for field in fields)
         for item in case.category_seed
+        if item["plan_variant"] == variant
     }
     supplied = {
         (row.plan_variant.value, row.period, row.business_unit, row.category_id): tuple(_dec(getattr(row, field)) for field in fields)
         for row in rows
+        if row.plan_variant.value == variant
     }
     return supplied == committed
+
+
+def _is_committed_seed(case, rows) -> bool:
+    """Whether every variant in the full matrix is the exact committed seed."""
+    return all(is_committed_variant_seed(case, rows, variant) for variant in VARIANTS)
 
 
 def _category_context(case, categories):
@@ -184,15 +189,18 @@ def calculate_rows(case: CaseData, rows: list, selected_variant: str):
 
     units = sorted({x[0] for x in pairs})
     metrics = ("revenue", "volume", "gross_profit", "cost_of_sales", "operating_expense", "operating_profit")
-    committed_seed = _is_committed_seed(case, rows)
+    committed_variants = {variant: is_committed_variant_seed(case, rows, variant) for variant in VARIANTS}
     for variant in VARIANTS:
         portfolio = defaultdict(Decimal)
         for unit in units:
-            if variant == "base":
+            # A committed Base seed is tied to the public forecast anchor. Once
+            # a user edits Base, the scenario is still valid but must reconcile
+            # to its own recalculated roll-up rather than the old anchor.
+            if variant == "base" and committed_variants["base"]:
                 for period in H2_MONTHS:
                     for metric in metrics:
                         _close(totals[(variant, period, unit)][metric], _metric(case, "forecast", unit, period, metric), f"Base {unit} {period} {metric} reconciliation")
-            if committed_seed:
+            if committed_variants[variant]:
                 adjustment = _dec(case.assumptions["variant_driver_adjustments"][variant]["volume_change_pct"])
                 for period in H2_MONTHS:
                     expected_volume = _metric(case, "forecast", unit, period, "volume") + adjustment * _metric(case, "budget", unit, period, "volume")
@@ -200,12 +208,12 @@ def calculate_rows(case: CaseData, rows: list, selected_variant: str):
             bu = {metric: sum((totals[(variant, period, unit)][metric] for period in H2_MONTHS), Decimal(0)) for metric in metrics}
             for metric in metrics:
                 portfolio[metric] += bu[metric]
-                if variant == "base":
+                if variant == "base" and committed_variants["base"]:
                     expected = sum((_metric(case, "forecast", unit, period, metric) for period in H2_MONTHS), Decimal(0))
                     _close(bu[metric], expected, f"Base H2 {unit} {metric} reconciliation")
         for metric in metrics:
             _close(portfolio[metric], sum((sum((totals[(variant, period, unit)][metric] for period in H2_MONTHS), Decimal(0)) for unit in units), Decimal(0)), f"Portfolio {variant} {metric} reconciliation")
-            if variant == "base":
+            if variant == "base" and committed_variants["base"]:
                 anchor = sum((_metric(case, "forecast", unit, period, metric) for unit in units for period in H2_MONTHS), Decimal(0))
                 _close(portfolio[metric], anchor, f"Base H2 portfolio {metric} reconciliation")
 

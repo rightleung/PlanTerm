@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import csv
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 from src.config import ROOT_DIR
@@ -20,6 +20,11 @@ class CaseData:
     records: tuple[PlanningRecord, ...]
     taxonomy: dict | None = None
     category_seed: tuple[dict, ...] = ()
+    working_capital_seed: tuple[dict, ...] = ()
+    cash_assumptions: dict = field(default_factory=dict)
+    forecast_snapshots: tuple[dict, ...] = ()
+    headcount_seed: tuple[dict, ...] = ()
+    headcount_assumptions: dict = field(default_factory=dict)
 
 
 class CaseNotFoundError(LookupError):
@@ -104,4 +109,14 @@ class CaseRepository:
         if seed_path.exists():
             with seed_path.open(newline="", encoding="utf-8") as handle:
                 category_seed = list(csv.DictReader(handle))
-        return CaseData(metadata["case_id"], metadata, assumptions, tuple(records), taxonomy, tuple(category_seed))
+        wc_path = case_path / "working_capital_seed.csv"
+        working_capital_seed = tuple(csv.DictReader(wc_path.open(newline="", encoding="utf-8"))) if wc_path.exists() else ()
+        cash_path = case_path / "cash_assumptions.json"
+        cash_assumptions = load_committed_json(cash_path) if cash_path.exists() else {}
+        snapshot_path = case_path / "forecast_snapshots.csv"
+        forecast_snapshots = tuple(csv.DictReader(snapshot_path.open(newline="", encoding="utf-8"))) if snapshot_path.exists() else ()
+        headcount_seed_path = case_path / "headcount_seed.csv"
+        headcount_seed = tuple(csv.DictReader(headcount_seed_path.open(newline="", encoding="utf-8"))) if headcount_seed_path.exists() else ()
+        headcount_assumptions_path = case_path / "headcount_assumptions.json"
+        headcount_assumptions = load_committed_json(headcount_assumptions_path) if headcount_assumptions_path.exists() else {}
+        return CaseData(metadata["case_id"], metadata, assumptions, tuple(records), taxonomy, tuple(category_seed), working_capital_seed, cash_assumptions, forecast_snapshots, headcount_seed, headcount_assumptions)

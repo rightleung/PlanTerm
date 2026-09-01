@@ -103,6 +103,24 @@ class PvmBridge(BaseModel):
     unit: str = "RMB millions"
 
 
+class ProfitBridgeItem(BaseModel):
+    driver: Literal["PVM profit effect", "Gross Margin", "Opex"]
+    amount: float | None
+    pct_of_variance: float | None
+    direction: Literal["favorable", "unfavorable", "neutral"] | None
+    provenance: Literal["calculated"] = "calculated"
+    action_owner: str
+
+
+class ProfitBridge(BaseModel):
+    actual_operating_profit: float | None
+    budget_operating_profit: float | None
+    operating_profit_variance: float | None
+    items: list[ProfitBridgeItem]
+    reconciliation_difference: float | None
+    unit: str = "RMB millions"
+
+
 class ManagementInsight(BaseModel):
     title: str
     business_unit: str
@@ -165,6 +183,7 @@ class PlanningDashboardResponse(BaseModel):
     monthly_trend: list[MonthlyTrendPoint]
     business_unit_variances: list[VarianceRow]
     pvm_bridge: PvmBridge
+    profit_bridge: ProfitBridge
     management_insights: list[ManagementInsight]
     data_sources: list[DataSource]
     provenance_legend: dict[str, str]

@@ -12,6 +12,10 @@ for (const key of ['NO_PROXY', 'no_proxy']) {
 export default defineConfig({
   testDir: './e2e',
   timeout: 30000,
+  // The integrated dashboard renders the 252-row planning matrix, workforce
+  // rows and governance panels after the API response. Keep assertions
+  // tolerant of cold CI runners without weakening the test cases themselves.
+  expect: { timeout: 15000 },
   fullyParallel: false,
   workers: 1,
   use: {

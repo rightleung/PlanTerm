@@ -20,6 +20,10 @@ def test_dashboard_default_and_filters():
     assert payload["selected_filters"] == {"brand": "all", "market": "all"}
     assert len(payload["business_unit_variances"]) == 3
     assert abs(payload["pvm_bridge"]["reconciliation_difference"]) <= 0.01
+    profit_bridge = payload["profit_bridge"]
+    assert {item["driver"] for item in profit_bridge["items"]} == {"PVM profit effect", "Gross Margin", "Opex"}
+    assert abs(profit_bridge["reconciliation_difference"]) <= 0.01
+    assert all(item["provenance"] == "calculated" and item["action_owner"] for item in profit_bridge["items"])
     assert len(payload["management_insights"]) == 2
 
     mainland = client.get("/api/v1/cases/miniso-2026/dashboard?brand=MINISO&market=mainland")
@@ -53,17 +57,17 @@ def test_dashboard_plan_variant_and_filters_are_preserved(variant):
     assert payload["selected_filters"] == {"brand": "MINISO", "market": "mainland"}
 
 
-def test_preview_preserves_filters_and_rejects_rollup_tampering():
+def test_preview_preserves_filters_and_rejects_out_of_range_input():
     template = client.get("/api/v1/cases/miniso-2026/planning-input-template").content
     imported = client.post("/api/v1/cases/miniso-2026/planning-inputs/import", content=template, headers={"Content-Type": "text/csv"}).json()
     payload = {"selected_plan_variant": "base", "brand": "MINISO", "market": "mainland", "rows": imported["rows"]}
     preview = client.post("/api/v1/cases/miniso-2026/dashboard/preview", json=payload)
     assert preview.status_code == 200
     assert preview.json()["selected_filters"] == {"brand": "MINISO", "market": "mainland"}
-    payload["rows"][0]["volume_change_pct"] = "0.500000"
+    payload["rows"][0]["volume_change_pct"] = "1.500000"
     rejected = client.post("/api/v1/cases/miniso-2026/dashboard/preview", json=payload)
     assert rejected.status_code == 422
-    assert rejected.json()["error_type"] == "rollup_reconciliation_failed"
+    assert rejected.json()["error_type"] == "invalid_input_row"
 
 
 @pytest.mark.parametrize("brand,market", [
@@ -133,6 +137,7 @@ def test_dashboard_selected_variant_drives_forecast_fields_and_preserves_locked_
     for variant in ('upside', 'downside'):
         selected = dashboards[variant]
         assert selected['pvm_bridge'] == base['pvm_bridge']
+        assert selected['profit_bridge'] == base['profit_bridge']
         for metric in base_kpis:
             for field in ('actual_ytd', 'budget_ytd', 'prior_year_ytd', 'fy_budget', 'variance_amount', 'variance_pct', 'yoy_pct'):
                 selected_kpi = kpis(selected)[metric]
@@ -165,10 +170,10 @@ def test_dashboard_forecast_rollup_matches_category_detail_for_selected_variant(
         assert july_revenue == pytest.approx(sum(item['revenue'] for item in detail if item['period'] == '2026-07' and item['plan_variant'] == variant and item['business_unit'] == selected_bu))
 
 
-def test_complete_tampered_matrix_fails_closed_for_selected_dashboard_variant():
+def test_complete_matrix_rejects_out_of_range_selected_variant_input():
     template = client.get('/api/v1/cases/miniso-2026/planning-input-template').content
     imported = client.post('/api/v1/cases/miniso-2026/planning-inputs/import', content=template, headers={'Content-Type': 'text/csv'}).json()
-    imported['rows'][0]['gross_margin_delta_pp'] = '0.010000'
+    next(row for row in imported['rows'] if row['plan_variant'] == 'upside')['gross_margin_delta_pp'] = '0.150001'
     response = client.post('/api/v1/cases/miniso-2026/dashboard/preview', json={'selected_plan_variant': 'upside', 'rows': imported['rows']})
     assert response.status_code == 422
-    assert response.json()['error_type'] == 'rollup_reconciliation_failed'
+    assert response.json()['error_type'] == 'invalid_input_row'

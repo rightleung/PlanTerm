@@ -1,0 +1,217 @@
+case_id,plan_variant,period,business_unit,role_group,planned_fte,monthly_loaded_cost,provenance
+miniso-2026,base,2026-07,MINISO - Chinese Mainland,store operations,140,0.012,synthetic_plan
+miniso-2026,base,2026-07,MINISO - Chinese Mainland,commercial,10,0.020,synthetic_plan
+miniso-2026,base,2026-07,MINISO - Chinese Mainland,supply chain,12,0.018,synthetic_plan
+miniso-2026,base,2026-07,MINISO - Chinese Mainland,finance/support,8,0.022,synthetic_plan
+miniso-2026,base,2026-07,MINISO - Overseas,store operations,90,0.011,synthetic_plan
+miniso-2026,base,2026-07,MINISO - Overseas,commercial,8,0.019,synthetic_plan
+miniso-2026,base,2026-07,MINISO - Overseas,supply chain,10,0.017,synthetic_plan
+miniso-2026,base,2026-07,MINISO - Overseas,finance/support,6,0.021,synthetic_plan
+miniso-2026,base,2026-07,TOP TOY - Global,store operations,55,0.010,synthetic_plan
+miniso-2026,base,2026-07,TOP TOY - Global,commercial,7,0.018,synthetic_plan
+miniso-2026,base,2026-07,TOP TOY - Global,supply chain,8,0.016,synthetic_plan
+miniso-2026,base,2026-07,TOP TOY - Global,finance/support,5,0.020,synthetic_plan
+miniso-2026,base,2026-08,MINISO - Chinese Mainland,store operations,140,0.012,synthetic_plan
+miniso-2026,base,2026-08,MINISO - Chinese Mainland,commercial,10,0.020,synthetic_plan
+miniso-2026,base,2026-08,MINISO - Chinese Mainland,supply chain,12,0.018,synthetic_plan
+miniso-2026,base,2026-08,MINISO - Chinese Mainland,finance/support,8,0.022,synthetic_plan
+miniso-2026,base,2026-08,MINISO - Overseas,store operations,90,0.011,synthetic_plan
+miniso-2026,base,2026-08,MINISO - Overseas,commercial,8,0.019,synthetic_plan
+miniso-2026,base,2026-08,MINISO - Overseas,supply chain,10,0.017,synthetic_plan
+miniso-2026,base,2026-08,MINISO - Overseas,finance/support,6,0.021,synthetic_plan
+miniso-2026,base,2026-08,TOP TOY - Global,store operations,55,0.010,synthetic_plan
+miniso-2026,base,2026-08,TOP TOY - Global,commercial,7,0.018,synthetic_plan
+miniso-2026,base,2026-08,TOP TOY - Global,supply chain,8,0.016,synthetic_plan
+miniso-2026,base,2026-08,TOP TOY - Global,finance/support,5,0.020,synthetic_plan
+miniso-2026,base,2026-09,MINISO - Chinese Mainland,store operations,140,0.012,synthetic_plan
+miniso-2026,base,2026-09,MINISO - Chinese Mainland,commercial,10,0.020,synthetic_plan
+miniso-2026,base,2026-09,MINISO - Chinese Mainland,supply chain,12,0.018,synthetic_plan
+miniso-2026,base,2026-09,MINISO - Chinese Mainland,finance/support,8,0.022,synthetic_plan
+miniso-2026,base,2026-09,MINISO - Overseas,store operations,90,0.011,synthetic_plan
+miniso-2026,base,2026-09,MINISO - Overseas,commercial,8,0.019,synthetic_plan
+miniso-2026,base,2026-09,MINISO - Overseas,supply chain,10,0.017,synthetic_plan
+miniso-2026,base,2026-09,MINISO - Overseas,finance/support,6,0.021,synthetic_plan
+miniso-2026,base,2026-09,TOP TOY - Global,store operations,55,0.010,synthetic_plan
+miniso-2026,base,2026-09,TOP TOY - Global,commercial,7,0.018,synthetic_plan
+miniso-2026,base,2026-09,TOP TOY - Global,supply chain,8,0.016,synthetic_plan
+miniso-2026,base,2026-09,TOP TOY - Global,finance/support,5,0.020,synthetic_plan
+miniso-2026,base,2026-10,MINISO - Chinese Mainland,store operations,140,0.012,synthetic_plan
+miniso-2026,base,2026-10,MINISO - Chinese Mainland,commercial,10,0.020,synthetic_plan
+miniso-2026,base,2026-10,MINISO - Chinese Mainland,supply chain,12,0.018,synthetic_plan
+miniso-2026,base,2026-10,MINISO - Chinese Mainland,finance/support,8,0.022,synthetic_plan
+miniso-2026,base,2026-10,MINISO - Overseas,store operations,90,0.011,synthetic_plan
+miniso-2026,base,2026-10,MINISO - Overseas,commercial,8,0.019,synthetic_plan
+miniso-2026,base,2026-10,MINISO - Overseas,supply chain,10,0.017,synthetic_plan
+miniso-2026,base,2026-10,MINISO - Overseas,finance/support,6,0.021,synthetic_plan
+miniso-2026,base,2026-10,TOP TOY - Global,store operations,55,0.010,synthetic_plan
+miniso-2026,base,2026-10,TOP TOY - Global,commercial,7,0.018,synthetic_plan
+miniso-2026,base,2026-10,TOP TOY - Global,supply chain,8,0.016,synthetic_plan
+miniso-2026,base,2026-10,TOP TOY - Global,finance/support,5,0.020,synthetic_plan
+miniso-2026,base,2026-11,MINISO - Chinese Mainland,store operations,140,0.012,synthetic_plan
+miniso-2026,base,2026-11,MINISO - Chinese Mainland,commercial,10,0.020,synthetic_plan
+miniso-2026,base,2026-11,MINISO - Chinese Mainland,supply chain,12,0.018,synthetic_plan
+miniso-2026,base,2026-11,MINISO - Chinese Mainland,finance/support,8,0.022,synthetic_plan
+miniso-2026,base,2026-11,MINISO - Overseas,store operations,90,0.011,synthetic_plan
+miniso-2026,base,2026-11,MINISO - Overseas,commercial,8,0.019,synthetic_plan
+miniso-2026,base,2026-11,MINISO - Overseas,supply chain,10,0.017,synthetic_plan
+miniso-2026,base,2026-11,MINISO - Overseas,finance/support,6,0.021,synthetic_plan
+miniso-2026,base,2026-11,TOP TOY - Global,store operations,55,0.010,synthetic_plan
+miniso-2026,base,2026-11,TOP TOY - Global,commercial,7,0.018,synthetic_plan
+miniso-2026,base,2026-11,TOP TOY - Global,supply chain,8,0.016,synthetic_plan
+miniso-2026,base,2026-11,TOP TOY - Global,finance/support,5,0.020,synthetic_plan
+miniso-2026,base,2026-12,MINISO - Chinese Mainland,store operations,140,0.012,synthetic_plan
+miniso-2026,base,2026-12,MINISO - Chinese Mainland,commercial,10,0.020,synthetic_plan
+miniso-2026,base,2026-12,MINISO - Chinese Mainland,supply chain,12,0.018,synthetic_plan
+miniso-2026,base,2026-12,MINISO - Chinese Mainland,finance/support,8,0.022,synthetic_plan
+miniso-2026,base,2026-12,MINISO - Overseas,store operations,90,0.011,synthetic_plan
+miniso-2026,base,2026-12,MINISO - Overseas,commercial,8,0.019,synthetic_plan
+miniso-2026,base,2026-12,MINISO - Overseas,supply chain,10,0.017,synthetic_plan
+miniso-2026,base,2026-12,MINISO - Overseas,finance/support,6,0.021,synthetic_plan
+miniso-2026,base,2026-12,TOP TOY - Global,store operations,55,0.010,synthetic_plan
+miniso-2026,base,2026-12,TOP TOY - Global,commercial,7,0.018,synthetic_plan
+miniso-2026,base,2026-12,TOP TOY - Global,supply chain,8,0.016,synthetic_plan
+miniso-2026,base,2026-12,TOP TOY - Global,finance/support,5,0.020,synthetic_plan
+miniso-2026,upside,2026-07,MINISO - Chinese Mainland,store operations,140,0.012,synthetic_plan
+miniso-2026,upside,2026-07,MINISO - Chinese Mainland,commercial,10,0.020,synthetic_plan
+miniso-2026,upside,2026-07,MINISO - Chinese Mainland,supply chain,12,0.018,synthetic_plan
+miniso-2026,upside,2026-07,MINISO - Chinese Mainland,finance/support,8,0.022,synthetic_plan
+miniso-2026,upside,2026-07,MINISO - Overseas,store operations,90,0.011,synthetic_plan
+miniso-2026,upside,2026-07,MINISO - Overseas,commercial,8,0.019,synthetic_plan
+miniso-2026,upside,2026-07,MINISO - Overseas,supply chain,10,0.017,synthetic_plan
+miniso-2026,upside,2026-07,MINISO - Overseas,finance/support,6,0.021,synthetic_plan
+miniso-2026,upside,2026-07,TOP TOY - Global,store operations,55,0.010,synthetic_plan
+miniso-2026,upside,2026-07,TOP TOY - Global,commercial,7,0.018,synthetic_plan
+miniso-2026,upside,2026-07,TOP TOY - Global,supply chain,8,0.016,synthetic_plan
+miniso-2026,upside,2026-07,TOP TOY - Global,finance/support,5,0.020,synthetic_plan
+miniso-2026,upside,2026-08,MINISO - Chinese Mainland,store operations,140,0.012,synthetic_plan
+miniso-2026,upside,2026-08,MINISO - Chinese Mainland,commercial,10,0.020,synthetic_plan
+miniso-2026,upside,2026-08,MINISO - Chinese Mainland,supply chain,12,0.018,synthetic_plan
+miniso-2026,upside,2026-08,MINISO - Chinese Mainland,finance/support,8,0.022,synthetic_plan
+miniso-2026,upside,2026-08,MINISO - Overseas,store operations,90,0.011,synthetic_plan
+miniso-2026,upside,2026-08,MINISO - Overseas,commercial,8,0.019,synthetic_plan
+miniso-2026,upside,2026-08,MINISO - Overseas,supply chain,10,0.017,synthetic_plan
+miniso-2026,upside,2026-08,MINISO - Overseas,finance/support,6,0.021,synthetic_plan
+miniso-2026,upside,2026-08,TOP TOY - Global,store operations,55,0.010,synthetic_plan
+miniso-2026,upside,2026-08,TOP TOY - Global,commercial,7,0.018,synthetic_plan
+miniso-2026,upside,2026-08,TOP TOY - Global,supply chain,8,0.016,synthetic_plan
+miniso-2026,upside,2026-08,TOP TOY - Global,finance/support,5,0.020,synthetic_plan
+miniso-2026,upside,2026-09,MINISO - Chinese Mainland,store operations,140,0.012,synthetic_plan
+miniso-2026,upside,2026-09,MINISO - Chinese Mainland,commercial,10,0.020,synthetic_plan
+miniso-2026,upside,2026-09,MINISO - Chinese Mainland,supply chain,12,0.018,synthetic_plan
+miniso-2026,upside,2026-09,MINISO - Chinese Mainland,finance/support,8,0.022,synthetic_plan
+miniso-2026,upside,2026-09,MINISO - Overseas,store operations,90,0.011,synthetic_plan
+miniso-2026,upside,2026-09,MINISO - Overseas,commercial,8,0.019,synthetic_plan
+miniso-2026,upside,2026-09,MINISO - Overseas,supply chain,10,0.017,synthetic_plan
+miniso-2026,upside,2026-09,MINISO - Overseas,finance/support,6,0.021,synthetic_plan
+miniso-2026,upside,2026-09,TOP TOY - Global,store operations,55,0.010,synthetic_plan
+miniso-2026,upside,2026-09,TOP TOY - Global,commercial,7,0.018,synthetic_plan
+miniso-2026,upside,2026-09,TOP TOY - Global,supply chain,8,0.016,synthetic_plan
+miniso-2026,upside,2026-09,TOP TOY - Global,finance/support,5,0.020,synthetic_plan
+miniso-2026,upside,2026-10,MINISO - Chinese Mainland,store operations,140,0.012,synthetic_plan
+miniso-2026,upside,2026-10,MINISO - Chinese Mainland,commercial,10,0.020,synthetic_plan
+miniso-2026,upside,2026-10,MINISO - Chinese Mainland,supply chain,12,0.018,synthetic_plan
+miniso-2026,upside,2026-10,MINISO - Chinese Mainland,finance/support,8,0.022,synthetic_plan
+miniso-2026,upside,2026-10,MINISO - Overseas,store operations,90,0.011,synthetic_plan
+miniso-2026,upside,2026-10,MINISO - Overseas,commercial,8,0.019,synthetic_plan
+miniso-2026,upside,2026-10,MINISO - Overseas,supply chain,10,0.017,synthetic_plan
+miniso-2026,upside,2026-10,MINISO - Overseas,finance/support,6,0.021,synthetic_plan
+miniso-2026,upside,2026-10,TOP TOY - Global,store operations,55,0.010,synthetic_plan
+miniso-2026,upside,2026-10,TOP TOY - Global,commercial,7,0.018,synthetic_plan
+miniso-2026,upside,2026-10,TOP TOY - Global,supply chain,8,0.016,synthetic_plan
+miniso-2026,upside,2026-10,TOP TOY - Global,finance/support,5,0.020,synthetic_plan
+miniso-2026,upside,2026-11,MINISO - Chinese Mainland,store operations,140,0.012,synthetic_plan
+miniso-2026,upside,2026-11,MINISO - Chinese Mainland,commercial,10,0.020,synthetic_plan
+miniso-2026,upside,2026-11,MINISO - Chinese Mainland,supply chain,12,0.018,synthetic_plan
+miniso-2026,upside,2026-11,MINISO - Chinese Mainland,finance/support,8,0.022,synthetic_plan
+miniso-2026,upside,2026-11,MINISO - Overseas,store operations,90,0.011,synthetic_plan
+miniso-2026,upside,2026-11,MINISO - Overseas,commercial,8,0.019,synthetic_plan
+miniso-2026,upside,2026-11,MINISO - Overseas,supply chain,10,0.017,synthetic_plan
+miniso-2026,upside,2026-11,MINISO - Overseas,finance/support,6,0.021,synthetic_plan
+miniso-2026,upside,2026-11,TOP TOY - Global,store operations,55,0.010,synthetic_plan
+miniso-2026,upside,2026-11,TOP TOY - Global,commercial,7,0.018,synthetic_plan
+miniso-2026,upside,2026-11,TOP TOY - Global,supply chain,8,0.016,synthetic_plan
+miniso-2026,upside,2026-11,TOP TOY - Global,finance/support,5,0.020,synthetic_plan
+miniso-2026,upside,2026-12,MINISO - Chinese Mainland,store operations,140,0.012,synthetic_plan
+miniso-2026,upside,2026-12,MINISO - Chinese Mainland,commercial,10,0.020,synthetic_plan
+miniso-2026,upside,2026-12,MINISO - Chinese Mainland,supply chain,12,0.018,synthetic_plan
+miniso-2026,upside,2026-12,MINISO - Chinese Mainland,finance/support,8,0.022,synthetic_plan
+miniso-2026,upside,2026-12,MINISO - Overseas,store operations,90,0.011,synthetic_plan
+miniso-2026,upside,2026-12,MINISO - Overseas,commercial,8,0.019,synthetic_plan
+miniso-2026,upside,2026-12,MINISO - Overseas,supply chain,10,0.017,synthetic_plan
+miniso-2026,upside,2026-12,MINISO - Overseas,finance/support,6,0.021,synthetic_plan
+miniso-2026,upside,2026-12,TOP TOY - Global,store operations,55,0.010,synthetic_plan
+miniso-2026,upside,2026-12,TOP TOY - Global,commercial,7,0.018,synthetic_plan
+miniso-2026,upside,2026-12,TOP TOY - Global,supply chain,8,0.016,synthetic_plan
+miniso-2026,upside,2026-12,TOP TOY - Global,finance/support,5,0.020,synthetic_plan
+miniso-2026,downside,2026-07,MINISO - Chinese Mainland,store operations,140,0.012,synthetic_plan
+miniso-2026,downside,2026-07,MINISO - Chinese Mainland,commercial,10,0.020,synthetic_plan
+miniso-2026,downside,2026-07,MINISO - Chinese Mainland,supply chain,12,0.018,synthetic_plan
+miniso-2026,downside,2026-07,MINISO - Chinese Mainland,finance/support,8,0.022,synthetic_plan
+miniso-2026,downside,2026-07,MINISO - Overseas,store operations,90,0.011,synthetic_plan
+miniso-2026,downside,2026-07,MINISO - Overseas,commercial,8,0.019,synthetic_plan
+miniso-2026,downside,2026-07,MINISO - Overseas,supply chain,10,0.017,synthetic_plan
+miniso-2026,downside,2026-07,MINISO - Overseas,finance/support,6,0.021,synthetic_plan
+miniso-2026,downside,2026-07,TOP TOY - Global,store operations,55,0.010,synthetic_plan
+miniso-2026,downside,2026-07,TOP TOY - Global,commercial,7,0.018,synthetic_plan
+miniso-2026,downside,2026-07,TOP TOY - Global,supply chain,8,0.016,synthetic_plan
+miniso-2026,downside,2026-07,TOP TOY - Global,finance/support,5,0.020,synthetic_plan
+miniso-2026,downside,2026-08,MINISO - Chinese Mainland,store operations,140,0.012,synthetic_plan
+miniso-2026,downside,2026-08,MINISO - Chinese Mainland,commercial,10,0.020,synthetic_plan
+miniso-2026,downside,2026-08,MINISO - Chinese Mainland,supply chain,12,0.018,synthetic_plan
+miniso-2026,downside,2026-08,MINISO - Chinese Mainland,finance/support,8,0.022,synthetic_plan
+miniso-2026,downside,2026-08,MINISO - Overseas,store operations,90,0.011,synthetic_plan
+miniso-2026,downside,2026-08,MINISO - Overseas,commercial,8,0.019,synthetic_plan
+miniso-2026,downside,2026-08,MINISO - Overseas,supply chain,10,0.017,synthetic_plan
+miniso-2026,downside,2026-08,MINISO - Overseas,finance/support,6,0.021,synthetic_plan
+miniso-2026,downside,2026-08,TOP TOY - Global,store operations,55,0.010,synthetic_plan
+miniso-2026,downside,2026-08,TOP TOY - Global,commercial,7,0.018,synthetic_plan
+miniso-2026,downside,2026-08,TOP TOY - Global,supply chain,8,0.016,synthetic_plan
+miniso-2026,downside,2026-08,TOP TOY - Global,finance/support,5,0.020,synthetic_plan
+miniso-2026,downside,2026-09,MINISO - Chinese Mainland,store operations,140,0.012,synthetic_plan
+miniso-2026,downside,2026-09,MINISO - Chinese Mainland,commercial,10,0.020,synthetic_plan
+miniso-2026,downside,2026-09,MINISO - Chinese Mainland,supply chain,12,0.018,synthetic_plan
+miniso-2026,downside,2026-09,MINISO - Chinese Mainland,finance/support,8,0.022,synthetic_plan
+miniso-2026,downside,2026-09,MINISO - Overseas,store operations,90,0.011,synthetic_plan
+miniso-2026,downside,2026-09,MINISO - Overseas,commercial,8,0.019,synthetic_plan
+miniso-2026,downside,2026-09,MINISO - Overseas,supply chain,10,0.017,synthetic_plan
+miniso-2026,downside,2026-09,MINISO - Overseas,finance/support,6,0.021,synthetic_plan
+miniso-2026,downside,2026-09,TOP TOY - Global,store operations,55,0.010,synthetic_plan
+miniso-2026,downside,2026-09,TOP TOY - Global,commercial,7,0.018,synthetic_plan
+miniso-2026,downside,2026-09,TOP TOY - Global,supply chain,8,0.016,synthetic_plan
+miniso-2026,downside,2026-09,TOP TOY - Global,finance/support,5,0.020,synthetic_plan
+miniso-2026,downside,2026-10,MINISO - Chinese Mainland,store operations,140,0.012,synthetic_plan
+miniso-2026,downside,2026-10,MINISO - Chinese Mainland,commercial,10,0.020,synthetic_plan
+miniso-2026,downside,2026-10,MINISO - Chinese Mainland,supply chain,12,0.018,synthetic_plan
+miniso-2026,downside,2026-10,MINISO - Chinese Mainland,finance/support,8,0.022,synthetic_plan
+miniso-2026,downside,2026-10,MINISO - Overseas,store operations,90,0.011,synthetic_plan
+miniso-2026,downside,2026-10,MINISO - Overseas,commercial,8,0.019,synthetic_plan
+miniso-2026,downside,2026-10,MINISO - Overseas,supply chain,10,0.017,synthetic_plan
+miniso-2026,downside,2026-10,MINISO - Overseas,finance/support,6,0.021,synthetic_plan
+miniso-2026,downside,2026-10,TOP TOY - Global,store operations,55,0.010,synthetic_plan
+miniso-2026,downside,2026-10,TOP TOY - Global,commercial,7,0.018,synthetic_plan
+miniso-2026,downside,2026-10,TOP TOY - Global,supply chain,8,0.016,synthetic_plan
+miniso-2026,downside,2026-10,TOP TOY - Global,finance/support,5,0.020,synthetic_plan
+miniso-2026,downside,2026-11,MINISO - Chinese Mainland,store operations,140,0.012,synthetic_plan
+miniso-2026,downside,2026-11,MINISO - Chinese Mainland,commercial,10,0.020,synthetic_plan
+miniso-2026,downside,2026-11,MINISO - Chinese Mainland,supply chain,12,0.018,synthetic_plan
+miniso-2026,downside,2026-11,MINISO - Chinese Mainland,finance/support,8,0.022,synthetic_plan
+miniso-2026,downside,2026-11,MINISO - Overseas,store operations,90,0.011,synthetic_plan
+miniso-2026,downside,2026-11,MINISO - Overseas,commercial,8,0.019,synthetic_plan
+miniso-2026,downside,2026-11,MINISO - Overseas,supply chain,10,0.017,synthetic_plan
+miniso-2026,downside,2026-11,MINISO - Overseas,finance/support,6,0.021,synthetic_plan
+miniso-2026,downside,2026-11,TOP TOY - Global,store operations,55,0.010,synthetic_plan
+miniso-2026,downside,2026-11,TOP TOY - Global,commercial,7,0.018,synthetic_plan
+miniso-2026,downside,2026-11,TOP TOY - Global,supply chain,8,0.016,synthetic_plan
+miniso-2026,downside,2026-11,TOP TOY - Global,finance/support,5,0.020,synthetic_plan
+miniso-2026,downside,2026-12,MINISO - Chinese Mainland,store operations,140,0.012,synthetic_plan
+miniso-2026,downside,2026-12,MINISO - Chinese Mainland,commercial,10,0.020,synthetic_plan
+miniso-2026,downside,2026-12,MINISO - Chinese Mainland,supply chain,12,0.018,synthetic_plan
+miniso-2026,downside,2026-12,MINISO - Chinese Mainland,finance/support,8,0.022,synthetic_plan
+miniso-2026,downside,2026-12,MINISO - Overseas,store operations,90,0.011,synthetic_plan
+miniso-2026,downside,2026-12,MINISO - Overseas,commercial,8,0.019,synthetic_plan
+miniso-2026,downside,2026-12,MINISO - Overseas,supply chain,10,0.017,synthetic_plan
+miniso-2026,downside,2026-12,MINISO - Overseas,finance/support,6,0.021,synthetic_plan
+miniso-2026,downside,2026-12,TOP TOY - Global,store operations,55,0.010,synthetic_plan
+miniso-2026,downside,2026-12,TOP TOY - Global,commercial,7,0.018,synthetic_plan
+miniso-2026,downside,2026-12,TOP TOY - Global,supply chain,8,0.016,synthetic_plan
+miniso-2026,downside,2026-12,TOP TOY - Global,finance/support,5,0.020,synthetic_plan

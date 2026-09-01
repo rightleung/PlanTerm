@@ -14,12 +14,32 @@ Completed in this release: deterministic synthetic product-category detail, stri
 
 ## v0.3 — Operating planning
 
-- Working-capital planning
-- Cash forecast
-- Headcount planning
-- Forecast accuracy tracking
+Implemented in the working tree: Operating Decision frontend, governance decision log, conclusion provenance, Excel and documentation for `miniso-2026` as of `2026-06-30`, in RMB millions.
 
-## v0.4 — Reporting and benchmarks
+- Working-capital planning with AR/AP/inventory days, NWC and CCC
+- Illustrative synthetic cash bridge and headroom
+- Forecast-accuracy tracking from synthetic snapshots
+- Scenario decision table and session-only action register
+- Session-only immutable decision log with exportable evidence
+- Conclusion-level metric, formula, source and reconciliation provenance
+
+Completion evidence and the matching direct CI result are recorded in `docs/release-evidence.md`. Workforce/headcount capacity is implemented as v0.4 scope.
+
+Matching direct CI is complete; Git tags and release publication remain explicit release-owner actions and are not claimed here.
+
+## v0.4 — Workforce capacity
+
+Implemented in the working tree: bounded H2 role-group workforce inputs, required-versus-planned FTE, loaded cost, capacity-gap calculations, reconciliation evidence and API/UI/Excel parity. Individual employees, payroll and HRIS data remain out of scope.
+
+## v0.5 — Governance and portfolio pack
+
+Implemented and pushed: session-only immutable decision events, assumption version/git SHA metadata, conclusion-level provenance and release/demo evidence for the deterministic MINISO case. Direct CI is recorded; the Git tag and publication remain release-owner actions.
+
+## v1.0 — Integrated release
+
+Local integration is frozen across the OpenAPI endpoint surface, TypeScript types, deterministic UI state and eight-sheet workbook. Matching direct CI evidence is available; the release is not declared because the repository owner still controls the final tag/publication.
+
+## Future — Reporting and benchmarks
 
 - PDF management pack
 - English / Chinese interface options
