@@ -1,0 +1,253 @@
+case_id,plan_variant,period,business_unit,category_id,volume_change_pct,average_ticket_change_pct,gross_margin_delta_pp,opex_ratio_delta_pp
+miniso-2026,base,2026-07,MINISO - Chinese Mainland,miniso_ip_toys,0.030000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-07,MINISO - Chinese Mainland,miniso_home_lifestyle,0.030000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-07,MINISO - Chinese Mainland,miniso_beauty_personal_care,0.030000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-07,MINISO - Chinese Mainland,miniso_electronics_accessories,0.030000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-07,MINISO - Chinese Mainland,miniso_stationery_food_other,0.030000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-07,MINISO - Overseas,miniso_ip_toys,-0.050000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-07,MINISO - Overseas,miniso_home_lifestyle,-0.050000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-07,MINISO - Overseas,miniso_beauty_personal_care,-0.050000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-07,MINISO - Overseas,miniso_electronics_accessories,-0.050000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-07,MINISO - Overseas,miniso_stationery_food_other,-0.050000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-07,TOP TOY - Global,toptoy_blind_boxes_figures,-0.080000,0.000000,-0.000000,-0.000000
+miniso-2026,base,2026-07,TOP TOY - Global,toptoy_building_blocks_kits,-0.080000,0.000000,-0.000000,-0.000000
+miniso-2026,base,2026-07,TOP TOY - Global,toptoy_plush_dolls_sculptures,-0.080000,0.000000,-0.000000,-0.000000
+miniso-2026,base,2026-07,TOP TOY - Global,toptoy_other,-0.080000,0.000000,-0.000000,-0.000000
+miniso-2026,base,2026-08,MINISO - Chinese Mainland,miniso_ip_toys,0.030000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-08,MINISO - Chinese Mainland,miniso_home_lifestyle,0.030000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-08,MINISO - Chinese Mainland,miniso_beauty_personal_care,0.030000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-08,MINISO - Chinese Mainland,miniso_electronics_accessories,0.030000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-08,MINISO - Chinese Mainland,miniso_stationery_food_other,0.030000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-08,MINISO - Overseas,miniso_ip_toys,-0.050000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-08,MINISO - Overseas,miniso_home_lifestyle,-0.050000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-08,MINISO - Overseas,miniso_beauty_personal_care,-0.050000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-08,MINISO - Overseas,miniso_electronics_accessories,-0.050000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-08,MINISO - Overseas,miniso_stationery_food_other,-0.050000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-08,TOP TOY - Global,toptoy_blind_boxes_figures,-0.080000,0.000000,-0.000000,-0.000000
+miniso-2026,base,2026-08,TOP TOY - Global,toptoy_building_blocks_kits,-0.080000,0.000000,-0.000000,-0.000000
+miniso-2026,base,2026-08,TOP TOY - Global,toptoy_plush_dolls_sculptures,-0.080000,0.000000,-0.000000,-0.000000
+miniso-2026,base,2026-08,TOP TOY - Global,toptoy_other,-0.080000,0.000000,-0.000000,-0.000000
+miniso-2026,base,2026-09,MINISO - Chinese Mainland,miniso_ip_toys,0.030000,0.000000,-0.000000,0.000000
+miniso-2026,base,2026-09,MINISO - Chinese Mainland,miniso_home_lifestyle,0.030000,0.000000,-0.000000,0.000000
+miniso-2026,base,2026-09,MINISO - Chinese Mainland,miniso_beauty_personal_care,0.030000,0.000000,-0.000000,0.000000
+miniso-2026,base,2026-09,MINISO - Chinese Mainland,miniso_electronics_accessories,0.030000,0.000000,-0.000000,0.000000
+miniso-2026,base,2026-09,MINISO - Chinese Mainland,miniso_stationery_food_other,0.030000,0.000000,-0.000000,0.000000
+miniso-2026,base,2026-09,MINISO - Overseas,miniso_ip_toys,-0.050000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-09,MINISO - Overseas,miniso_home_lifestyle,-0.050000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-09,MINISO - Overseas,miniso_beauty_personal_care,-0.050000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-09,MINISO - Overseas,miniso_electronics_accessories,-0.050000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-09,MINISO - Overseas,miniso_stationery_food_other,-0.050000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-09,TOP TOY - Global,toptoy_blind_boxes_figures,-0.080000,0.000000,-0.000000,0.000000
+miniso-2026,base,2026-09,TOP TOY - Global,toptoy_building_blocks_kits,-0.080000,0.000000,-0.000000,0.000000
+miniso-2026,base,2026-09,TOP TOY - Global,toptoy_plush_dolls_sculptures,-0.080000,0.000000,-0.000000,0.000000
+miniso-2026,base,2026-09,TOP TOY - Global,toptoy_other,-0.080000,0.000000,-0.000000,0.000000
+miniso-2026,base,2026-10,MINISO - Chinese Mainland,miniso_ip_toys,0.030000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-10,MINISO - Chinese Mainland,miniso_home_lifestyle,0.030000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-10,MINISO - Chinese Mainland,miniso_beauty_personal_care,0.030000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-10,MINISO - Chinese Mainland,miniso_electronics_accessories,0.030000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-10,MINISO - Chinese Mainland,miniso_stationery_food_other,0.030000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-10,MINISO - Overseas,miniso_ip_toys,-0.050000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-10,MINISO - Overseas,miniso_home_lifestyle,-0.050000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-10,MINISO - Overseas,miniso_beauty_personal_care,-0.050000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-10,MINISO - Overseas,miniso_electronics_accessories,-0.050000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-10,MINISO - Overseas,miniso_stationery_food_other,-0.050000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-10,TOP TOY - Global,toptoy_blind_boxes_figures,-0.080000,0.000000,-0.000000,-0.000000
+miniso-2026,base,2026-10,TOP TOY - Global,toptoy_building_blocks_kits,-0.080000,0.000000,-0.000000,-0.000000
+miniso-2026,base,2026-10,TOP TOY - Global,toptoy_plush_dolls_sculptures,-0.080000,0.000000,-0.000000,-0.000000
+miniso-2026,base,2026-10,TOP TOY - Global,toptoy_other,-0.080000,0.000000,-0.000000,-0.000000
+miniso-2026,base,2026-11,MINISO - Chinese Mainland,miniso_ip_toys,0.030000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-11,MINISO - Chinese Mainland,miniso_home_lifestyle,0.030000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-11,MINISO - Chinese Mainland,miniso_beauty_personal_care,0.030000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-11,MINISO - Chinese Mainland,miniso_electronics_accessories,0.030000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-11,MINISO - Chinese Mainland,miniso_stationery_food_other,0.030000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-11,MINISO - Overseas,miniso_ip_toys,-0.050000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-11,MINISO - Overseas,miniso_home_lifestyle,-0.050000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-11,MINISO - Overseas,miniso_beauty_personal_care,-0.050000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-11,MINISO - Overseas,miniso_electronics_accessories,-0.050000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-11,MINISO - Overseas,miniso_stationery_food_other,-0.050000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-11,TOP TOY - Global,toptoy_blind_boxes_figures,-0.080000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-11,TOP TOY - Global,toptoy_building_blocks_kits,-0.080000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-11,TOP TOY - Global,toptoy_plush_dolls_sculptures,-0.080000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-11,TOP TOY - Global,toptoy_other,-0.080000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-12,MINISO - Chinese Mainland,miniso_ip_toys,0.030000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-12,MINISO - Chinese Mainland,miniso_home_lifestyle,0.030000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-12,MINISO - Chinese Mainland,miniso_beauty_personal_care,0.030000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-12,MINISO - Chinese Mainland,miniso_electronics_accessories,0.030000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-12,MINISO - Chinese Mainland,miniso_stationery_food_other,0.030000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-12,MINISO - Overseas,miniso_ip_toys,-0.050000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-12,MINISO - Overseas,miniso_home_lifestyle,-0.050000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-12,MINISO - Overseas,miniso_beauty_personal_care,-0.050000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-12,MINISO - Overseas,miniso_electronics_accessories,-0.050000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-12,MINISO - Overseas,miniso_stationery_food_other,-0.050000,0.000000,0.000000,-0.000000
+miniso-2026,base,2026-12,TOP TOY - Global,toptoy_blind_boxes_figures,-0.080000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-12,TOP TOY - Global,toptoy_building_blocks_kits,-0.080000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-12,TOP TOY - Global,toptoy_plush_dolls_sculptures,-0.080000,0.000000,0.000000,0.000000
+miniso-2026,base,2026-12,TOP TOY - Global,toptoy_other,-0.080000,0.000000,0.000000,0.000000
+miniso-2026,upside,2026-07,MINISO - Chinese Mainland,miniso_ip_toys,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-07,MINISO - Chinese Mainland,miniso_home_lifestyle,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-07,MINISO - Chinese Mainland,miniso_beauty_personal_care,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-07,MINISO - Chinese Mainland,miniso_electronics_accessories,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-07,MINISO - Chinese Mainland,miniso_stationery_food_other,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-07,MINISO - Overseas,miniso_ip_toys,0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-07,MINISO - Overseas,miniso_home_lifestyle,0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-07,MINISO - Overseas,miniso_beauty_personal_care,0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-07,MINISO - Overseas,miniso_electronics_accessories,0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-07,MINISO - Overseas,miniso_stationery_food_other,0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-07,TOP TOY - Global,toptoy_blind_boxes_figures,-0.030000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-07,TOP TOY - Global,toptoy_building_blocks_kits,-0.030000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-07,TOP TOY - Global,toptoy_plush_dolls_sculptures,-0.030000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-07,TOP TOY - Global,toptoy_other,-0.030000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-08,MINISO - Chinese Mainland,miniso_ip_toys,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-08,MINISO - Chinese Mainland,miniso_home_lifestyle,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-08,MINISO - Chinese Mainland,miniso_beauty_personal_care,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-08,MINISO - Chinese Mainland,miniso_electronics_accessories,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-08,MINISO - Chinese Mainland,miniso_stationery_food_other,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-08,MINISO - Overseas,miniso_ip_toys,0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-08,MINISO - Overseas,miniso_home_lifestyle,0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-08,MINISO - Overseas,miniso_beauty_personal_care,0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-08,MINISO - Overseas,miniso_electronics_accessories,0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-08,MINISO - Overseas,miniso_stationery_food_other,0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-08,TOP TOY - Global,toptoy_blind_boxes_figures,-0.030000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-08,TOP TOY - Global,toptoy_building_blocks_kits,-0.030000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-08,TOP TOY - Global,toptoy_plush_dolls_sculptures,-0.030000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-08,TOP TOY - Global,toptoy_other,-0.030000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-09,MINISO - Chinese Mainland,miniso_ip_toys,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-09,MINISO - Chinese Mainland,miniso_home_lifestyle,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-09,MINISO - Chinese Mainland,miniso_beauty_personal_care,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-09,MINISO - Chinese Mainland,miniso_electronics_accessories,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-09,MINISO - Chinese Mainland,miniso_stationery_food_other,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-09,MINISO - Overseas,miniso_ip_toys,0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-09,MINISO - Overseas,miniso_home_lifestyle,0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-09,MINISO - Overseas,miniso_beauty_personal_care,0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-09,MINISO - Overseas,miniso_electronics_accessories,0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-09,MINISO - Overseas,miniso_stationery_food_other,0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-09,TOP TOY - Global,toptoy_blind_boxes_figures,-0.030000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-09,TOP TOY - Global,toptoy_building_blocks_kits,-0.030000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-09,TOP TOY - Global,toptoy_plush_dolls_sculptures,-0.030000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-09,TOP TOY - Global,toptoy_other,-0.030000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-10,MINISO - Chinese Mainland,miniso_ip_toys,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-10,MINISO - Chinese Mainland,miniso_home_lifestyle,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-10,MINISO - Chinese Mainland,miniso_beauty_personal_care,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-10,MINISO - Chinese Mainland,miniso_electronics_accessories,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-10,MINISO - Chinese Mainland,miniso_stationery_food_other,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-10,MINISO - Overseas,miniso_ip_toys,0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-10,MINISO - Overseas,miniso_home_lifestyle,0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-10,MINISO - Overseas,miniso_beauty_personal_care,0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-10,MINISO - Overseas,miniso_electronics_accessories,0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-10,MINISO - Overseas,miniso_stationery_food_other,0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-10,TOP TOY - Global,toptoy_blind_boxes_figures,-0.030000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-10,TOP TOY - Global,toptoy_building_blocks_kits,-0.030000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-10,TOP TOY - Global,toptoy_plush_dolls_sculptures,-0.030000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-10,TOP TOY - Global,toptoy_other,-0.030000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-11,MINISO - Chinese Mainland,miniso_ip_toys,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-11,MINISO - Chinese Mainland,miniso_home_lifestyle,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-11,MINISO - Chinese Mainland,miniso_beauty_personal_care,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-11,MINISO - Chinese Mainland,miniso_electronics_accessories,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-11,MINISO - Chinese Mainland,miniso_stationery_food_other,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-11,MINISO - Overseas,miniso_ip_toys,-0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-11,MINISO - Overseas,miniso_home_lifestyle,-0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-11,MINISO - Overseas,miniso_beauty_personal_care,-0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-11,MINISO - Overseas,miniso_electronics_accessories,-0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-11,MINISO - Overseas,miniso_stationery_food_other,-0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-11,TOP TOY - Global,toptoy_blind_boxes_figures,-0.030000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-11,TOP TOY - Global,toptoy_building_blocks_kits,-0.030000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-11,TOP TOY - Global,toptoy_plush_dolls_sculptures,-0.030000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-11,TOP TOY - Global,toptoy_other,-0.030000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-12,MINISO - Chinese Mainland,miniso_ip_toys,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-12,MINISO - Chinese Mainland,miniso_home_lifestyle,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-12,MINISO - Chinese Mainland,miniso_beauty_personal_care,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-12,MINISO - Chinese Mainland,miniso_electronics_accessories,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-12,MINISO - Chinese Mainland,miniso_stationery_food_other,0.080000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-12,MINISO - Overseas,miniso_ip_toys,-0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-12,MINISO - Overseas,miniso_home_lifestyle,-0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-12,MINISO - Overseas,miniso_beauty_personal_care,-0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-12,MINISO - Overseas,miniso_electronics_accessories,-0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-12,MINISO - Overseas,miniso_stationery_food_other,-0.000000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-12,TOP TOY - Global,toptoy_blind_boxes_figures,-0.030000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-12,TOP TOY - Global,toptoy_building_blocks_kits,-0.030000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-12,TOP TOY - Global,toptoy_plush_dolls_sculptures,-0.030000,0.020000,0.005000,-0.003000
+miniso-2026,upside,2026-12,TOP TOY - Global,toptoy_other,-0.030000,0.020000,0.005000,-0.003000
+miniso-2026,downside,2026-07,MINISO - Chinese Mainland,miniso_ip_toys,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-07,MINISO - Chinese Mainland,miniso_home_lifestyle,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-07,MINISO - Chinese Mainland,miniso_beauty_personal_care,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-07,MINISO - Chinese Mainland,miniso_electronics_accessories,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-07,MINISO - Chinese Mainland,miniso_stationery_food_other,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-07,MINISO - Overseas,miniso_ip_toys,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-07,MINISO - Overseas,miniso_home_lifestyle,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-07,MINISO - Overseas,miniso_beauty_personal_care,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-07,MINISO - Overseas,miniso_electronics_accessories,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-07,MINISO - Overseas,miniso_stationery_food_other,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-07,TOP TOY - Global,toptoy_blind_boxes_figures,-0.150000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-07,TOP TOY - Global,toptoy_building_blocks_kits,-0.150000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-07,TOP TOY - Global,toptoy_plush_dolls_sculptures,-0.150000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-07,TOP TOY - Global,toptoy_other,-0.150000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-08,MINISO - Chinese Mainland,miniso_ip_toys,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-08,MINISO - Chinese Mainland,miniso_home_lifestyle,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-08,MINISO - Chinese Mainland,miniso_beauty_personal_care,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-08,MINISO - Chinese Mainland,miniso_electronics_accessories,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-08,MINISO - Chinese Mainland,miniso_stationery_food_other,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-08,MINISO - Overseas,miniso_ip_toys,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-08,MINISO - Overseas,miniso_home_lifestyle,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-08,MINISO - Overseas,miniso_beauty_personal_care,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-08,MINISO - Overseas,miniso_electronics_accessories,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-08,MINISO - Overseas,miniso_stationery_food_other,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-08,TOP TOY - Global,toptoy_blind_boxes_figures,-0.150000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-08,TOP TOY - Global,toptoy_building_blocks_kits,-0.150000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-08,TOP TOY - Global,toptoy_plush_dolls_sculptures,-0.150000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-08,TOP TOY - Global,toptoy_other,-0.150000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-09,MINISO - Chinese Mainland,miniso_ip_toys,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-09,MINISO - Chinese Mainland,miniso_home_lifestyle,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-09,MINISO - Chinese Mainland,miniso_beauty_personal_care,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-09,MINISO - Chinese Mainland,miniso_electronics_accessories,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-09,MINISO - Chinese Mainland,miniso_stationery_food_other,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-09,MINISO - Overseas,miniso_ip_toys,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-09,MINISO - Overseas,miniso_home_lifestyle,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-09,MINISO - Overseas,miniso_beauty_personal_care,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-09,MINISO - Overseas,miniso_electronics_accessories,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-09,MINISO - Overseas,miniso_stationery_food_other,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-09,TOP TOY - Global,toptoy_blind_boxes_figures,-0.150000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-09,TOP TOY - Global,toptoy_building_blocks_kits,-0.150000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-09,TOP TOY - Global,toptoy_plush_dolls_sculptures,-0.150000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-09,TOP TOY - Global,toptoy_other,-0.150000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-10,MINISO - Chinese Mainland,miniso_ip_toys,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-10,MINISO - Chinese Mainland,miniso_home_lifestyle,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-10,MINISO - Chinese Mainland,miniso_beauty_personal_care,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-10,MINISO - Chinese Mainland,miniso_electronics_accessories,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-10,MINISO - Chinese Mainland,miniso_stationery_food_other,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-10,MINISO - Overseas,miniso_ip_toys,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-10,MINISO - Overseas,miniso_home_lifestyle,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-10,MINISO - Overseas,miniso_beauty_personal_care,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-10,MINISO - Overseas,miniso_electronics_accessories,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-10,MINISO - Overseas,miniso_stationery_food_other,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-10,TOP TOY - Global,toptoy_blind_boxes_figures,-0.150000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-10,TOP TOY - Global,toptoy_building_blocks_kits,-0.150000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-10,TOP TOY - Global,toptoy_plush_dolls_sculptures,-0.150000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-10,TOP TOY - Global,toptoy_other,-0.150000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-11,MINISO - Chinese Mainland,miniso_ip_toys,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-11,MINISO - Chinese Mainland,miniso_home_lifestyle,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-11,MINISO - Chinese Mainland,miniso_beauty_personal_care,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-11,MINISO - Chinese Mainland,miniso_electronics_accessories,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-11,MINISO - Chinese Mainland,miniso_stationery_food_other,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-11,MINISO - Overseas,miniso_ip_toys,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-11,MINISO - Overseas,miniso_home_lifestyle,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-11,MINISO - Overseas,miniso_beauty_personal_care,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-11,MINISO - Overseas,miniso_electronics_accessories,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-11,MINISO - Overseas,miniso_stationery_food_other,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-11,TOP TOY - Global,toptoy_blind_boxes_figures,-0.150000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-11,TOP TOY - Global,toptoy_building_blocks_kits,-0.150000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-11,TOP TOY - Global,toptoy_plush_dolls_sculptures,-0.150000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-11,TOP TOY - Global,toptoy_other,-0.150000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-12,MINISO - Chinese Mainland,miniso_ip_toys,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-12,MINISO - Chinese Mainland,miniso_home_lifestyle,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-12,MINISO - Chinese Mainland,miniso_beauty_personal_care,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-12,MINISO - Chinese Mainland,miniso_electronics_accessories,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-12,MINISO - Chinese Mainland,miniso_stationery_food_other,-0.040000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-12,MINISO - Overseas,miniso_ip_toys,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-12,MINISO - Overseas,miniso_home_lifestyle,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-12,MINISO - Overseas,miniso_beauty_personal_care,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-12,MINISO - Overseas,miniso_electronics_accessories,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-12,MINISO - Overseas,miniso_stationery_food_other,-0.120000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-12,TOP TOY - Global,toptoy_blind_boxes_figures,-0.150000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-12,TOP TOY - Global,toptoy_building_blocks_kits,-0.150000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-12,TOP TOY - Global,toptoy_plush_dolls_sculptures,-0.150000,-0.020000,-0.007000,0.005000
+miniso-2026,downside,2026-12,TOP TOY - Global,toptoy_other,-0.150000,-0.020000,-0.007000,0.005000

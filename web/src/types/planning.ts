@@ -117,4 +117,53 @@ export interface DashboardResponse {
   management_insights: ManagementInsight[]
   data_sources: DataSource[]
   provenance_legend: Record<string, string>
+  selected_plan_variant?: PlanVariant
+  planning_input_source?: PlanningInputSource
+  planning_horizon?: PlanningHorizon
+  category_detail?: CategoryDetail[]
+  category_detail_context?: CategoryDetailContext[]
+  scenario_comparison?: ScenarioComparison
+  category_taxonomy_disclosure?: CategoryTaxonomyDisclosure
+}
+
+export type PlanVariant = 'base' | 'upside' | 'downside'
+export type PlanningInputSource = 'seed' | 'upload' | 'editor'
+export interface PlanningHorizon { locked_through: string; editable_from: string; editable_to: string }
+export interface PlanningInputRow {
+  case_id: string
+  plan_variant: PlanVariant
+  period: string
+  business_unit: string
+  category_id: string
+  volume_change_pct: number
+  average_ticket_change_pct: number
+  gross_margin_delta_pp: number
+  opex_ratio_delta_pp: number
+  category_name?: string
+  brand?: string
+  market?: string
+  provenance?: string
+}
+export interface CategoryDetail {
+  period: string; plan_variant: PlanVariant; business_unit: string; category_id: string; category_name: string
+  revenue: number; revenue_mix_pct: number; gross_margin_pct: number; opex_ratio_pct: number; operating_margin_pct: number; provenance: string
+}
+export interface CategoryFinancialContext {
+  revenue: number; volume: number; average_ticket: number | null; gross_profit: number; cost_of_sales: number; operating_expense: number; operating_profit: number
+  gross_margin_pct: number | null; opex_ratio_pct: number | null; operating_margin_pct: number | null
+}
+export interface CategoryDetailContext {
+  business_unit: string; category_id: string; category_name: string
+  provenance: 'synthetic_allocation'; allocation_basis: 'committed_category_revenue_share'
+  h1_actual: CategoryFinancialContext; h1_prior_year: CategoryFinancialContext; fy_budget: CategoryFinancialContext
+}
+export interface ScenarioMetric { base_fy_forecast: number; selected_fy_forecast: number; delta: number; unit: string }
+export interface ScenarioComparison { selected_plan_variant: PlanVariant; revenue: ScenarioMetric; gross_profit: ScenarioMetric; operating_profit: ScenarioMetric }
+export interface CategoryTaxonomyDisclosure {
+  disclosure: string
+  taxonomy_provenance: string
+  official_taxonomy_note: string
+  official_source: { source_url: string; source_period: string; publisher: string; document_title: string }
+  official_label_registry: Array<{ source_label: string; brand: string; source_url: string; source_period: string; planning_category_id: string }>
+  categories: Array<{ category_id: string; category_name: string; brand: string; market: string; business_unit: string; provenance: string }>
 }

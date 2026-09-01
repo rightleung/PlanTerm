@@ -9,6 +9,7 @@ import json
 import math
 import os
 import re
+import sys
 import tempfile
 from html.parser import HTMLParser
 from pathlib import Path
@@ -17,6 +18,12 @@ from urllib.request import Request, urlopen
 
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from src.services.committed_json import load_committed_json
+
+
 SNAPSHOT = ROOT / "data/source/miniso_public_actuals.json"
 SOURCE_URL = "https://ir.miniso.com/2026-08-28-MINISO-Group-Announces-2026-June-Quarter-and-Interim-Unaudited-Financial-Results"
 EXPECTED_PERIOD_END = "2026-06-30"
@@ -224,7 +231,7 @@ def main() -> int:
     args = parser.parse_args()
     html = fetch(SOURCE_URL)
     parsed = parse_public_html(html, SOURCE_URL, "2026-08-28")
-    snapshot = json.loads(SNAPSHOT.read_text(encoding="utf-8"))
+    snapshot = load_committed_json(SNAPSHOT)
     validate_refresh_payload(parsed, html, snapshot)
     current = snapshot["periods"]["2026 H1"]
     print("Public snapshot differences (2026 H1):")

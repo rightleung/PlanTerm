@@ -8,11 +8,9 @@ Completed in this release: normalized synthetic profit allocation indices, recon
 
 Completed in this release: public-data anchored Actual / Budget / Forecast / Prior Year, three-business-unit analysis, deterministic PVM, management insights, local FastAPI API, React dashboard and Excel management pack.
 
-## v0.2 — Planning inputs
+## v0.2.0 — Planning inputs
 
-- Simulated product-category detail
-- CSV template upload
-- Base / Upside / Downside scenario editor
+Completed in this release: deterministic synthetic product-category detail, strict 252-row CSV template/import, Base / Upside / Downside H2 scenario editor and preview, scenario comparison, locked Actual/Budget/Prior Year/H1 Actual boundaries, and a seven-sheet Excel management pack with input-matrix and taxonomy provenance.
 
 ## v0.3 — Operating planning
 

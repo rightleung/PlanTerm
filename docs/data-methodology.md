@@ -37,3 +37,24 @@ The sum is checked against Actual versus Budget Operating Profit with a RMB 0.01
 ## Refresh behavior
 
 `scripts/refresh_public_actuals.py` is dry-run by default. It parses the official H1 metrics and revenue split, validates the source URL, period, unit, finite non-negative split values and split-to-group reconciliation, and only then performs an atomic replacement when `--write` is supplied. A missing split or changed page structure fails loudly rather than combining a new group total with an old split.
+
+## v0.2 planning-input methodology
+
+The planning-input layer is deliberately stateless. The committed category seed contains 252 rows: three complete plan variants, six H2 months (2026-07 through 2026-12), and 14 business-unit/category leaves. The CSV contract contains only the four driver changes—volume, average ticket, gross-margin delta and opex-ratio delta. The server injects category names and provenance and recomputes all financial amounts; it does not accept category revenue, profit, Actual, Budget, Prior Year or source fields from the client.
+
+For each row, the scenario formulas are:
+
+```text
+scenario_volume = budget_volume × (1 + volume_change_pct)
+scenario_ticket = budget_ticket × (1 + average_ticket_change_pct)
+scenario_gross_margin = budget_gross_margin + gross_margin_delta_pp
+scenario_opex_ratio = budget_opex_ratio + opex_ratio_delta_pp
+revenue = scenario_volume × scenario_ticket
+gross_profit = revenue × scenario_gross_margin
+opex = revenue × scenario_opex_ratio
+operating_profit = gross_profit − opex
+```
+
+The selected plan variant changes H2 Forecast only. FY Forecast is frozen H1 Actual plus the selected H2 scenario. Existing YTD Actual versus fixed Budget PVM, Actual, Budget and Prior Year remain unchanged. Base is reverse-inferred from the committed Budget-to-Forecast case; Upside and Downside are committed complete matrices rather than runtime fallbacks. Category-to-business-unit and business-unit-to-portfolio totals, financial identities and the Base compatibility anchor are checked with a RMB 0.01 million tolerance.
+
+Official MINISO and TOP TOY labels are retained as taxonomy provenance with source URL and period. They do not represent reported category revenue or profitability. All category values are labelled `synthetic_allocation`, `synthetic_plan` or `calculated`, and browser upload/editor contents are discarded rather than written to the case files.

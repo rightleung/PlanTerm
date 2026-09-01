@@ -1,0 +1,48 @@
+{
+  "disclosure": "Synthetic planning allocation; not reported category data. Official product taxonomy labels and their mappings are provenance only; category amounts are synthetic allocation or calculated, never public reported category values.",
+  "taxonomy_provenance": "official_product_taxonomy_labels",
+  "official_taxonomy_note": "The official labels support product-taxonomy context only. They do not disclose category revenue, volume, gross profit, operating expense, or operating profit.",
+  "official_source": {
+    "source_url": "https://ir.miniso.com/image/2023_ESG_Report.pdf",
+    "source_period": "Fiscal year ended June 30, 2023",
+    "publisher": "MINISO Group Holding Limited",
+    "document_title": "2023 ESG Report"
+  },
+  "official_label_registry": [
+    {"source_label": "home decor", "brand": "MINISO", "source_url": "https://ir.miniso.com/image/2023_ESG_Report.pdf", "source_period": "Fiscal year ended June 30, 2023", "planning_category_id": "miniso_home_lifestyle"},
+    {"source_label": "small electronics", "brand": "MINISO", "source_url": "https://ir.miniso.com/image/2023_ESG_Report.pdf", "source_period": "Fiscal year ended June 30, 2023", "planning_category_id": "miniso_electronics_accessories"},
+    {"source_label": "textiles", "brand": "MINISO", "source_url": "https://ir.miniso.com/image/2023_ESG_Report.pdf", "source_period": "Fiscal year ended June 30, 2023", "planning_category_id": "miniso_home_lifestyle"},
+    {"source_label": "accessories", "brand": "MINISO", "source_url": "https://ir.miniso.com/image/2023_ESG_Report.pdf", "source_period": "Fiscal year ended June 30, 2023", "planning_category_id": "miniso_electronics_accessories"},
+    {"source_label": "beauty tools", "brand": "MINISO", "source_url": "https://ir.miniso.com/image/2023_ESG_Report.pdf", "source_period": "Fiscal year ended June 30, 2023", "planning_category_id": "miniso_beauty_personal_care"},
+    {"source_label": "toys", "brand": "MINISO", "source_url": "https://ir.miniso.com/image/2023_ESG_Report.pdf", "source_period": "Fiscal year ended June 30, 2023", "planning_category_id": "miniso_ip_toys"},
+    {"source_label": "cosmetics", "brand": "MINISO", "source_url": "https://ir.miniso.com/image/2023_ESG_Report.pdf", "source_period": "Fiscal year ended June 30, 2023", "planning_category_id": "miniso_beauty_personal_care"},
+    {"source_label": "personal care", "brand": "MINISO", "source_url": "https://ir.miniso.com/image/2023_ESG_Report.pdf", "source_period": "Fiscal year ended June 30, 2023", "planning_category_id": "miniso_beauty_personal_care"},
+    {"source_label": "snacks", "brand": "MINISO", "source_url": "https://ir.miniso.com/image/2023_ESG_Report.pdf", "source_period": "Fiscal year ended June 30, 2023", "planning_category_id": "miniso_stationery_food_other"},
+    {"source_label": "fragrances and perfumes", "brand": "MINISO", "source_url": "https://ir.miniso.com/image/2023_ESG_Report.pdf", "source_period": "Fiscal year ended June 30, 2023", "planning_category_id": "miniso_beauty_personal_care"},
+    {"source_label": "stationery and gifts", "brand": "MINISO", "source_url": "https://ir.miniso.com/image/2023_ESG_Report.pdf", "source_period": "Fiscal year ended June 30, 2023", "planning_category_id": "miniso_stationery_food_other"},
+    {"source_label": "blind boxes", "brand": "TOP_TOY", "source_url": "https://ir.miniso.com/image/2023_ESG_Report.pdf", "source_period": "Fiscal year ended June 30, 2023", "planning_category_id": "toptoy_blind_boxes_figures"},
+    {"source_label": "toy bricks", "brand": "TOP_TOY", "source_url": "https://ir.miniso.com/image/2023_ESG_Report.pdf", "source_period": "Fiscal year ended June 30, 2023", "planning_category_id": "toptoy_building_blocks_kits"},
+    {"source_label": "model figures", "brand": "TOP_TOY", "source_url": "https://ir.miniso.com/image/2023_ESG_Report.pdf", "source_period": "Fiscal year ended June 30, 2023", "planning_category_id": "toptoy_blind_boxes_figures"},
+    {"source_label": "model kits", "brand": "TOP_TOY", "source_url": "https://ir.miniso.com/image/2023_ESG_Report.pdf", "source_period": "Fiscal year ended June 30, 2023", "planning_category_id": "toptoy_building_blocks_kits"},
+    {"source_label": "collectible dolls", "brand": "TOP_TOY", "source_url": "https://ir.miniso.com/image/2023_ESG_Report.pdf", "source_period": "Fiscal year ended June 30, 2023", "planning_category_id": "toptoy_plush_dolls_sculptures"},
+    {"source_label": "Ichiban Kuji", "brand": "TOP_TOY", "source_url": "https://ir.miniso.com/image/2023_ESG_Report.pdf", "source_period": "Fiscal year ended June 30, 2023", "planning_category_id": "toptoy_blind_boxes_figures"},
+    {"source_label": "sculptures", "brand": "TOP_TOY", "source_url": "https://ir.miniso.com/image/2023_ESG_Report.pdf", "source_period": "Fiscal year ended June 30, 2023", "planning_category_id": "toptoy_plush_dolls_sculptures"},
+    {"source_label": "other popular toys", "brand": "TOP_TOY", "source_url": "https://ir.miniso.com/image/2023_ESG_Report.pdf", "source_period": "Fiscal year ended June 30, 2023", "planning_category_id": "toptoy_other"}
+  ],
+  "categories": [
+    {"category_id": "miniso_ip_toys", "category_name": "IP & Toys", "brand": "MINISO", "market": "mainland", "business_unit": "MINISO - Chinese Mainland", "provenance": "synthetic_allocation"},
+    {"category_id": "miniso_home_lifestyle", "category_name": "Home & Lifestyle", "brand": "MINISO", "market": "mainland", "business_unit": "MINISO - Chinese Mainland", "provenance": "synthetic_allocation"},
+    {"category_id": "miniso_beauty_personal_care", "category_name": "Beauty & Personal Care", "brand": "MINISO", "market": "mainland", "business_unit": "MINISO - Chinese Mainland", "provenance": "synthetic_allocation"},
+    {"category_id": "miniso_electronics_accessories", "category_name": "Electronics & Accessories", "brand": "MINISO", "market": "mainland", "business_unit": "MINISO - Chinese Mainland", "provenance": "synthetic_allocation"},
+    {"category_id": "miniso_stationery_food_other", "category_name": "Stationery, Food & Other", "brand": "MINISO", "market": "mainland", "business_unit": "MINISO - Chinese Mainland", "provenance": "synthetic_allocation"},
+    {"category_id": "miniso_ip_toys", "category_name": "IP & Toys", "brand": "MINISO", "market": "overseas", "business_unit": "MINISO - Overseas", "provenance": "synthetic_allocation"},
+    {"category_id": "miniso_home_lifestyle", "category_name": "Home & Lifestyle", "brand": "MINISO", "market": "overseas", "business_unit": "MINISO - Overseas", "provenance": "synthetic_allocation"},
+    {"category_id": "miniso_beauty_personal_care", "category_name": "Beauty & Personal Care", "brand": "MINISO", "market": "overseas", "business_unit": "MINISO - Overseas", "provenance": "synthetic_allocation"},
+    {"category_id": "miniso_electronics_accessories", "category_name": "Electronics & Accessories", "brand": "MINISO", "market": "overseas", "business_unit": "MINISO - Overseas", "provenance": "synthetic_allocation"},
+    {"category_id": "miniso_stationery_food_other", "category_name": "Stationery, Food & Other", "brand": "MINISO", "market": "overseas", "business_unit": "MINISO - Overseas", "provenance": "synthetic_allocation"},
+    {"category_id": "toptoy_blind_boxes_figures", "category_name": "Blind Boxes & Collectible Figures", "brand": "TOP_TOY", "market": "global", "business_unit": "TOP TOY - Global", "provenance": "synthetic_allocation"},
+    {"category_id": "toptoy_building_blocks_kits", "category_name": "Building Blocks & Model Kits", "brand": "TOP_TOY", "market": "global", "business_unit": "TOP TOY - Global", "provenance": "synthetic_allocation"},
+    {"category_id": "toptoy_plush_dolls_sculptures", "category_name": "Plush, Dolls & Sculptures", "brand": "TOP_TOY", "market": "global", "business_unit": "TOP TOY - Global", "provenance": "synthetic_allocation"},
+    {"category_id": "toptoy_other", "category_name": "Other Toys", "brand": "TOP_TOY", "market": "global", "business_unit": "TOP TOY - Global", "provenance": "synthetic_allocation"}
+  ]
+}

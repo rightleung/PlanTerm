@@ -5,15 +5,22 @@ from __future__ import annotations
 
 import argparse
 import csv
-import json
 import math
+from decimal import Decimal
 from pathlib import Path
-
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from src.services.committed_json import load_committed_json
+
+
 SNAPSHOT = ROOT / "data/source/miniso_public_actuals.json"
 CASE_DIR = ROOT / "data/cases/miniso-2026"
 OUTPUT = CASE_DIR / "planning_records.csv"
+CATEGORY_SEED_OUTPUT = CASE_DIR / "category_scenario_seed.csv"
 FIELDS = ["period", "scenario", "brand", "market", "business_unit", "metric", "value", "unit", "provenance"]
 MONTHS = [f"2026-{month:02d}" for month in range(1, 13)]
 H1 = set(MONTHS[:6])
@@ -51,8 +58,8 @@ def get_metric(snapshot: dict, period: str, metric: str) -> float:
 
 
 def build_rows() -> list[dict]:
-    snapshot = json.loads(SNAPSHOT.read_text(encoding="utf-8"))
-    assumptions = json.loads((CASE_DIR / "assumptions.json").read_text(encoding="utf-8"))
+    snapshot = load_committed_json(SNAPSHOT)
+    assumptions = load_committed_json(CASE_DIR / "assumptions.json")
     weights = assumptions["monthly_seasonality"]
     profit_indices = assumptions["profit_allocation_indices"]
     rows: list[dict] = []
@@ -162,6 +169,89 @@ def build_rows() -> list[dict]:
     return rows
 
 
+CATEGORY_FIELDS = ["case_id", "plan_variant", "period", "business_unit", "category_id", "volume_change_pct", "average_ticket_change_pct", "gross_margin_delta_pp", "opex_ratio_delta_pp"]
+HARMONIZED = {
+    "MINISO - Chinese Mainland": ["miniso_ip_toys", "miniso_home_lifestyle", "miniso_beauty_personal_care", "miniso_electronics_accessories", "miniso_stationery_food_other"],
+    "MINISO - Overseas": ["miniso_ip_toys", "miniso_home_lifestyle", "miniso_beauty_personal_care", "miniso_electronics_accessories", "miniso_stationery_food_other"],
+    "TOP TOY - Global": ["toptoy_blind_boxes_figures", "toptoy_building_blocks_kits", "toptoy_plush_dolls_sculptures", "toptoy_other"],
+}
+
+
+def build_category_seed() -> list[dict]:
+    assumptions = load_committed_json(CASE_DIR / "assumptions.json")
+    shares = assumptions.get("category_revenue_shares", {})
+    for unit, categories in HARMONIZED.items():
+        if sum(Decimal(str(shares[unit][category]["budget"])) for category in categories) != Decimal(1):
+            raise ValueError(f"Category budget shares do not reconcile for {unit}")
+        for index_name in ("category_ticket_indices", "category_gross_margin_indices", "category_opex_ratio_indices"):
+            weighted = sum(Decimal(str(shares[unit][category]["budget"])) * Decimal(str(assumptions[index_name][category])) for category in categories)
+            if weighted <= 0 or any(Decimal(str(assumptions[index_name][category])) <= 0 for category in categories):
+                raise ValueError(f"Invalid normalized {index_name} for {unit}")
+    records = build_rows()
+    anchors = {(r["scenario"], r["period"], r["business_unit"], r["metric"]): (None if r["value"] == "" else Decimal(r["value"])) for r in records}
+    rows: list[dict] = []
+    variants = assumptions["variant_driver_adjustments"]
+    def driver(unit: str, period: str) -> dict[str, Decimal]:
+        budget_rev = anchors[("budget", period, unit, "revenue")]
+        forecast_rev = anchors[("forecast", period, unit, "revenue")]
+        budget_vol = anchors[("budget", period, unit, "volume")]
+        forecast_vol = anchors[("forecast", period, unit, "volume")]
+        budget_ticket = anchors[("budget", period, unit, "average_ticket")]
+        forecast_ticket = anchors[("forecast", period, unit, "average_ticket")]
+        budget_gm = anchors[("budget", period, unit, "gross_profit")] / budget_rev
+        forecast_gm = anchors[("forecast", period, unit, "gross_profit")] / forecast_rev
+        budget_opex = anchors[("budget", period, unit, "operating_expense")] / budget_rev
+        forecast_opex = anchors[("forecast", period, unit, "operating_expense")] / forecast_rev
+        return {
+            "volume_change_pct": forecast_vol / budget_vol - 1,
+            "average_ticket_change_pct": forecast_ticket / budget_ticket - 1,
+            "gross_margin_delta_pp": forecast_gm - budget_gm,
+            "opex_ratio_delta_pp": forecast_opex - budget_opex,
+        }
+    for variant in ("base", "upside", "downside"):
+        for period in sorted(H2):
+            for unit in UNITS:
+                for category_id in HARMONIZED[unit]:
+                    base = driver(unit, period)
+                    row = {
+                        "case_id": "miniso-2026", "plan_variant": variant, "period": period,
+                        "business_unit": unit, "category_id": category_id,
+                        "volume_change_pct": f"{base['volume_change_pct'] + Decimal(str(variants[variant]['volume_change_pct'])):.6f}",
+                        "average_ticket_change_pct": f"{base['average_ticket_change_pct'] + Decimal(str(variants[variant]['average_ticket_change_pct'])):.6f}",
+                        "gross_margin_delta_pp": f"{base['gross_margin_delta_pp'] + Decimal(str(variants[variant]['gross_margin_delta_pp'])):.6f}",
+                        "opex_ratio_delta_pp": f"{base['opex_ratio_delta_pp'] + Decimal(str(variants[variant]['opex_ratio_delta_pp'])):.6f}",
+                    }
+                    rows.append(row)
+    validate_category_seed_volume(rows, anchors, assumptions)
+    return rows
+
+
+def validate_category_seed_volume(rows: list[dict], anchors: dict, assumptions: dict) -> None:
+    """Independently verify all default leaf volumes against BU parent anchors."""
+    by_key = {(row["plan_variant"], row["period"], row["business_unit"], row["category_id"]): row for row in rows}
+    tolerance = Decimal("0.01")
+    for variant in ("base", "upside", "downside"):
+        adjustment = Decimal(str(assumptions["variant_driver_adjustments"][variant]["volume_change_pct"]))
+        for period in sorted(H2):
+            for unit, category_ids in HARMONIZED.items():
+                budget_revenue = anchors[("budget", period, unit, "revenue")]
+                budget_ticket = anchors[("budget", period, unit, "average_ticket")]
+                harmonic_scale = sum((
+                    Decimal(str(assumptions["category_revenue_shares"][unit][category_id]["budget"])) /
+                    Decimal(str(assumptions["category_ticket_indices"][category_id]))
+                    for category_id in category_ids
+                ), Decimal(0))
+                leaf_volume = sum((
+                    budget_revenue * Decimal(str(assumptions["category_revenue_shares"][unit][category_id]["budget"])) /
+                    (budget_ticket * Decimal(str(assumptions["category_ticket_indices"][category_id])) * harmonic_scale) *
+                    (Decimal(1) + Decimal(by_key[(variant, period, unit, category_id)]["volume_change_pct"]))
+                    for category_id in category_ids
+                ), Decimal(0))
+                expected = anchors[("forecast", period, unit, "volume")] + adjustment * anchors[("budget", period, unit, "volume")]
+                if abs(leaf_volume - expected) > tolerance:
+                    raise ValueError(f"Category volume does not reconcile: {variant}/{period}/{unit}: {leaf_volume} != {expected}")
+
+
 def validate(rows: list[dict], snapshot: dict):
     by_key = {(row["scenario"], row["period"], row["business_unit"], row["metric"]): (None if row["value"] == "" else float(row["value"])) for row in rows}
     actual_h1 = sum(by_key[("actual", month, unit, "revenue")] for month in MONTHS[:6] for unit in UNITS)
@@ -195,13 +285,21 @@ def main() -> int:
     writer.writeheader()
     writer.writerows(rows)
     content = buffer.getvalue()
+    category_buffer = io.StringIO()
+    category_writer = csv.DictWriter(category_buffer, fieldnames=CATEGORY_FIELDS, lineterminator="\n")
+    category_writer.writeheader()
+    category_writer.writerows(build_category_seed())
+    category_content = category_buffer.getvalue()
     if args.check:
         if not OUTPUT.exists() or OUTPUT.read_text(encoding="utf-8") != content:
             raise SystemExit("planning_records.csv differs from deterministic generator output")
-        print(f"Case check passed: {OUTPUT}")
+        if not CATEGORY_SEED_OUTPUT.exists() or CATEGORY_SEED_OUTPUT.read_text(encoding="utf-8") != category_content:
+            raise SystemExit("category_scenario_seed.csv differs from deterministic generator output")
+        print(f"Case check passed: {OUTPUT} ({len(rows)} planning rows); {CATEGORY_SEED_OUTPUT} ({len(build_category_seed())} category rows)")
         return 0
     OUTPUT.write_text(content, encoding="utf-8")
-    print(f"Wrote {len(rows)} planning records to {OUTPUT}")
+    CATEGORY_SEED_OUTPUT.write_text(category_content, encoding="utf-8")
+    print(f"Wrote {len(rows)} planning records to {OUTPUT}; {len(build_category_seed())} category seed rows to {CATEGORY_SEED_OUTPUT}")
     return 0
 
 
