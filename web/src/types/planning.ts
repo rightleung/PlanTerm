@@ -167,3 +167,158 @@ export interface CategoryTaxonomyDisclosure {
   official_label_registry: Array<{ source_label: string; brand: string; source_url: string; source_period: string; planning_category_id: string }>
   categories: Array<{ category_id: string; category_name: string; brand: string; market: string; business_unit: string; provenance: string }>
 }
+
+export interface WorkingCapitalRow {
+  case_id: string
+  plan_variant: PlanVariant
+  period: string
+  business_unit: string
+  revenue: number | null
+  cogs: number | null
+  ar_days: number | null
+  inventory_days: number | null
+  ap_days: number | null
+  ar_balance: number | null
+  inventory_balance: number | null
+  ap_balance: number | null
+  nwc: number | null
+  ccc: number | null
+  provenance: string
+}
+
+export interface WorkingCapitalInputRow {
+  case_id: string
+  plan_variant: PlanVariant
+  period: string
+  business_unit: string
+  ar_days: number | null
+  inventory_days: number | null
+  ap_days: number | null
+  provenance: string
+}
+
+export interface WorkingCapitalPlan {
+  rows: WorkingCapitalRow[]
+  provenance?: string
+}
+
+export interface CashAssumptionRow {
+  case_id: string
+  plan_variant: PlanVariant
+  period: string
+  opening_cash: number | null
+  minimum_cash_buffer: number | null
+  capex: number | null
+  other_cash_items: number | null
+  provenance: string
+}
+
+export interface CashBridgeRow extends CashAssumptionRow {
+  operating_profit: number | null
+  prior_ar: number | null
+  current_ar: number | null
+  prior_inventory: number | null
+  current_inventory: number | null
+  prior_ap: number | null
+  current_ap: number | null
+  net_cash_change: number | null
+  closing_illustrative_cash: number | null
+  headroom: number | null
+  status: string
+}
+
+export interface CashBridge {
+  rows: CashBridgeRow[]
+  closing_illustrative_cash: number | null
+  minimum_headroom: number | null
+  disclosure: string
+}
+
+export interface ForecastAccuracy {
+  wape: number | null
+  bias: number | null
+  directional_hit_rate: number | null
+  eligible_periods: number
+  status: string
+  provenance: string
+}
+
+export interface ActionRegisterRow {
+  action_id: string
+  observation: string
+  driver: string
+  impact: number | null
+  risk: string
+  action: string
+  owner: string
+  due_period: string
+  cadence: string
+  status?: string
+  provenance: string
+}
+
+export interface ScenarioDecisionRow {
+  plan_variant: PlanVariant
+  fy_revenue_delta: number | null
+  fy_operating_profit_delta: number | null
+  minimum_cash_month: string | null
+  cash_headroom: number | null
+  ccc: number | null
+  top_revenue_driver: string | null
+  top_profit_driver: string | null
+  top_cash_driver: string | null
+  owner: string | null
+  next_review_date: string | null
+  provenance: string
+}
+
+export interface CashBridgeReconciliationEvidence {
+  status: string
+  max_residual: number | null
+}
+
+export interface CategoryRollupReconciliationEvidence {
+  status: string
+  revenue_residual: number | null
+}
+
+export interface ReconciliationStatus {
+  status: string
+  tolerance_rmb_millions: number
+  cash_bridge: CashBridgeReconciliationEvidence
+  category_rollup: CategoryRollupReconciliationEvidence
+}
+
+export interface OperatingPlanResponse {
+  as_of_date: string
+  planning_horizon: PlanningHorizon
+  plan_variant: PlanVariant
+  provenance_legend: Record<string, string>
+  working_capital: WorkingCapitalPlan
+  cash_bridge: CashBridge
+  forecast_accuracy: ForecastAccuracy
+  actions: ActionRegisterRow[]
+  decision_table: ScenarioDecisionRow[]
+  reconciliation: ReconciliationStatus
+}
+
+export interface OperatingPlanPreviewRequest {
+  case_id: string
+  selected_plan_variant: PlanVariant
+  planning_input_source: PlanningInputSource
+  rows: PlanningInputRow[]
+  working_capital_rows: WorkingCapitalInputRow[]
+  cash_assumption_rows: CashAssumptionRow[]
+  actions?: Array<{
+    case_id: string
+    observation: string
+    driver: string
+    impact: number | null
+    risk: string
+    action: string
+    owner: string
+    due_period: string
+    cadence: string
+    provenance: string
+  }>
+}

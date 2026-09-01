@@ -58,3 +58,23 @@ operating_profit = gross_profit − opex
 The selected plan variant changes H2 Forecast only. FY Forecast is frozen H1 Actual plus the selected H2 scenario. Existing YTD Actual versus fixed Budget PVM, Actual, Budget and Prior Year remain unchanged. Base is reverse-inferred from the committed Budget-to-Forecast case; Upside and Downside are committed complete matrices rather than runtime fallbacks. Category-to-business-unit and business-unit-to-portfolio totals, financial identities and the Base compatibility anchor are checked with a RMB 0.01 million tolerance.
 
 Official MINISO and TOP TOY labels are retained as taxonomy provenance with source URL and period. They do not represent reported category revenue or profitability. All category values are labelled `synthetic_allocation`, `synthetic_plan` or `calculated`, and browser upload/editor contents are discarded rather than written to the case files.
+
+## v0.3 operating-decision methodology
+
+The operating-decision case is `miniso-2026`, as of `2026-06-30`, in RMB millions. Its selected `plan_variant` remains `base`, `upside` or `downside`; it is not the existing `scenario` enum. Actual, Budget, Prior Year and H1 remain immutable. Only complete H2 category-driver rows, working-capital rows and cash-assumption rows are accepted for a stateless preview.
+
+AR/AP/inventory days, opening cash, CAPEX proxy, other cash inputs, forecast snapshots and illustrative actions are `synthetic_plan` or `illustrative_session_action`. They do not represent MINISO internal receivables, payables, inventory, cash, forecast accuracy or action tracking. Server formulas produce `calculated` balances, NWC, cash-conversion cycle, cash effects, illustrative closing cash, headroom, forecast metrics and reconciliation results:
+
+```text
+AR = Revenue x AR days / Days in period
+Inventory = COGS x Inventory days / Days in period
+AP = COGS x AP days / Days in period
+NWC = AR + Inventory - AP
+CCC = AR days + Inventory days - AP days
+Net cash change = OP + (prior AR - current AR) + (prior Inventory - current Inventory)
+                  + (current AP - prior AP) - CAPEX + Other cash items
+Illustrative closing cash = Opening cash + Net cash change
+Headroom = Illustrative closing cash - Minimum cash buffer
+```
+
+The browser action register is session memory only. It is not written to case data, a database or a user directory. The operating-decision Excel sheet keeps source and disclosure text as literal spreadsheet-neutralized values, preserves numeric negatives as numbers, and uses auditable formulas only for calculated numeric cells. The cash bridge must be described as illustrative or synthetic, never as public reported or actual cash. All roll-ups and bridge reconciliations use a RMB 0.01m tolerance; missing or ineligible accuracy metrics remain `null` with a status rather than becoming zero.

@@ -1,5 +1,5 @@
 import type { Worksheet } from 'exceljs'
-import type { DashboardResponse, KpiSnapshot, PlanningInputRow, VarianceRow } from '@/types/planning'
+import type { ActionRegisterRow, DashboardResponse, KpiSnapshot, OperatingPlanResponse, PlanningInputRow, VarianceRow } from '@/types/planning'
 import { sanitizeSpreadsheetCell } from '@/lib/spreadsheetText'
 
 const FILE_NAME = 'PlanTerm_MINISO_2026H1_Management_Pack.xlsx'
@@ -131,7 +131,7 @@ function addVarianceRows(sheet: Worksheet, rows: VarianceRow[]) {
   })
 }
 
-export async function exportManagementPack(dashboard: DashboardResponse, scenarioRows: PlanningInputRow[]) {
+export async function exportManagementPack(dashboard: DashboardResponse, scenarioRows: PlanningInputRow[], operatingPlan: OperatingPlanResponse | null = null, sessionActions: ActionRegisterRow[] = []) {
   const [{ Workbook }, { saveAs }] = await Promise.all([import('exceljs'), import('file-saver')])
   const workbook = new Workbook()
   workbook.creator = 'PlanTerm'
@@ -235,6 +235,82 @@ export async function exportManagementPack(dashboard: DashboardResponse, scenari
       columns.forEach((columnNumber) => { sheet.getCell(rowNumber, columnNumber).numFmt = '0.0%;[Red](0.0%);-' })
     })
   }
+
+  const operating = workbook.addWorksheet('Operating Decision')
+  const operatingVariant = operatingPlan?.plan_variant || dashboard.selected_plan_variant || 'base'
+  setTitle(operating, `Operating Decision · ${operatingVariant} · illustrative / synthetic`, 12)
+  operating.addRow(['Case', dashboard.metadata.name, 'As of', operatingPlan?.as_of_date || dashboard.metadata.as_of_date, 'Unit', 'RMB millions'])
+  operating.addRow(['Disclosure', 'Synthetic planning assumptions and calculated illustrative cash - not public reported or actual cash.'])
+  operating.addRow([])
+  operating.addRow(['Working capital · synthetic planning inputs and calculated balances'])
+  operating.addRow(['Period', 'Business Unit', 'AR Days', 'Inventory Days', 'AP Days', 'AR Balance', 'Inventory Balance', 'AP Balance', 'NWC', 'CCC', 'Provenance'])
+  const workingCapitalRows = operatingPlan?.working_capital.rows || []
+  workingCapitalRows.forEach((row, index) => {
+    const rowNumber = 7 + index
+    operating.addRow([
+      row.period, row.business_unit, nullableNumber(row.ar_days), nullableNumber(row.inventory_days), nullableNumber(row.ap_days),
+      nullableNumber(row.ar_balance), nullableNumber(row.inventory_balance), nullableNumber(row.ap_balance),
+      formula(`IF(OR(F${rowNumber}="",G${rowNumber}="",H${rowNumber}=""),"",F${rowNumber}+G${rowNumber}-H${rowNumber})`, nullableNumber(row.nwc)),
+      formula(`IF(OR(C${rowNumber}="",D${rowNumber}="",E${rowNumber}=""),"",C${rowNumber}+D${rowNumber}-E${rowNumber})`, nullableNumber(row.ccc)),
+      row.provenance,
+    ])
+  })
+  const cashHeadingRow = 8 + workingCapitalRows.length
+  operating.addRow([])
+  operating.addRow(['Illustrative cash bridge · calculated from synthetic planning assumptions'])
+  operating.addRow(['Bridge item', 'Amount', 'Provenance'])
+  const latestCash = operatingPlan?.cash_bridge.rows[operatingPlan.cash_bridge.rows.length - 1]
+  const cashRows: Array<[string, number | null]> = [
+    ['Opening cash', latestCash?.opening_cash ?? null],
+    ['Operating profit', latestCash?.operating_profit ?? null],
+    ['AR effect', latestCash === undefined || latestCash.prior_ar === null || latestCash.current_ar === null ? null : latestCash.prior_ar - latestCash.current_ar],
+    ['Inventory effect', latestCash === undefined || latestCash.prior_inventory === null || latestCash.current_inventory === null ? null : latestCash.prior_inventory - latestCash.current_inventory],
+    ['AP effect', latestCash === undefined || latestCash.current_ap === null || latestCash.prior_ap === null ? null : latestCash.current_ap - latestCash.prior_ap],
+    ['CAPEX', latestCash?.capex ?? null],
+    ['Other cash', latestCash?.other_cash_items ?? null],
+  ]
+  cashRows.forEach(([label, value]) => operating.addRow([label, nullableNumber(value), label === 'Opening cash' || label === 'CAPEX' || label === 'Other cash' ? 'synthetic_plan' : 'calculated']))
+  const cashStartRow = cashHeadingRow + 2
+  const netCashRow = cashStartRow + cashRows.length
+  operating.addRow(['Net cash change', formula(`IF(COUNT(B${cashStartRow + 1}:B${cashStartRow + 6})<6,"",SUM(B${cashStartRow + 1}:B${cashStartRow + 4})-B${cashStartRow + 5}+B${cashStartRow + 6})`, nullableNumber(latestCash?.net_cash_change ?? null)), 'calculated'])
+  operating.addRow(['Illustrative closing cash', formula(`IF(OR(B${cashStartRow}="",B${netCashRow}=""),"",B${cashStartRow}+B${netCashRow})`, nullableNumber(latestCash?.closing_illustrative_cash ?? null)), 'calculated'])
+  operating.addRow(['Minimum cash buffer', nullableNumber(latestCash?.minimum_cash_buffer ?? null), 'synthetic_plan'])
+  operating.addRow(['Headroom', formula(`IF(OR(B${netCashRow + 1}="",B${netCashRow + 2}=""),"",B${netCashRow + 1}-B${netCashRow + 2})`, nullableNumber(latestCash?.headroom ?? null)), 'calculated'])
+  const accuracyHeadingRow = netCashRow + 5
+  operating.addRow([])
+  operating.addRow(['Forecast accuracy · calculated from synthetic snapshots'])
+  operating.addRow(['Metric', 'Value', 'Definition', 'Status', 'Provenance'])
+  const accuracyRows = [
+    ['WAPE', operatingPlan?.forecast_accuracy.wape ?? null, 'Weighted absolute percentage error for eligible elapsed months.'],
+    ['Bias', operatingPlan?.forecast_accuracy.bias ?? null, 'Forecast bias as a share of eligible actuals.'],
+    ['Directional hit rate', operatingPlan?.forecast_accuracy.directional_hit_rate ?? null, 'Share of eligible periods with correct forecast direction.'],
+  ] as const
+  accuracyRows.forEach(([label, value, definition]) => operating.addRow([label, nullableNumber(value), definition, operatingPlan?.forecast_accuracy.status || 'Not available', operatingPlan?.forecast_accuracy.provenance || 'calculated']))
+  operating.addRow([])
+  operating.addRow(['Scenario decision table · selected variant and Base / Upside / Downside deltas'])
+  operating.addRow(['Plan Variant', 'FY Revenue Delta', 'FY Operating Profit Delta', 'Cash Headroom', 'Minimum Cash Month', 'CCC', 'Revenue Driver', 'Profit Driver', 'Cash Driver', 'Owner', 'Next Review', 'Provenance'])
+  ;(operatingPlan?.decision_table || []).forEach((row) => operating.addRow([row.plan_variant, nullableNumber(row.fy_revenue_delta), nullableNumber(row.fy_operating_profit_delta), nullableNumber(row.cash_headroom), row.minimum_cash_month, nullableNumber(row.ccc), row.top_revenue_driver, row.top_profit_driver, row.top_cash_driver, row.owner, row.next_review_date, row.provenance]))
+  const actionHeadingRow = operating.rowCount + 2
+  operating.addRow([])
+  operating.addRow(['Action register · illustrative session-only actions'])
+  operating.addRow(['Observation', 'Driver', 'Impact', 'Risk', 'Action', 'Owner', 'Due', 'Cadence', 'Status', 'Provenance'])
+  sessionActions.forEach((action) => operating.addRow([action.observation, action.driver, nullableNumber(action.impact), action.risk, action.action, action.owner, action.due_period, action.cadence, action.status || 'Open', action.provenance]))
+  operating.addRow([])
+  const reconciliation = operatingPlan?.reconciliation
+  operating.addRow([
+    'Reconciliation status', reconciliation?.status || 'Not available',
+    'Cash bridge status', reconciliation?.cash_bridge.status || 'Not available',
+    'Cash residual', nullableNumber(reconciliation?.cash_bridge.max_residual ?? null),
+    'Category roll-up status', reconciliation?.category_rollup.status || 'Not available',
+    'Category residual', nullableNumber(reconciliation?.category_rollup.revenue_residual ?? null),
+    'Tolerance', nullableNumber(reconciliation?.tolerance_rmb_millions ?? null),
+  ])
+  configureSheet(operating, 6, [22, 26, 18, 18, 18, 18, 18, 18, 18, 18, 18, 28])
+  const operatingNumericRows = Array.from({ length: workingCapitalRows.length }, (_, index) => 7 + index)
+  formatColumns(operating, operatingNumericRows, [3, 4, 5, 6, 7, 8, 9, 10])
+  formatColumns(operating, Array.from({ length: cashRows.length + 4 }, (_, index) => cashStartRow + index), [2])
+  formatColumns(operating, accuracyRows.map((_, index) => accuracyHeadingRow + 2 + index), [2])
+  operating.getRow(actionHeadingRow).font = { bold: true }
 
   // Sanitize only primitive text cells; Excel formulas and numeric values remain untouched.
   sanitizeWorkbookText(workbook)

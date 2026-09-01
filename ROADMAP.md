@@ -14,10 +14,14 @@ Completed in this release: deterministic synthetic product-category detail, stri
 
 ## v0.3 — Operating planning
 
-- Working-capital planning
-- Cash forecast
-- Headcount planning
-- Forecast accuracy tracking
+In implementation: Operating Decision frontend, Excel and documentation for `miniso-2026` as of `2026-06-30`, in RMB millions.
+
+- Working-capital planning with AR/AP/inventory days, NWC and CCC
+- Illustrative synthetic cash bridge and headroom
+- Forecast-accuracy tracking from synthetic snapshots
+- Scenario decision table and session-only action register
+
+Completion remains gated on the frozen P1 API contract, RMB 0.01m reconciliation tolerance, API/UI/Excel parity and browser preflight. Workforce/headcount capacity remains P2 scope.
 
 ## v0.4 — Reporting and benchmarks
 

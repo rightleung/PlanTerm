@@ -1,6 +1,6 @@
 # PlanTerm
 
-PlanTerm is an FP&A planning and performance management workbench. The v0.2.0 release uses MINISO Group as a public-data case and adds a stateless planning-input workflow to the v0.1.1 dashboard. It presents Actual, Budget, Forecast and Prior Year across:
+PlanTerm is an FP&A planning and performance management workbench. The v0.3 workstream uses the `miniso-2026` public-data case, with an as-of date of `2026-06-30` and RMB millions throughout. It presents Actual, Budget, Forecast and Prior Year across:
 
 - MINISO — Chinese Mainland
 - MINISO — Overseas
@@ -31,6 +31,9 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000). The application reads the c
 | GET | `/api/v1/cases/{case_id}/planning-input-template` | Deterministic 252-row CSV template |
 | POST | `/api/v1/cases/{case_id}/planning-inputs/import` | Strict, non-persistent CSV validation |
 | POST | `/api/v1/cases/{case_id}/dashboard/preview` | Independent 252-row scenario preview |
+| GET | `/api/v1/cases/{case_id}/operating-plan` | Working capital, illustrative cash, actions and decision data |
+| POST | `/api/v1/cases/{case_id}/operating-plan/preview` | Stateless operating-plan recalculation for a selected plan variant |
+| GET | `/api/v1/cases/{case_id}/forecast-accuracy` | Synthetic-snapshot forecast accuracy metrics |
 
 The API uses a consistent error shape: `error`, `error_type` and `details`. Unknown cases return 404, invalid filters return 422, and internal errors do not expose stack traces.
 
@@ -48,6 +51,12 @@ The editor accepts a complete 252-row matrix: three plan variants (`base`, `upsi
 
 Product-category figures are synthetic planning allocations, not public category reporting. The UI and export disclose this distinction and retain official taxonomy labels only as source-backed taxonomy provenance.
 
+## Operating decision workflow
+
+The v0.3 operating-decision view extends the selected `base`, `upside` or `downside` H2 plan variant with AR, inventory and AP days; calculated balances, NWC and cash-conversion cycle; an illustrative cash bridge; forecast-accuracy metrics; a scenario decision table; and an action register.
+
+AR/AP/inventory days, opening cash, CAPEX proxy, other cash assumptions, actions and forecast snapshots are synthetic planning inputs. Balances, cash effects, NWC, CCC, headroom, accuracy metrics and reconciliations are calculated. The product does not report actual company cash, working-capital balances, internal forecasts or action records. Browser action edits are session-only and are never persisted.
+
 ## Excel management pack
 
 The dashboard export produces `PlanTerm_MINISO_2026H1_Management_Pack.xlsx` with:
@@ -59,12 +68,17 @@ The dashboard export produces `PlanTerm_MINISO_2026H1_Management_Pack.xlsx` with
 5. Assumptions & Sources
 6. Product Category Detail
 7. Scenario Inputs & Provenance
+8. Operating Decision
 
-The export follows the active dashboard filters and selected plan variant, uses RMB millions as the default unit, and includes the exact 252-row input matrix plus taxonomy and source disclosure.
+The export follows the active dashboard filters and selected plan variant, uses RMB millions as the default unit, and includes the exact 252-row input matrix plus taxonomy, source and operating-decision disclosures. Numeric cells, including negatives, remain numeric. Formula-backed calculated cells remain auditable; disclosure text is exported as literal, spreadsheet-neutralized text.
 
 ## v0.2.0 planning inputs
 
 This release adds deterministic product-category planning allocations, a strict CSV template/import contract, complete Base/Upside/Downside H2 scenario editing, stateless dashboard previews, scenario comparison, category detail, and a seven-sheet Excel management pack. Public reported Actual/Prior Year anchors remain distinct from synthetic allocation and scenario-input data.
+
+## v0.3 status
+
+Operating Decision is in implementation. Completion requires the P1 API/UI/Excel parity, reconciliation and browser acceptance gates to pass against the frozen endpoint contract; until then, this workstream is not represented as a completed release.
 
 ## v0.1.1 hardening
 

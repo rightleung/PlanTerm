@@ -14,7 +14,7 @@ from fastapi.staticfiles import StaticFiles
 from src.config import ROOT_DIR, settings
 from src.repositories.case_repository import CaseNotFoundError, CaseRepository
 from src.models.planning import PlanningInputSource
-from src.services.planning_service import build_dashboard, filters_are_compatible, valid_combinations
+from src.services.planning_service import build_dashboard, build_operating_decision, filters_are_compatible, valid_combinations
 from src.services.csv_input_service import InputError, HEADERS, parse_csv, parse_json_rows
 from src.services.spreadsheet_neutralizer import sanitize_csv_row
 from src.services.committed_json import DuplicateJsonKeyError, loads_json
@@ -174,6 +174,64 @@ async def dashboard_preview(
         canonical = parse_json_rows(raw_rows, case_id, case.taxonomy)
         return build_dashboard(case, selected_brand, selected_market, selected, source, [r.model_dump(mode="json") for r in canonical]).model_dump(mode="json")
     except InputError as exc: return _input_error(exc)
+    except ValueError as exc:
+        return JSONResponse(content=api_error(str(exc), "rollup_reconciliation_failed", None), status_code=422)
+
+
+@app.get("/api/v1/cases/{case_id}/operating-plan")
+def operating_plan(case_id: str, plan_variant: Literal["base", "upside", "downside"] = Query("base")):
+    try:
+        case = repository.get_case(case_id)
+        return build_operating_decision(case, plan_variant)
+    except CaseNotFoundError:
+        raise HTTPException(status_code=404, detail={"error": "Case not found", "error_type": "case_not_found", "case_id": case_id})
+    except InputError as exc:
+        raise HTTPException(status_code=422, detail={"error": exc.message, "error_type": exc.error_type, **exc.details})
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail={"error": str(exc), "error_type": "rollup_reconciliation_failed"})
+
+
+@app.get("/api/v1/cases/{case_id}/forecast-accuracy")
+def forecast_accuracy(case_id: str):
+    try:
+        case = repository.get_case(case_id)
+        return build_operating_decision(case)["forecast_accuracy"]
+    except CaseNotFoundError:
+        raise HTTPException(status_code=404, detail={"error": "Case not found", "error_type": "case_not_found", "case_id": case_id})
+    except InputError as exc:
+        return _input_error(exc)
+    except ValueError as exc:
+        return JSONResponse(content=api_error(str(exc), "validation_error", None), status_code=422)
+
+
+@app.post("/api/v1/cases/{case_id}/operating-plan/preview")
+async def operating_plan_preview(case_id: str, request: Request):
+    try:
+        case = repository.get_case(case_id)
+    except CaseNotFoundError:
+        raise HTTPException(status_code=404, detail={"error": "Case not found", "error_type": "case_not_found", "case_id": case_id})
+    try:
+        payload = loads_json(await request.body())
+        if not isinstance(payload, dict):
+            raise InputError("validation_error", "Operating-plan request must be an object")
+        required = {"case_id", "selected_plan_variant", "planning_input_source", "rows", "working_capital_rows", "cash_assumption_rows"}
+        missing = sorted(required - set(payload))
+        if missing:
+            raise InputError("validation_error", "Operating-plan request is incomplete", {"missing": missing})
+        unknown = sorted(set(payload) - (required | {"actions"}))
+        if unknown:
+            raise InputError("unexpected_input_key", "Unexpected operating-plan request field", {"fields": unknown})
+        if payload["case_id"] != case_id:
+            raise InputError("invalid_case", "Request case_id does not match path", {"case_id": payload["case_id"]})
+        if payload["planning_input_source"] not in {"upload", "editor"}:
+            raise InputError("invalid_input_source", "Preview source must be upload or editor")
+        if payload["selected_plan_variant"] not in {"base", "upside", "downside"}:
+            raise InputError("invalid_variant", "Unknown plan variant")
+        if "actions" in payload and not isinstance(payload["actions"], list):
+            raise InputError("validation_error", "actions must be a list")
+        return build_operating_decision(case, payload["selected_plan_variant"], payload["planning_input_source"], payload["rows"], payload["working_capital_rows"], payload["cash_assumption_rows"], payload.get("actions"))
+    except InputError as exc:
+        return _input_error(exc)
     except ValueError as exc:
         return JSONResponse(content=api_error(str(exc), "rollup_reconciliation_failed", None), status_code=422)
 

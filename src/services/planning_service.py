@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from decimal import Decimal
+
 from src.models.planning import DataSource, KpiSnapshot, MonthlyTrendPoint, PlanningDashboardResponse
 from src.repositories.case_repository import CaseData
 from src.services.case_builder import validate_case_records
@@ -9,6 +11,13 @@ from src.services.insight_service import make_insights
 from src.services.pvm_service import calculate_pvm
 from src.services.variance_service import aggregate_total, make_variance_rows, safe_pct, status_for
 from src.services.scenario_service import seed_rows, preview as scenario_preview
+from src.services.csv_input_service import InputError, parse_json_rows
+from src.services.category_plan_service import calculate_rows
+from src.services.scenario_service import seed_rows
+from src.services.working_capital_service import calculate_working_capital, dec, json_float
+from src.services.cash_forecast_service import calculate_cash_bridge
+from src.services.forecast_accuracy_service import calculate_forecast_accuracy
+from src.services.action_service import build_actions
 
 
 MONTHS = [f"2026-{month:02d}" for month in range(1, 13)]
@@ -179,3 +188,186 @@ def build_dashboard(case: CaseData, brand: str, market: str, plan_variant: str =
         scenario_comparison=comparison,
         category_taxonomy_disclosure=case.taxonomy or {},
     )
+
+
+def build_operating_decision(case: CaseData, plan_variant: str = "base", planning_input_source: str = "seed", planning_rows=None, working_capital_rows=None, cash_assumption_rows=None, actions=None) -> dict:
+    """Compose the additive v0.3 operating-decision fields."""
+    return build_operating_plan(case, plan_variant, planning_input_source, planning_rows, working_capital_rows, cash_assumption_rows, actions)
+
+
+OD_MONTHS = [f"2026-{month:02d}" for month in range(7, 13)]
+UNITS = ("MINISO - Chinese Mainland", "MINISO - Overseas", "TOP TOY - Global")
+VARIANTS = ("base", "upside", "downside")
+
+
+def _validated_decimal(value, *, row: int, field: str):
+    try:
+        return dec(value)
+    except ValueError as exc:
+        raise InputError("invalid_range", "Invalid finite numeric assumption", {"row": row, "field": field}) from exc
+
+
+def _records(case, scenario, period, unit, metric):
+    return sum((dec(r.value) or Decimal(0) for r in case.records if r.scenario.value == scenario and r.period == period and r.business_unit == unit and r.metric == metric), Decimal(0))
+
+
+def _validate_wc_rows(case, rows, selected_variant="base"):
+    if not isinstance(rows, list):
+        raise InputError("incomplete_input_matrix", "Complete working-capital rows are required")
+    expected = {(selected_variant, period, unit) for period in OD_MONTHS for unit in UNITS}
+    seen = set()
+    for index, row in enumerate(rows, 1):
+        if not isinstance(row, dict):
+            raise InputError("invalid_input_row", "Working-capital row must be an object", {"row": index})
+        required = {"case_id", "plan_variant", "period", "business_unit", "ar_days", "inventory_days", "ap_days", "provenance"}
+        missing = required - set(row)
+        unknown = set(row) - required
+        if missing:
+            raise InputError("validation_error", "Working-capital row is missing required fields", {"row": index, "missing": sorted(missing)})
+        if unknown:
+            raise InputError("unexpected_input_key", "Working-capital row has unexpected fields", {"row": index, "fields": sorted(unknown)})
+        if any(not isinstance(row[field], str) for field in ("case_id", "plan_variant", "period", "business_unit")):
+            raise InputError("validation_error", "Working-capital identity fields must be strings", {"row": index})
+        key = (row["plan_variant"], row["period"], row["business_unit"])
+        if key in seen:
+            raise InputError("duplicate_input_key", "Duplicate working-capital row", {"row": index})
+        seen.add(key)
+        if key not in expected:
+            raise InputError("unexpected_input_key", "Unknown working-capital row key", {"row": index})
+        if row["case_id"] != case.case_id:
+            raise InputError("invalid_input_row", "Unknown case in working-capital row", {"row": index})
+        if row["provenance"] != "synthetic_plan":
+            raise InputError("invalid_provenance", "Working-capital assumptions must be synthetic_plan", {"row": index})
+        for field in ("ar_days", "inventory_days", "ap_days"):
+            value = _validated_decimal(row.get(field), row=index, field=field)
+            if value is not None and (value < 0 or value > 3650):
+                raise InputError("invalid_range", "Invalid working-capital day assumption", {"row": index, "field": field})
+    if seen != expected:
+        raise InputError("incomplete_input_matrix", "Complete working-capital rows are required", {"missing_count": len(expected - seen)})
+
+
+def _validate_cash_rows(case, rows, selected_variant="base"):
+    if not isinstance(rows, list):
+        raise InputError("incomplete_input_matrix", "Complete cash-assumption rows are required")
+    expected = {(selected_variant, period) for period in OD_MONTHS}
+    seen = set()
+    for index, row in enumerate(rows, 1):
+        if not isinstance(row, dict):
+            raise InputError("validation_error", "Cash-assumption row must be an object", {"row": index})
+        required = {"case_id", "plan_variant", "period", "opening_cash", "minimum_cash_buffer", "capex", "other_cash_items", "provenance"}
+        missing, unknown = required - set(row), set(row) - required
+        if missing:
+            raise InputError("validation_error", "Cash-assumption row is missing required fields", {"row": index, "missing": sorted(missing)})
+        if unknown:
+            raise InputError("unexpected_input_key", "Cash-assumption row has unexpected fields", {"row": index, "fields": sorted(unknown)})
+        if any(not isinstance(row[field], str) for field in ("case_id", "plan_variant", "period")):
+            raise InputError("validation_error", "Cash-assumption identity fields must be strings", {"row": index})
+        key = (row["plan_variant"], row["period"])
+        if key in seen:
+            raise InputError("duplicate_input_key", "Duplicate cash-assumption row", {"row": index})
+        seen.add(key)
+        if key not in expected:
+            raise InputError("unexpected_input_key", "Unknown cash-assumption row key", {"row": index})
+        if row["case_id"] != case.case_id:
+            raise InputError("invalid_input_row", "Unknown case in cash-assumption row", {"row": index})
+        if row["provenance"] != "synthetic_plan":
+            raise InputError("invalid_provenance", "Cash assumptions must be synthetic_plan", {"row": index})
+        for field in ("opening_cash", "minimum_cash_buffer", "capex", "other_cash_items"):
+            value = _validated_decimal(row.get(field), row=index, field=field)
+            if value is not None and abs(value) > Decimal("1000000"):
+                raise InputError("invalid_range", "Invalid cash assumption", {"row": index, "field": field})
+    if seen != expected:
+        raise InputError("incomplete_input_matrix", "Complete cash-assumption rows are required", {"missing_count": len(expected - seen)})
+
+
+def _seed_wc(case):
+    return [dict(row) for row in case.working_capital_seed]
+
+
+def _seed_cash(case):
+    return [dict(row, opening_cash=case.cash_assumptions.get("opening_cash"), minimum_cash_buffer=case.cash_assumptions.get("minimum_cash_buffer")) for row in case.cash_assumptions.get("rows", [])]
+
+
+def _metric_detail(details, variant, period, unit, metric):
+    return sum((dec(item.get(metric)) or Decimal(0) for item in details if item.get("plan_variant") == variant and item.get("period") == period and item.get("business_unit") == unit), Decimal(0))
+
+
+def build_operating_plan(case, plan_variant="base", planning_input_source="seed", planning_rows=None, working_capital_rows=None, cash_assumption_rows=None, actions=None):
+    if plan_variant not in VARIANTS:
+        raise InputError("invalid_variant", "Unknown plan variant")
+    rows = seed_rows(case) if planning_rows is None else parse_json_rows(planning_rows, case.case_id, case.taxonomy)
+    details, comparison, _ = calculate_rows(case, rows, plan_variant)
+    wc_rows = _seed_wc(case) if working_capital_rows is None else working_capital_rows
+    cash_rows = _seed_cash(case) if cash_assumption_rows is None else cash_assumption_rows
+    # Client previews are scoped to the selected variant; committed seeds contain all three.
+    if working_capital_rows is not None:
+        _validate_wc_rows(case, wc_rows, plan_variant)
+    if cash_assumption_rows is not None:
+        _validate_cash_rows(case, cash_rows, plan_variant)
+    wc_by_variant = {variant: [dict(row) for row in _seed_wc(case) if row.get("plan_variant") == variant] for variant in VARIANTS}
+    cash_by_variant = {variant: [dict(row) for row in _seed_cash(case) if row.get("plan_variant") == variant] for variant in VARIANTS}
+    if working_capital_rows is not None:
+        wc_by_variant[plan_variant] = wc_rows
+    if cash_assumption_rows is not None:
+        cash_by_variant[plan_variant] = cash_rows
+    for variant in VARIANTS:
+        _validate_wc_rows(case, wc_by_variant[variant], variant)
+        _validate_cash_rows(case, cash_by_variant[variant], variant)
+
+    def calculate_variant(variant):
+        wc_lookup = {(r["plan_variant"], r["period"], r["business_unit"]): r for r in wc_by_variant[variant]}
+        cash_lookup = {(r["plan_variant"], r["period"]): r for r in cash_by_variant[variant]}
+        working_capital, cash_bridge = [], []
+        for period in OD_MONTHS:
+            for unit in UNITS:
+                assumption = wc_lookup[(variant, period, unit)]
+                revenue = _metric_detail(details, variant, period, unit, "revenue")
+                cogs = _metric_detail(details, variant, period, unit, "cost_of_sales")
+                prior_revenue = _records(case, "actual", "2026-06", unit, "revenue")
+                prior_cogs = _records(case, "actual", "2026-06", unit, "cost_of_sales")
+                current = calculate_working_capital({**assumption, "revenue": revenue, "cogs": cogs})
+                prior = calculate_working_capital({**assumption, "revenue": prior_revenue, "cogs": prior_cogs})
+                current["business_unit"], current["period"], current["plan_variant"] = unit, period, variant
+                current["prior_ar_balance"] = prior["ar_balance"]
+                current["prior_inventory_balance"] = prior["inventory_balance"]
+                current["prior_ap_balance"] = prior["ap_balance"]
+                working_capital.append(current)
+            cash = cash_lookup[(variant, period)]
+            op = sum((_metric_detail(details, variant, period, unit, "operating_profit") for unit in UNITS), Decimal(0))
+            current_wc = [row for row in working_capital if row["period"] == period]
+            previous_wc = [row for row in working_capital if row["period"] == OD_MONTHS[OD_MONTHS.index(period)-1]] if period != OD_MONTHS[0] else []
+            if previous_wc:
+                prior_ar = sum((dec(row.get("ar_balance"), nullable=False) for row in previous_wc), Decimal(0))
+                prior_inventory = sum((dec(row.get("inventory_balance"), nullable=False) for row in previous_wc), Decimal(0))
+                prior_ap = sum((dec(row.get("ap_balance"), nullable=False) for row in previous_wc), Decimal(0))
+            else:
+                prior_ar = sum((dec(row.get("prior_ar_balance"), nullable=False) for row in current_wc), Decimal(0))
+                prior_inventory = sum((dec(row.get("prior_inventory_balance"), nullable=False) for row in current_wc), Decimal(0))
+                prior_ap = sum((dec(row.get("prior_ap_balance"), nullable=False) for row in current_wc), Decimal(0))
+            bridge = {**cash, "period": period, "plan_variant": variant, "operating_profit": op, "prior_ar": prior_ar, "current_ar": sum((dec(row.get("ar_balance"), nullable=False) for row in current_wc), Decimal(0)), "prior_inventory": prior_inventory, "current_inventory": sum((dec(row.get("inventory_balance"), nullable=False) for row in current_wc), Decimal(0)), "current_ap": sum((dec(row.get("ap_balance"), nullable=False) for row in current_wc), Decimal(0)), "prior_ap": prior_ap}
+            cash_bridge.append(calculate_cash_bridge(bridge))
+        return working_capital, cash_bridge
+
+    variant_results = {variant: calculate_variant(variant) for variant in VARIANTS}
+    working_capital, cash_bridge = variant_results[plan_variant]
+    accuracy = calculate_forecast_accuracy(case.forecast_snapshots)
+    actions_out = build_actions(case_id=case.case_id, cash_bridge=cash_bridge[-1] if cash_bridge else None, forecast_accuracy=accuracy, actions=actions)
+    closing_values = [row.get("closing_illustrative_cash") for row in cash_bridge if row.get("closing_illustrative_cash") is not None]
+    headrooms = [row.get("headroom") for row in cash_bridge if row.get("headroom") is not None]
+    decision_table = []
+    base_fy_revenue = sum((_metric_detail(details, "base", "FY2026", unit, "revenue") for unit in UNITS), Decimal(0))
+    base_fy_op = sum((_metric_detail(details, "base", "FY2026", unit, "operating_profit") for unit in UNITS), Decimal(0))
+    for variant in VARIANTS:
+        variant_details, variant_cash = variant_results[variant]
+        fy_revenue = sum((_metric_detail(details, variant, "FY2026", unit, "revenue") for unit in UNITS), Decimal(0))
+        fy_op = sum((_metric_detail(details, variant, "FY2026", unit, "operating_profit") for unit in UNITS), Decimal(0))
+        valid_cash = [row for row in variant_cash if row.get("closing_illustrative_cash") is not None]
+        minimum_cash = min(valid_cash, key=lambda row: row.get("headroom")) if valid_cash else None
+        decision_table.append({"plan_variant": variant, "fy_revenue_delta": float(fy_revenue - base_fy_revenue), "fy_operating_profit_delta": float(fy_op - base_fy_op), "minimum_cash_month": minimum_cash.get("period") if minimum_cash else None, "cash_headroom": minimum_cash.get("headroom") if minimum_cash else None, "ccc": None, "top_revenue_driver": "H2 category drivers", "top_profit_driver": "Operating profit", "top_cash_driver": "Working capital", "owner": "Group FP&A", "next_review_date": "2026-07-31", "provenance": "calculated"})
+    # Residual evidence is surfaced rather than asserted by flag.
+    base_h2_residual = sum((_metric_detail(details, "base", period, unit, "revenue") - _records(case, "forecast", period, unit, "revenue") for period in OD_MONTHS for unit in UNITS), Decimal(0))
+    cash_residuals = [dec(row.get("cash_identity_residual"), nullable=False) for row in cash_bridge if row.get("cash_identity_residual") is not None]
+    max_cash_residual = max((abs(x) for x in cash_residuals), default=None)
+    category_ok = abs(base_h2_residual) <= Decimal("0.01")
+    cash_ok = max_cash_residual is not None and max_cash_residual <= Decimal("0.01")
+    return {"as_of_date": case.metadata["as_of_date"], "planning_horizon": {"locked_through": "2026-06", "editable_from": "2026-07", "editable_to": "2026-12"}, "plan_variant": plan_variant, "provenance_legend": case.metadata["provenance_legend"], "working_capital": {"rows": working_capital, "unit": "RMB millions", "input_provenance": "synthetic_plan", "disclosure": "Synthetic planning assumption; not public reported working capital."}, "cash_bridge": {"rows": cash_bridge, "closing_illustrative_cash": closing_values[-1] if closing_values else None, "minimum_headroom": min(headrooms) if headrooms else None, "input_provenance": "synthetic_plan", "disclosure": "Illustrative cash balance; not a bank-reported cash balance."}, "forecast_accuracy": accuracy, "actions": actions_out, "decision_table": decision_table, "reconciliation": {"status": "reconciled" if category_ok and cash_ok else "not_reconciled", "tolerance_rmb_millions": 0.01, "cash_bridge": {"status": "reconciled" if cash_ok else "not_reconciled", "max_residual": json_float(max_cash_residual)}, "category_rollup": {"status": "reconciled" if category_ok else "not_reconciled", "revenue_residual": json_float(base_h2_residual)}}}

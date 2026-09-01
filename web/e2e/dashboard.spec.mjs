@@ -67,6 +67,38 @@ function findRowByValues(sheet, expected) {
   return found;
 }
 
+function operatingPlanFixture(variant = 'base', reconciliation = { status: 'reconciled', tolerance_rmb_millions: 0.01, cash_bridge: { status: 'reconciled', max_residual: 0, }, category_rollup: { status: 'reconciled', revenue_residual: 0 } }) {
+  const delta = variant === 'upside' ? 18.5 : variant === 'downside' ? -21.5 : 0;
+  return {
+    as_of_date: '2026-06-30',
+    planning_horizon: { locked_through: '2026-06', editable_from: '2026-07', editable_to: '2026-12' },
+    plan_variant: variant,
+    provenance_legend: { synthetic_plan: 'Synthetic planning assumptions', calculated: 'Server-calculated output' },
+    working_capital: { unit: 'RMB millions', disclosure: 'Synthetic planning assumption; not public reported working capital.', rows: [{ case_id: 'miniso-2026', plan_variant: variant, period: '2026-12', business_unit: 'Portfolio', revenue: 100, cogs: 62, ar_days: 34, inventory_days: 51, ap_days: 42, ar_balance: 9.3, inventory_balance: 8.7, ap_balance: 7.1, nwc: 10.9, ccc: 43, provenance: 'calculated', status: 'eligible' }] },
+    cash_bridge: { closing_illustrative_cash: 92.6 + delta, minimum_headroom: 12.6 + delta, disclosure: 'Illustrative cash balance; not a bank-reported cash balance.', rows: [{ case_id: 'miniso-2026', plan_variant: variant, period: '2026-12', opening_cash: 90, minimum_cash_buffer: 80, operating_profit: 20 + delta, prior_ar: 11.7, current_ar: 14.1, prior_inventory: 14, current_inventory: 17.2, current_ap: 9.5, prior_ap: 7.7, capex: 12.5, other_cash_items: -1.1, net_cash_change: 2.6 + delta, closing_illustrative_cash: 92.6 + delta, headroom: 12.6 + delta, status: 'eligible', provenance: 'calculated' }] },
+    forecast_accuracy: { wape: null, bias: null, directional_hit_rate: null, eligible_periods: 0, status: 'not_eligible', provenance: 'calculated' },
+    actions: [{ observation: 'Inventory cover elevated', driver: 'Inventory days', impact: -3.2, risk: 'Cash buffer pressure', action: '=Review purchase cadence', owner: 'Supply Chain', due_period: '2026-07-31', cadence: 'Monthly', provenance: 'synthetic_plan' }],
+    decision_table: ['base', 'upside', 'downside'].map((planVariant) => { const planDelta = planVariant === 'upside' ? 18.5 : planVariant === 'downside' ? -21.5 : 0; return { plan_variant: planVariant, fy_revenue_delta: planDelta, fy_operating_profit_delta: planDelta, minimum_cash_month: planVariant === variant ? '2026-12' : null, cash_headroom: planVariant === variant ? 12.6 + planDelta : null, ccc: null, top_revenue_driver: 'H2 category drivers', top_profit_driver: 'Operating profit', top_cash_driver: 'Working capital', owner: 'Group FP&A', next_review_date: '2026-07-31', provenance: 'calculated' }; }),
+    reconciliation,
+  };
+}
+
+async function mockOperatingPlan(page, onPreview, onOperatingPlan, fixture = operatingPlanFixture) {
+  await page.route('**/api/v1/cases/miniso-2026/operating-plan/preview', async (route) => {
+    const body = route.request().postDataJSON();
+    if (onPreview) await onPreview(route, body);
+    else await route.fulfill({ contentType: 'application/json', body: JSON.stringify(fixture(body.selected_plan_variant)) });
+  });
+  await page.route(/\/api\/v1\/cases\/miniso-2026\/operating-plan(?:\?.*)?$/, async (route) => {
+    const variant = new URL(route.request().url()).searchParams.get('plan_variant') || 'base';
+    if (onOperatingPlan) await onOperatingPlan(route, variant);
+    await route.fulfill({ contentType: 'application/json', body: JSON.stringify(fixture(variant)) });
+  });
+  await page.route('**/api/v1/cases/miniso-2026/forecast-accuracy', async (route) => {
+    await route.fulfill({ contentType: 'application/json', body: JSON.stringify(operatingPlanFixture().forecast_accuracy) });
+  });
+}
+
 test('loads the offline MINISO planning case and renders the disclosure', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByText('PlanTerm', { exact: true })).toBeVisible();
@@ -250,7 +282,7 @@ test('valid upload previews all variants, supports edits and discard, and export
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.load(await fs.readFile(await download.path()));
   expect(workbook.worksheets.map((sheet) => sheet.name)).toEqual([
-    'Executive Summary', 'Monthly Trend', 'Business Unit Variance', 'PVM Bridge', 'Assumptions & Sources', 'Product Category Detail', 'Scenario Inputs & Provenance',
+    'Executive Summary', 'Monthly Trend', 'Business Unit Variance', 'PVM Bridge', 'Assumptions & Sources', 'Product Category Detail', 'Scenario Inputs & Provenance', 'Operating Decision',
   ]);
   const provenance = workbook.getWorksheet('Scenario Inputs & Provenance');
   const selectedVariant = findRowByFirstValue(provenance, 'Selected plan variant');
@@ -279,6 +311,112 @@ test('valid upload previews all variants, supports edits and discard, and export
   const categoryNames = categoryRows.map((row) => row.getCell(4).value);
   expect(categoryNames).toEqual(expect.arrayContaining(["'=SUM(A1)", "'+1", "'-label", "'@cmd"]));
   expect(categoryNames.every((value) => typeof value === 'string')).toBe(true);
+});
+
+test('operating decision loads, previews selected variants, and exports safe illustrative disclosures', async ({ page }) => {
+  const previewBodies = [];
+  const operatingPlanVariants = [];
+  await mockOperatingPlan(page, async (route, body) => {
+    previewBodies.push(body);
+    await route.fulfill({ contentType: 'application/json', body: JSON.stringify(operatingPlanFixture(body.selected_plan_variant)) });
+  }, (_route, variant) => operatingPlanVariants.push(variant));
+  await page.goto('/');
+  await expect(page.getByRole('heading', { name: 'Working capital and illustrative cash' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Forecast accuracy' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Scenario decision table' })).toBeVisible();
+  await expect(page.getByText('Synthetic planning assumptions and calculated illustrative cash - not public reported or actual cash.')).toBeVisible();
+  await expect(page.getByText('not_eligible').first()).toBeVisible();
+  await expect(page.getByText('Not available').first()).toBeVisible();
+
+  await page.getByLabel('action action 1').fill('Session-only action');
+  await page.reload();
+  await expect(page.getByLabel('action action 1')).toHaveValue('=Review purchase cadence');
+
+  await openPlanningEditor(page);
+  const template = await downloadTemplate(page);
+  await uploadTemplate(page, template);
+  await page.getByRole('button', { name: 'downside', exact: true }).click();
+  await page.getByRole('button', { name: /Apply & preview/ }).click();
+  await expect.poll(() => previewBodies.length).toBe(1);
+  expect(previewBodies[0]).toMatchObject({ case_id: 'miniso-2026', selected_plan_variant: 'downside', planning_input_source: 'upload' });
+  expect(previewBodies[0].rows).toHaveLength(252);
+  expect(previewBodies[0].working_capital_rows).toHaveLength(1);
+  expect(previewBodies[0].cash_assumption_rows).toHaveLength(1);
+  expect(operatingPlanVariants).toContain('downside');
+  expect(previewBodies[0].working_capital_rows.every((row) => row.plan_variant === 'downside')).toBe(true);
+  expect(previewBodies[0].cash_assumption_rows.every((row) => row.plan_variant === 'downside')).toBe(true);
+  await expect(page.getByText('Selected downside · RMB millions')).toBeVisible();
+
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Export Excel management pack' }).click();
+  const download = await downloadPromise;
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(await fs.readFile(await download.path()));
+  expect(workbook.worksheets).toHaveLength(8);
+  const operating = workbook.getWorksheet('Operating Decision');
+  expect(operating).toBeTruthy();
+  expect(findRowByFirstValue(operating, 'Disclosure').row.getCell(2).value).toContain('not public reported or actual cash');
+  expect(findRowByFirstValue(operating, 'Other cash').row.getCell(2).value).toBe(-1.1);
+  const actionRow = findRowByFirstValue(operating, 'Inventory cover elevated');
+  expect(actionRow.row.getCell(5).value).toBe("'=Review purchase cadence");
+});
+
+test('evidence-object reconciliation renders and exports residual status', async ({ page }) => {
+  const fixture = (variant = 'base') => operatingPlanFixture(variant, {
+    status: 'not_reconciled',
+    tolerance_rmb_millions: 0.01,
+    cash_bridge: { status: 'not_reconciled', max_residual: 0.75 },
+    category_rollup: { status: 'not_reconciled', revenue_residual: -1.25 },
+  });
+  await mockOperatingPlan(page, undefined, undefined, fixture);
+  await page.goto('/');
+  const reconciliation = page.locator('section[aria-labelledby="operating-cash-title"] .reconciliation');
+  await expect(reconciliation).toContainText('cash bridge not_reconciled');
+  await expect(reconciliation).toContainText('max residual 0.8');
+  await expect(reconciliation).toContainText('category roll-up not_reconciled');
+  await expect(reconciliation).toContainText('revenue residual -1.3');
+
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Export Excel management pack' }).click();
+  const download = await downloadPromise;
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(await fs.readFile(await download.path()));
+  const operating = workbook.getWorksheet('Operating Decision');
+  const row = findRowByFirstValue(operating, 'Reconciliation status').row;
+  expect(row.getCell(2).value).toBe('not_reconciled');
+  expect(row.getCell(4).value).toBe('not_reconciled');
+  expect(row.getCell(6).value).toBe(0.75);
+  expect(row.getCell(8).value).toBe('not_reconciled');
+  expect(row.getCell(10).value).toBe(-1.25);
+  expect(row.values).not.toContain('[object Object]');
+});
+
+test('an older operating preview response cannot overwrite a newer selected variant', async ({ page }) => {
+  let resolveFirstPreview;
+  const firstPreviewReleased = new Promise((resolve) => { resolveFirstPreview = resolve; });
+  let previews = 0;
+  await mockOperatingPlan(page, async (route, body) => {
+    previews += 1;
+    if (previews === 1) {
+      await firstPreviewReleased;
+      try { await route.fulfill({ contentType: 'application/json', body: JSON.stringify(operatingPlanFixture(body.selected_plan_variant)) }); } catch { /* abort is expected */ }
+      return;
+    }
+    await route.fulfill({ contentType: 'application/json', body: JSON.stringify(operatingPlanFixture(body.selected_plan_variant)) });
+  });
+  await page.goto('/');
+  await openPlanningEditor(page);
+  const template = await downloadTemplate(page);
+  await uploadTemplate(page, template);
+  await page.getByRole('button', { name: 'downside', exact: true }).click();
+  await page.getByRole('button', { name: /Apply & preview/ }).click();
+  await expect.poll(() => previews).toBe(1);
+  await openPlanningEditor(page, 'downside');
+  await page.getByRole('button', { name: 'upside', exact: true }).click();
+  await page.getByRole('button', { name: /Apply & preview/ }).click();
+  await expect.poll(() => previews).toBe(2);
+  resolveFirstPreview();
+  await expect(page.getByText('Selected upside · RMB millions')).toBeVisible();
 });
 
 test('an older committed dashboard response cannot replace an applied preview', async ({ page }) => {

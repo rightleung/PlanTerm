@@ -1,0 +1,26 @@
+{
+  "provenance": "synthetic_plan",
+  "unit": "RMB millions",
+  "opening_cash": 1200.0,
+  "minimum_cash_buffer": 500.0,
+  "rows": [
+    {"case_id":"miniso-2026","plan_variant":"base","period":"2026-07","capex":35.0,"other_cash_items":5.0,"provenance":"synthetic_plan"},
+    {"case_id":"miniso-2026","plan_variant":"base","period":"2026-08","capex":35.0,"other_cash_items":5.0,"provenance":"synthetic_plan"},
+    {"case_id":"miniso-2026","plan_variant":"base","period":"2026-09","capex":40.0,"other_cash_items":5.0,"provenance":"synthetic_plan"},
+    {"case_id":"miniso-2026","plan_variant":"base","period":"2026-10","capex":40.0,"other_cash_items":5.0,"provenance":"synthetic_plan"},
+    {"case_id":"miniso-2026","plan_variant":"base","period":"2026-11","capex":45.0,"other_cash_items":5.0,"provenance":"synthetic_plan"},
+    {"case_id":"miniso-2026","plan_variant":"base","period":"2026-12","capex":50.0,"other_cash_items":5.0,"provenance":"synthetic_plan"},
+    {"case_id":"miniso-2026","plan_variant":"upside","period":"2026-07","capex":35.0,"other_cash_items":8.0,"provenance":"synthetic_plan"},
+    {"case_id":"miniso-2026","plan_variant":"upside","period":"2026-08","capex":35.0,"other_cash_items":8.0,"provenance":"synthetic_plan"},
+    {"case_id":"miniso-2026","plan_variant":"upside","period":"2026-09","capex":40.0,"other_cash_items":8.0,"provenance":"synthetic_plan"},
+    {"case_id":"miniso-2026","plan_variant":"upside","period":"2026-10","capex":40.0,"other_cash_items":8.0,"provenance":"synthetic_plan"},
+    {"case_id":"miniso-2026","plan_variant":"upside","period":"2026-11","capex":45.0,"other_cash_items":8.0,"provenance":"synthetic_plan"},
+    {"case_id":"miniso-2026","plan_variant":"upside","period":"2026-12","capex":50.0,"other_cash_items":8.0,"provenance":"synthetic_plan"},
+    {"case_id":"miniso-2026","plan_variant":"downside","period":"2026-07","capex":30.0,"other_cash_items":0.0,"provenance":"synthetic_plan"},
+    {"case_id":"miniso-2026","plan_variant":"downside","period":"2026-08","capex":30.0,"other_cash_items":0.0,"provenance":"synthetic_plan"},
+    {"case_id":"miniso-2026","plan_variant":"downside","period":"2026-09","capex":35.0,"other_cash_items":0.0,"provenance":"synthetic_plan"},
+    {"case_id":"miniso-2026","plan_variant":"downside","period":"2026-10","capex":35.0,"other_cash_items":0.0,"provenance":"synthetic_plan"},
+    {"case_id":"miniso-2026","plan_variant":"downside","period":"2026-11","capex":40.0,"other_cash_items":0.0,"provenance":"synthetic_plan"},
+    {"case_id":"miniso-2026","plan_variant":"downside","period":"2026-12","capex":45.0,"other_cash_items":0.0,"provenance":"synthetic_plan"}
+  ]
+}
