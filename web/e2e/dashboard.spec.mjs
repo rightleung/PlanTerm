@@ -109,10 +109,12 @@ test('loads the offline MINISO planning case and renders the disclosure', async 
 
 test('renders the empty business unit variance state', async ({ page }) => {
   await page.route('**/api/v1/cases/miniso-2026/dashboard?*', async (route) => {
-    const response = await route.fetch();
+    // Fetch the backend directly so this mutation does not depend on the
+    // Vite proxy completing a second in-flight request under CI load.
+    const response = await fetch(route.request().url().replace('http://127.0.0.1:4173', 'http://127.0.0.1:8000'));
     const payload = await response.json();
     payload.business_unit_variances = [];
-    await route.fulfill({ response, body: JSON.stringify(payload) });
+    await route.fulfill({ status: response.status, contentType: 'application/json', body: JSON.stringify(payload) });
   });
   await page.goto('/');
   await expect(page.getByText('No business unit matches the selected filters')).toBeVisible();
