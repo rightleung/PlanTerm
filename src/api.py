@@ -16,6 +16,7 @@ from src.repositories.case_repository import CaseNotFoundError, CaseRepository
 from src.models.planning import PlanningInputSource
 from src.services.planning_service import build_dashboard, filters_are_compatible, valid_combinations
 from src.services.csv_input_service import InputError, HEADERS, parse_csv, parse_json_rows
+from src.services.spreadsheet_neutralizer import sanitize_csv_row
 from src.services.committed_json import DuplicateJsonKeyError, loads_json
 
 
@@ -114,7 +115,7 @@ def planning_input_template(case_id: str):
     try: case = repository.get_case(case_id)
     except CaseNotFoundError: raise HTTPException(status_code=404, detail={"error":"Case not found", "error_type":"case_not_found", "case_id":case_id})
     import csv, io
-    out = io.StringIO(); writer = csv.DictWriter(out, fieldnames=HEADERS, lineterminator="\n"); writer.writeheader(); writer.writerows(case.category_seed)
+    out = io.StringIO(); writer = csv.DictWriter(out, fieldnames=HEADERS, lineterminator="\n"); writer.writeheader(); writer.writerows(sanitize_csv_row(row) for row in case.category_seed)
     return Response(content=out.getvalue(), media_type="text/csv", headers={"Content-Disposition": f'attachment; filename="{case_id}-planning-input-template.csv"'})
 
 
@@ -144,6 +145,15 @@ async def dashboard_preview(
             raise InputError("malformed_csv", "Malformed JSON preview payload") from exc
         if not isinstance(payload, dict):
             raise InputError("incomplete_input_matrix", "Complete 252-row matrix is required")
+        unexpected_top_level = sorted(set(payload) - {
+            "selected_plan_variant",
+            "planning_input_source",
+            "brand",
+            "market",
+            "rows",
+        })
+        if unexpected_top_level:
+            raise InputError("unexpected_input_key", "Unexpected preview input key", {"keys": unexpected_top_level})
         selected = payload.get("selected_plan_variant")
         if selected not in {"base", "upside", "downside"}: raise InputError("scenario_not_found", "Unknown plan variant")
         source_value = payload.get("planning_input_source", PlanningInputSource.UPLOAD.value)

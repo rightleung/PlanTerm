@@ -23,6 +23,31 @@ async function uploadTemplate(page, template) {
   await expect(page.getByText(/Showing 84 rows for (base|upside|downside) \(252 total\)/)).toBeVisible();
 }
 
+function parseCsvLine(line) {
+  const values = [];
+  let field = '';
+  let quoted = false;
+  for (let index = 0; index < line.length; index += 1) {
+    const character = line[index];
+    const next = line[index + 1];
+    if (character === '"') {
+      if (quoted && next === '"') {
+        field += '"';
+        index += 1;
+      } else {
+        quoted = !quoted;
+      }
+    } else if (character === ',' && !quoted) {
+      values.push(field);
+      field = '';
+    } else {
+      field += character;
+    }
+  }
+  values.push(field);
+  return values;
+}
+
 function findRowByFirstValue(sheet, value) {
   let found;
   sheet.eachRow((row, rowNumber) => {
@@ -106,6 +131,41 @@ test('template download uses the frozen header and full 252-row matrix', async (
   expect(lines[0]).toBe('case_id,plan_variant,period,business_unit,category_id,volume_change_pct,average_ticket_change_pct,gross_margin_delta_pp,opex_ratio_delta_pp');
 });
 
+test('browser CSV export neutralizes text triggers and preserves numeric negatives', async ({ page }) => {
+  await page.route('**/api/v1/cases/miniso-2026/planning-input-template', async (route) => {
+    const response = await route.fetch();
+    const lines = (await response.text()).trim().split(/\r?\n/);
+    const fields = lines[1].split(',');
+    fields[0] = '=SUM(A1)';
+    fields[2] = '-label';
+    fields[3] = '+1';
+    fields[4] = '@cmd';
+    fields[5] = '-0.25';
+    lines[1] = fields.join(',');
+    await route.fulfill({ response, body: lines.join('\n') });
+  });
+  await page.goto('/');
+  await openPlanningEditor(page);
+  const exported = await downloadTemplate(page);
+  const firstRow = parseCsvLine(exported.toString('utf8').trim().split(/\r?\n/)[1]);
+  expect(firstRow.slice(0, 5)).toEqual(["'=SUM(A1)", 'base', "'-label", "'+1", "'@cmd"]);
+  expect(Number(firstRow[5])).toBe(-0.25);
+});
+
+test('browser CSV parser rejects empty numeric cells', async ({ page }) => {
+  await page.route('**/api/v1/cases/miniso-2026/planning-input-template', async (route) => {
+    const response = await route.fetch();
+    const lines = (await response.text()).trim().split(/\r?\n/);
+    const fields = lines[1].split(',');
+    fields[5] = '   ';
+    lines[1] = fields.join(',');
+    await route.fulfill({ response, body: lines.join('\n') });
+  });
+  await page.goto('/');
+  await openPlanningEditor(page);
+  await expect(page.getByRole('alert')).toContainText('Invalid CSV row values');
+});
+
 test('malformed planning upload is rejected visibly', async ({ page }) => {
   await page.goto('/');
   await openPlanningEditor(page);
@@ -145,6 +205,7 @@ test('valid upload previews all variants, supports edits and discard, and export
   await expect(page.locator('input[type=number]').first()).not.toHaveValue('0.123456');
   await expect(page.locator('input[type=number]').first()).toHaveValue(originalValue);
   await page.getByRole('button', { name: 'upside', exact: true }).click();
+  await page.locator('input[type=number]').first().fill('-0.25');
   const previewResponse = page.waitForResponse((response) => response.url().includes('/dashboard/preview') && response.status() === 200);
   await page.getByRole('button', { name: /Apply & preview/ }).click();
   await previewResponse;
@@ -153,7 +214,18 @@ test('valid upload previews all variants, supports edits and discard, and export
   await expect(page.getByRole('heading', { name: 'Product Category Detail' })).toBeVisible();
   await expect(page.getByText('Synthetic planning input — not reported category data').first()).toBeVisible();
   await expect(page.locator('.category-detail-panel tbody tr')).toHaveCount(98);
+  let injectedPreviewCount = 0;
+  await page.route('**/api/v1/cases/miniso-2026/dashboard/preview*', async (route) => {
+    expect(route.request().method()).toBe('POST');
+    injectedPreviewCount += 1;
+    const response = await route.fetch();
+    const payload = await response.json();
+    const triggerValues = ['=SUM(A1)', '+1', '-label', '@cmd'];
+    payload.category_detail.filter((row) => row.plan_variant === 'upside').slice(0, triggerValues.length).forEach((row, index) => { row.category_name = triggerValues[index]; });
+    await route.fulfill({ response, body: JSON.stringify(payload) });
+  });
   await page.getByLabel('Brand').selectOption('MINISO');
+  await expect.poll(() => injectedPreviewCount).toBe(1);
   await expect(page.getByRole('heading', { name: 'Scenario comparison' })).toBeVisible();
   await expect(page.locator('.category-detail-panel tbody tr')).toHaveCount(70);
   await openPlanningEditor(page, 'upside');
@@ -183,6 +255,7 @@ test('valid upload previews all variants, supports edits and discard, and export
   expect(new Set(inputRows.map((row) => row.slice(0, 5).join('|'))).size).toBe(252);
   expect(new Set(inputRows.map((row) => row[1]))).toEqual(new Set(['base', 'upside', 'downside']));
   expect(inputRows.every((row) => row.slice(5).every((value) => typeof value === 'number'))).toBe(true);
+  expect(inputRows.some((row) => row[5] === -0.25)).toBe(true);
   expect(provenance.autoFilter).toBeTruthy();
   [6, 7, 8, 9].forEach((column) => expect(provenance.getCell(matrixHeader.rowNumber + 1, column).numFmt).toContain('%'));
   expect(workbook.getWorksheet('PVM Bridge').getCell('B8').value).toHaveProperty('formula');
@@ -192,6 +265,9 @@ test('valid upload previews all variants, supports edits and discard, and export
   expect(categoryRows).toHaveLength(70);
   expect(categoryRows.every((row) => row.getCell(2).value === 'upside')).toBe(true);
   expect(categoryRows[0].getCell(6).numFmt).toContain('%');
+  const categoryNames = categoryRows.map((row) => row.getCell(4).value);
+  expect(categoryNames).toEqual(expect.arrayContaining(["'=SUM(A1)", "'+1", "'-label", "'@cmd"]));
+  expect(categoryNames.every((value) => typeof value === 'string')).toBe(true);
 });
 
 test('an older committed dashboard response cannot replace an applied preview', async ({ page }) => {

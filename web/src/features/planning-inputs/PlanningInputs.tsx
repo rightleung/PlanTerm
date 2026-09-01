@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Download, Pencil, RotateCcw, Save, Upload, X } from 'lucide-react'
 import { ApiError, fetchPlanningTemplate, importPlanningInputs, previewDashboard } from '@/api/client'
 import type { BrandFilter, DashboardResponse, MarketFilter, PlanVariant, PlanningInputRow, PlanningInputSource } from '@/types/planning'
+import { neutralizeSpreadsheetText, numericSpreadsheetValue } from '@/lib/spreadsheetText'
 
 const CASE_ID = 'miniso-2026'
 const HEADERS = ['case_id', 'plan_variant', 'period', 'business_unit', 'category_id', 'volume_change_pct', 'average_ticket_change_pct', 'gross_margin_delta_pp', 'opex_ratio_delta_pp'] as const
@@ -13,10 +14,18 @@ export function parsePlanningInputCsv(csv: string): PlanningInputRow[] {
   for (let i = 0; i < text.length; i += 1) { const c = text[i]; const n = text[i + 1]; if (c === '"') { if (quoted && n === '"') { field += '"'; i += 1 } else quoted = !quoted } else if (c === ',' && !quoted) { row.push(field); field = '' } else if ((c === '\n' || c === '\r') && !quoted) { if (c === '\r' && n === '\n') i += 1; row.push(field); if (row.some((value) => value !== '')) records.push(row); row = []; field = '' } else field += c }
   if (quoted) throw new Error('Malformed CSV: unterminated quoted field'); if (field !== '' || row.length) { row.push(field); records.push(row) }
   if (records.length < 2 || records[0].length !== HEADERS.length || records[0].some((value, index) => value !== HEADERS[index])) throw new Error('Template header mismatch')
-  return records.slice(1).map((values) => { if (values.length !== HEADERS.length) throw new Error('Invalid CSV row shape'); const [case_id, plan_variant, period, business_unit, category_id, volume, ticket, gm, opex] = values; const drivers = [volume, ticket, gm, opex].map(Number); if (!case_id || !period || !business_unit || !category_id || !['base', 'upside', 'downside'].includes(plan_variant) || drivers.some((value) => !Number.isFinite(value))) throw new Error('Invalid CSV row values'); return { case_id, plan_variant: plan_variant as PlanVariant, period, business_unit, category_id, volume_change_pct: drivers[0], average_ticket_change_pct: drivers[1], gross_margin_delta_pp: drivers[2], opex_ratio_delta_pp: drivers[3] } })
+  const driverFields = ['volume_change_pct', 'average_ticket_change_pct', 'gross_margin_delta_pp', 'opex_ratio_delta_pp'] as const
+  return records.slice(1).map((values) => { if (values.length !== HEADERS.length) throw new Error('Invalid CSV row shape'); const [case_id, plan_variant, period, business_unit, category_id, volume, ticket, gm, opex] = values; let drivers: number[]; try { drivers = [volume, ticket, gm, opex].map((value, index) => numericSpreadsheetValue(value, driverFields[index])) } catch { throw new Error('Invalid CSV row values') } if (!case_id || !period || !business_unit || !category_id || !['base', 'upside', 'downside'].includes(plan_variant)) throw new Error('Invalid CSV row values'); return { case_id, plan_variant: plan_variant as PlanVariant, period, business_unit, category_id, volume_change_pct: drivers[0], average_ticket_change_pct: drivers[1], gross_margin_delta_pp: drivers[2], opex_ratio_delta_pp: drivers[3] } })
 }
 
-function csvFromRows(rows: PlanningInputRow[]) { const escape = (value: string | number) => `"${String(value).replaceAll('"', '""')}"`; return [HEADERS.join(','), ...rows.map((row) => HEADERS.map((key) => escape(row[key] as string | number)).join(','))].join('\n') }
+const NUMERIC_FIELDS = new Set<keyof PlanningInputRow>(['volume_change_pct', 'average_ticket_change_pct', 'gross_margin_delta_pp', 'opex_ratio_delta_pp'])
+export function csvFromRows(rows: PlanningInputRow[]) {
+  const escape = (value: string | number) => `"${String(value).replaceAll('"', '""')}"`
+  return [HEADERS.join(','), ...rows.map((row) => HEADERS.map((key) => {
+    const value = row[key] as string | number
+    return escape(NUMERIC_FIELDS.has(key) ? numericSpreadsheetValue(value, key) : neutralizeSpreadsheetText(String(value)))
+  }).join(','))].join('\n')
+}
 function diagnostics(reason: unknown) { if (!(reason instanceof ApiError) || !Array.isArray(reason.details.diagnostics)) return []; return reason.details.diagnostics.slice(0, 50).map((item) => typeof item === 'object' && item !== null ? JSON.stringify(item) : String(item)) }
 
 export function PlanningInputs({ dashboard, brand, market, session, onPreview, onDiscardAll }: { dashboard: DashboardResponse | null; brand: BrandFilter; market: MarketFilter; session: PlanningSession | null; onPreview: (next: DashboardResponse, nextSession: PlanningSession) => void; onDiscardAll: () => void }) {

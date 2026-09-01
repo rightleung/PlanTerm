@@ -1,5 +1,6 @@
 import type { Worksheet } from 'exceljs'
 import type { DashboardResponse, KpiSnapshot, PlanningInputRow, VarianceRow } from '@/types/planning'
+import { sanitizeSpreadsheetCell } from '@/lib/spreadsheetText'
 
 const FILE_NAME = 'PlanTerm_MINISO_2026H1_Management_Pack.xlsx'
 const COLORS = {
@@ -76,6 +77,12 @@ function addStatusConditionalFormatting(sheet: Worksheet, range: string) {
 function addStatusValue(cell: ReturnType<Worksheet['getCell']>, status: string | null) {
   if (status === 'Favorable') cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: COLORS.greenFill } }
   if (status === 'Unfavorable') cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: COLORS.redFill } }
+}
+
+function sanitizeWorkbookText(workbook: { worksheets: Worksheet[] }) {
+  workbook.worksheets.forEach((sheet) => sheet.eachRow((row) => row.eachCell((cell) => {
+    cell.value = sanitizeSpreadsheetCell(cell.value) as typeof cell.value
+  })))
 }
 
 function addSummaryRows(sheet: Worksheet, kpis: KpiSnapshot[]) {
@@ -228,6 +235,9 @@ export async function exportManagementPack(dashboard: DashboardResponse, scenari
       columns.forEach((columnNumber) => { sheet.getCell(rowNumber, columnNumber).numFmt = '0.0%;[Red](0.0%);-' })
     })
   }
+
+  // Sanitize only primitive text cells; Excel formulas and numeric values remain untouched.
+  sanitizeWorkbookText(workbook)
 
   const buffer = await workbook.xlsx.writeBuffer()
   saveAs(new Blob([buffer]), FILE_NAME)
