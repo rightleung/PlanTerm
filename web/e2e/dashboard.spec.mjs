@@ -75,6 +75,17 @@ test('loads the offline MINISO planning case and renders the disclosure', async 
   await expect(page.getByRole('heading', { name: 'Price / Volume / Mix' })).toBeVisible();
 });
 
+test('renders the empty business unit variance state', async ({ page }) => {
+  await page.route('**/api/v1/cases/miniso-2026/dashboard?*', async (route) => {
+    const response = await route.fetch();
+    const payload = await response.json();
+    payload.business_unit_variances = [];
+    await route.fulfill({ response, body: JSON.stringify(payload) });
+  });
+  await page.goto('/');
+  await expect(page.getByText('No business unit matches the selected filters')).toBeVisible();
+});
+
 test('filters update business unit rows and PVM values', async ({ page }) => {
   await page.goto('/');
   await page.getByLabel('Brand').selectOption('MINISO');
