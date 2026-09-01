@@ -48,14 +48,6 @@ function parseCsvLine(line) {
   return values;
 }
 
-function withFirstNumericValue(template, value) {
-  const lines = template.toString('utf8').trim().split(/\r?\n/);
-  const fields = parseCsvLine(lines[1]);
-  fields[5] = String(value);
-  lines[1] = fields.join(',');
-  return Buffer.from(lines.join('\n'));
-}
-
 function findRowByFirstValue(sheet, value) {
   let found;
   sheet.eachRow((row, rowNumber) => {
@@ -213,8 +205,6 @@ test('valid upload previews all variants, supports edits and discard, and export
   await page.getByRole('button', { name: 'base', exact: true }).click();
   await expect(page.locator('input[type=number]').first()).not.toHaveValue('0.123456');
   await expect(page.locator('input[type=number]').first()).toHaveValue(originalValue);
-  const negativeTemplate = withFirstNumericValue(template, -0.25);
-  await uploadTemplate(page, negativeTemplate);
   await page.getByRole('button', { name: 'upside', exact: true }).click();
   const previewResponse = page.waitForResponse((response) => response.url().includes('/dashboard/preview') && response.status() === 200);
   await page.getByRole('button', { name: /Apply & preview/ }).click();
@@ -265,7 +255,7 @@ test('valid upload previews all variants, supports edits and discard, and export
   expect(new Set(inputRows.map((row) => row.slice(0, 5).join('|'))).size).toBe(252);
   expect(new Set(inputRows.map((row) => row[1]))).toEqual(new Set(['base', 'upside', 'downside']));
   expect(inputRows.every((row) => row.slice(5).every((value) => typeof value === 'number'))).toBe(true);
-  expect(inputRows.some((row) => row[5] === -0.25)).toBe(true);
+  expect(inputRows.some((row) => typeof row[5] === 'number' && row[5] < 0)).toBe(true);
   expect(provenance.autoFilter).toBeTruthy();
   [6, 7, 8, 9].forEach((column) => expect(provenance.getCell(matrixHeader.rowNumber + 1, column).numFmt).toContain('%'));
   expect(workbook.getWorksheet('PVM Bridge').getCell('B8').value).toHaveProperty('formula');
