@@ -49,6 +49,10 @@ function configureSheet(sheet: Worksheet, headerRow: number, columnWidths: numbe
   sheet.views = [{ state: 'frozen', ySplit: headerRow }]
   sheet.autoFilter = { from: `A${headerRow}`, to: `${lastColumn}${headerRow}` }
   columnWidths.forEach((width, index) => { sheet.getColumn(index + 1).width = width })
+  styleHeader(sheet, headerRow)
+}
+
+function styleHeader(sheet: Worksheet, headerRow: number) {
   const header = sheet.getRow(headerRow)
   header.font = { bold: true, color: { argb: COLORS.white } }
   header.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: COLORS.teal } }
@@ -278,7 +282,8 @@ export async function exportManagementPack(dashboard: DashboardResponse, scenari
     const detailHeaderRow = roleTableEndRow + 2
     const detailStartRow = detailHeaderRow + 1
     const detailEndRow = detailStartRow + workforce.headcount_rows.length - 1
-    configureSheet(capacity, 8, [18, 28, 20, 14, 14, 14, 16, 16, 18, 24])
+    configureSheet(capacity, detailHeaderRow, [18, 28, 20, 14, 14, 14, 16, 16, 18, 24])
+    styleHeader(capacity, 8)
     formatColumns(capacity, Array.from({ length: roles.length + 1 }, (_, index) => roleTableStartRow + index), [2, 3, 4, 5, 6, 7], [])
     formatColumns(capacity, Array.from({ length: workforce.headcount_rows.length }, (_, index) => detailStartRow + index), [4, 5, 6, 7, 8], [])
     addWorkforceStatusConditionalFormatting(capacity, `H${roleTableStartRow}:H${roleTableEndRow}`)

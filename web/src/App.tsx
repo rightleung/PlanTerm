@@ -117,6 +117,7 @@ export default function App() {
         rows: currentSession.rows,
         working_capital_rows: workingCapitalRows,
         cash_assumption_rows: cashAssumptionRows,
+        headcount_rows: currentSession.headcountRows,
         actions: sessionActionsRef.current.map(operatingActionPayload),
       }, controller.signal)
     })()
@@ -184,7 +185,7 @@ export default function App() {
 
         <div className="callout"><span className="callout-icon">i</span><span>Public reported data anchors H1 Actual and Prior Year. Budget, Forecast, monthly allocations and business-unit cost/profit views are clearly marked synthetic planning assumptions.</span></div>
         <FilterBar brand={brand} market={market} availableFilters={dashboard?.available_filters} onBrandChange={handleBrandChange} onMarketChange={setMarket} onReset={resetFilters} />
-        <PlanningInputs dashboard={dashboard} brand={brand} market={market} session={planningSession} onPreview={applyPreview} onDiscardAll={discardAll} />
+        <PlanningInputs dashboard={dashboard} brand={brand} market={market} session={planningSession} workforceCapacity={operatingPlan?.workforce_capacity || operatingPlan?.headcount_capacity} onPreview={applyPreview} onDiscardAll={discardAll} />
 
         {loading && <div className="state-card" role="status"><div className="spinner" />Loading planning case…</div>}
         {!loading && error && <div className="state-card error-state" role="alert"><div><strong>Dashboard unavailable</strong><p>{error.message}</p></div><button className="button" type="button" onClick={() => setRetryCount((count) => count + 1)}>Retry</button></div>}

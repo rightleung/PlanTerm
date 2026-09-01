@@ -6,6 +6,7 @@ async function openPlanningEditor(page, expectedVariant = 'base') {
   await page.getByRole('button', { name: 'Open editor' }).click();
   await expect(page.getByRole('dialog', { name: 'Planning Inputs' })).toBeVisible();
   await expect(page.getByText(new RegExp(`Showing 84 rows for ${expectedVariant} \\(252 total\\)`))).toBeVisible();
+  await expect(page.getByText(/72 workforce rows/)).toBeVisible();
 }
 
 async function downloadTemplate(page) {
@@ -69,18 +70,25 @@ function findRowByValues(sheet, expected) {
 
 function workforceFixture(variant = 'base') {
   const requiredRatio = variant === 'upside' ? 1.08 : variant === 'downside' ? 0.92 : 1;
+  const periods = ['2026-07', '2026-08', '2026-09', '2026-10', '2026-11', '2026-12'];
+  const businessUnits = ['MINISO - Chinese Mainland', 'MINISO - Overseas', 'TOP TOY - Global'];
   const roleRows = [
     ['store operations', 12, 0.12, 120],
     ['commercial', 4, 0.2, 60],
     ['supply chain', 3, 0.18, 40],
     ['finance/support', 2, 0.22, 25],
   ];
-  const headcountRows = roleRows.map(([role, planned, monthlyCost, revenue]) => ({
-    case_id: 'miniso-2026', plan_variant: variant, period: '2026-07', business_unit: 'MINISO - Chinese Mainland', role_group: role,
-    planned_fte: planned, required_fte: planned * requiredRatio, monthly_loaded_cost: monthlyCost, loaded_cost: planned * monthlyCost,
-    revenue, revenue_per_fte: planned > 0 ? revenue / planned : null, capacity_gap: planned * (requiredRatio - 1), productivity_basis: 'Revenue / planned FTE (RMB millions per FTE)',
-    status: requiredRatio > 1 ? 'capacity_gap' : requiredRatio < 1 ? 'over_capacity' : 'balanced', provenance: 'calculated', input_provenance: 'synthetic_plan',
-  })) ;
+  const headcountRows = periods.flatMap((period) => businessUnits.flatMap((businessUnit) => roleRows.map(([role, seedPlanned, monthlyCost, seedRevenue]) => {
+    const isSeedRow = period === '2026-07' && businessUnit === 'MINISO - Chinese Mainland';
+    const planned = isSeedRow ? seedPlanned : 0;
+    const revenue = isSeedRow ? seedRevenue : 0;
+    return {
+      case_id: 'miniso-2026', plan_variant: variant, period, business_unit: businessUnit, role_group: role,
+      planned_fte: planned, required_fte: planned * requiredRatio, monthly_loaded_cost: monthlyCost, loaded_cost: planned * monthlyCost,
+      revenue, revenue_per_fte: planned > 0 ? revenue / planned : null, capacity_gap: planned * (requiredRatio - 1), productivity_basis: 'Revenue / planned FTE (RMB millions per FTE)',
+      status: planned === 0 ? 'zero_capacity' : requiredRatio > 1 ? 'capacity_gap' : requiredRatio < 1 ? 'over_capacity' : 'balanced', provenance: 'calculated', input_provenance: 'synthetic_plan',
+    };
+  })));
   const rollups = Object.fromEntries(roleRows.map(([role, planned, monthlyCost]) => [role, {
     planned_fte: planned, required_fte: planned * requiredRatio, loaded_cost: planned * monthlyCost, capacity_gap: planned * (requiredRatio - 1), row_count: 1, provenance: 'calculated',
   }]));
@@ -368,12 +376,18 @@ test('operating decision loads, previews selected variants, and exports safe ill
   const template = await downloadTemplate(page);
   await uploadTemplate(page, template);
   await page.getByRole('button', { name: 'downside', exact: true }).click();
+  const editedHeadcount = page.getByLabel('planned_fte 2026-07 MINISO - Chinese Mainland store operations');
+  await editedHeadcount.fill('13');
+  await expect(editedHeadcount).toHaveValue('13');
   await page.getByRole('button', { name: /Apply & preview/ }).click();
   await expect.poll(() => previewBodies.length).toBe(1);
   expect(previewBodies[0]).toMatchObject({ case_id: 'miniso-2026', selected_plan_variant: 'downside', planning_input_source: 'upload' });
   expect(previewBodies[0].rows).toHaveLength(252);
   expect(previewBodies[0].working_capital_rows).toHaveLength(1);
   expect(previewBodies[0].cash_assumption_rows).toHaveLength(1);
+  expect(previewBodies[0].headcount_rows).toHaveLength(72);
+  expect(previewBodies[0].headcount_rows.every((row) => row.plan_variant === 'downside')).toBe(true);
+  expect(previewBodies[0].headcount_rows.find((row) => row.period === '2026-07' && row.business_unit === 'MINISO - Chinese Mainland' && row.role_group === 'store operations').planned_fte).toBe(13);
   expect(operatingPlanVariants).toContain('downside');
   expect(previewBodies[0].working_capital_rows.every((row) => row.plan_variant === 'downside')).toBe(true);
   expect(previewBodies[0].cash_assumption_rows.every((row) => row.plan_variant === 'downside')).toBe(true);
@@ -443,6 +457,10 @@ test('workforce capacity renders bounded role groups and exports parity sheet', 
   expect(findRowByFirstValue(workforce, 'Reconciliation status').row.getCell(2).value).toBe('reconciled');
   expect(workforce.getCell(9, 2).value).toBe(12);
   expect(typeof workforce.getCell(9, 2).value).toBe('number');
+  expect(workforce.getCell(9, 2).numFmt).toContain('#,##0.0');
+  const detailHeader = findRowByValues(workforce, ['Period', 'Business Unit', 'Role Group', 'Planned FTE', 'Required FTE', 'Capacity Gap', 'Loaded Cost', 'Revenue / FTE', 'Status', 'Provenance']);
+  expect(workforce.autoFilter).toBe(`A${detailHeader.rowNumber}:J${detailHeader.rowNumber}`);
+  expect(workforce.getCell(detailHeader.rowNumber + 1, 4).numFmt).toContain('#,##0.0');
   expect(workforce.getRows(1, workforce.rowCount).flatMap((row) => row.values)).not.toContain('[object Object]');
 });
 
