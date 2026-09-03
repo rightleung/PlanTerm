@@ -1,0 +1,17 @@
+{
+  "exchange": "A_SHARE",
+  "venue": "SZSE",
+  "ticker": "000001",
+  "normalized_symbol": "000001.SZ",
+  "company": {"name": "Ping An Bank", "currency": "CNY", "country": "CN"},
+  "currency": "CNY",
+  "unit": "CNY millions",
+  "unit_scale": "millions",
+  "source_url": "https://example.test/szse/000001",
+  "retrieved_at": "2025-01-02T00:00:00Z",
+  "statements": [
+    {"period_end": "2024-12-31", "period_type": "annual", "fiscal_year": 2024, "fiscal_quarter": null, "is_flow": true, "currency": "CNY", "unit": "CNY millions", "unit_scale": "millions", "values": {"revenue": 146000.0, "cash": null, "operating_cf": 42000.0}, "as_of": "2024-12-31", "filing_date": "2025-03-15"},
+    {"period_end": "2024-09-30", "period_type": "quarterly", "fiscal_year": 2024, "fiscal_quarter": 3, "is_flow": true, "currency": "CNY", "unit": "CNY millions", "unit_scale": "millions", "values": {"revenue": 37000.0, "cash": null, "operating_cf": 10000.0}, "as_of": "2024-09-30", "filing_date": "2024-10-26"}
+  ],
+  "periods": ["annual", "quarterly"]
+}

@@ -19,6 +19,8 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0,<10", "httpx>=0.27,<1"]
+public-data-yfinance = ["yfinance>=0.2,<1"]
+public-data-akshare = ["akshare>=1,<2"]
 
 [tool.setuptools.packages.find]
 where = ["."]

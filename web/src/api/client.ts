@@ -1,8 +1,8 @@
-import type { BrandFilter, DashboardResponse, ForecastAccuracy, MarketFilter, OperatingPlanPreviewRequest, OperatingPlanResponse, PlanVariant, PlanningInputRow } from '@/types/planning'
+import type { BrandFilter, DashboardResponse, ForecastAccuracy, MarketFilter, OperatingPlanPreviewRequest, OperatingPlanResponse, PlanVariant, PlanningInputRow, PublicImportPreview, PublicImportRequest, ApiErrorCode } from '@/types/planning'
 
 export class ApiError extends Error {
   status: number
-  errorType: string
+  errorType: ApiErrorCode | string
   details: Record<string, unknown>
 
   constructor(message: string, status: number, errorType = 'request_error', details: Record<string, unknown> = {}) {
@@ -82,4 +82,9 @@ export async function previewOperatingPlan(caseId: string, request: OperatingPla
 export async function fetchForecastAccuracy(caseId: string, signal?: AbortSignal): Promise<ForecastAccuracy> {
   const response = await fetch(`/api/v1/cases/${encodeURIComponent(caseId)}/forecast-accuracy`, { signal })
   return parseApiResponse<ForecastAccuracy>(response)
+}
+
+export async function previewPublicImport(request: PublicImportRequest, signal?: AbortSignal): Promise<PublicImportPreview> {
+  const response = await fetch('/api/v1/public-import/preview', { method: 'POST', body: JSON.stringify(request), signal, headers: { 'Content-Type': 'application/json', Accept: 'application/json' } })
+  return parseApiResponse<PublicImportPreview>(response)
 }

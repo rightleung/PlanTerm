@@ -17,7 +17,10 @@ import { CashBridge } from '@/features/operating-plan/CashBridge'
 import { ForecastAccuracy } from '@/features/operating-plan/ForecastAccuracy'
 import { ScenarioDecisionTable } from '@/features/operating-plan/ScenarioDecisionTable'
 import { HeadcountCapacity } from '@/features/operating-plan/HeadcountCapacity'
+import { PublicImportPanel } from '@/features/public-import/PublicImportPanel'
 import type { ActionRegisterRow, BrandFilter, DashboardResponse, DecisionLogRow, MarketFilter, OperatingPlanResponse } from '@/types/planning'
+import { localeName, useI18n, type Locale } from '@/i18n'
+import { apiLabel } from '@/i18n/apiLabels'
 
 const CASE_ID = 'miniso-2026'
 
@@ -30,6 +33,8 @@ function operatingActionPayload(action: ActionRegisterRow) {
 }
 
 export default function App() {
+  const { t, locale, setLocale, formatDate, formatNumber } = useI18n()
+  const publicImportEnabled = import.meta.env.VITE_PUBLIC_IMPORT_ENABLED === 'true'
   const [brand, setBrand] = useState<BrandFilter>('all')
   const [market, setMarket] = useState<MarketFilter>('all')
   const [dashboard, setDashboard] = useState<DashboardResponse | null>(null)
@@ -47,6 +52,8 @@ export default function App() {
   const [decisionLog, setDecisionLog] = useState<DecisionLogRow[]>([])
   const requestId = useRef(0)
   const dashboardController = useRef<AbortController | null>(null)
+  const translateRef = useRef(t)
+  translateRef.current = t
   const operatingRequestId = useRef(0)
   const operatingController = useRef<AbortController | null>(null)
   const planningSessionRef = useRef<PlanningSession | null>(null)
@@ -80,7 +87,7 @@ export default function App() {
     load.then((result) => {
       if (active && id === requestId.current) setDashboard(result)
     }).catch((reason: unknown) => {
-      if (active && id === requestId.current && (reason as Error).name !== 'AbortError') setError(reason instanceof Error ? reason : new Error('Unable to load dashboard'))
+      if (active && id === requestId.current && (reason as Error).name !== 'AbortError') setError(reason instanceof Error ? reason : new Error(translateRef.current('dashboardErrorFallback')))
     }).finally(() => { if (active && id === requestId.current) setLoading(false) })
     return () => {
       active = false
@@ -134,7 +141,7 @@ export default function App() {
         setDecisionLog((current) => current.length > 0 ? current : (result.decision_log || result.governance?.decision_log || []))
       }
     }).catch((reason: unknown) => {
-      if (active && id === operatingRequestId.current && (reason as Error).name !== 'AbortError') setOperatingError(reason instanceof Error ? reason : new Error('Unable to load operating decision plan'))
+      if (active && id === operatingRequestId.current && (reason as Error).name !== 'AbortError') setOperatingError(reason instanceof Error ? reason : new Error(translateRef.current('operatingErrorFallback')))
     }).finally(() => { if (active && id === operatingRequestId.current) setOperatingLoading(false) })
     return () => {
       active = false
@@ -172,29 +179,30 @@ export default function App() {
   const download = async () => {
     if (!dashboard || dashboard.business_unit_variances.length === 0) return
     setExporting(true)
-    try { const rows = planningSession?.rows || parsePlanningInputCsv(await fetchPlanningTemplate(CASE_ID)); await exportManagementPack(dashboard, rows, operatingPlan, sessionActions, decisionLog) } catch (reason: unknown) { setError(reason instanceof Error ? reason : new Error('Excel export failed')) } finally { setExporting(false) }
+    try { const rows = planningSession?.rows || parsePlanningInputCsv(await fetchPlanningTemplate(CASE_ID)); await exportManagementPack(dashboard, rows, operatingPlan, sessionActions, decisionLog) } catch (reason: unknown) { setError(reason instanceof Error ? reason : new Error(t('dashboardErrorFallback'))) } finally { setExporting(false) }
   }
   const selectedCategoryDetail = dashboard?.category_detail?.filter((row) => row.plan_variant === (dashboard.selected_plan_variant || 'base')) || []
 
   return (
     <main className="app-shell">
       <header className="app-header">
-        <div className="brand-lockup"><div className="brand-mark">PT</div><div><div className="brand-name">PlanTerm</div><div className="brand-subtitle">FP&amp;A planning workbench</div></div></div>
-        <div className="header-meta"><span className="status-dot" />Local case · no live data dependency</div>
+        <div className="brand-lockup"><div className="brand-mark">PT</div><div><div className="brand-name">PlanTerm</div><div className="brand-subtitle">{t('workbenchSubtitle')}</div></div></div>
+        <div className="header-meta"><span className="status-dot" /><span className="case-status-label">{t('localCase')}</span><label><span className="sr-only">{t('language')}</span><select aria-label={t('language')} value={locale} onChange={(event) => setLocale(event.target.value as Locale)}><option value="en">{t('languageEnglish')}</option><option value="zh-CN">{t('languageZhCN')}</option><option value="zh-TW">{t('languageZhTW')}</option></select></label><span className="sr-only" aria-live="polite">{t('languageChanged', { language: localeName(locale) })}</span></div>
       </header>
 
       <div className="content">
         <section className="hero">
-          <div><div className="eyebrow">MINISO Group · Management view</div><h1>Portfolio planning &amp; performance</h1><p className="hero-copy">A disciplined view of Actual, Budget, Forecast and Prior Year across the three-business-unit MINISO case.</p></div>
-          <div className="hero-side"><span className="case-label">{dashboard?.metadata.name || 'MINISO FP&A Portfolio MVP'}</span><strong>As of {dashboard?.metadata.as_of_date || '2026-06-30'}</strong><span>RMB millions · IFRS basis</span></div>
+          <div><div className="eyebrow">{t('managementView')}</div><h1>{t('portfolioPlanning')}</h1><p className="hero-copy">{t('heroCopy')}</p></div>
+          <div className="hero-side"><span className="case-label">{dashboard?.metadata.name ? apiLabel(dashboard.metadata.name, t) : t('minisoPortfolioMvp')}</span><strong>{t('asOf', { date: formatDate(dashboard?.metadata.as_of_date || '2026-06-30') })}</strong><span>{t('ifrsBasis')}</span></div>
         </section>
 
-        <div className="callout"><span className="callout-icon">i</span><span>Public reported data anchors H1 Actual and Prior Year. Budget, Forecast, monthly allocations and business-unit cost/profit views are clearly marked synthetic planning assumptions.</span></div>
+        <div className="callout"><span className="callout-icon">i</span><span>{t('publicDisclosure')}</span></div>
+        {publicImportEnabled && <PublicImportPanel />}
         <FilterBar brand={brand} market={market} availableFilters={dashboard?.available_filters} onBrandChange={handleBrandChange} onMarketChange={setMarket} onReset={resetFilters} />
         <PlanningInputs dashboard={dashboard} brand={brand} market={market} session={planningSession} workforceCapacity={operatingPlan?.workforce_capacity || operatingPlan?.headcount_capacity} onPreview={applyPreview} onDiscardAll={discardAll} />
 
-        {loading && <div className="state-card" role="status"><div className="spinner" />Loading planning case…</div>}
-        {!loading && error && <div className="state-card error-state" role="alert"><div><strong>Dashboard unavailable</strong><p>{error.message}</p></div><button className="button" type="button" onClick={() => setRetryCount((count) => count + 1)}>Retry</button></div>}
+        {loading && <div className="state-card" role="status"><div className="spinner" />{t('loadingPlanning')}</div>}
+        {!loading && error && <div className="state-card error-state" role="alert"><div><strong>{t('dashboardUnavailable')}</strong><p>{error.message}</p></div><button className="button" type="button" onClick={() => setRetryCount((count) => count + 1)}>{t('retry')}</button></div>}
         {!loading && !error && dashboard && (
           <div className="dashboard-stack">
             {dashboard.business_unit_variances.length > 0 ? <>
@@ -203,11 +211,11 @@ export default function App() {
               <VarianceTable rows={dashboard.business_unit_variances} />
               <div className="two-column"><PvmBridge bridge={dashboard.pvm_bridge} /><ProfitBridge bridge={dashboard.profit_bridge} /></div>
               <ManagementInsights insights={dashboard.management_insights} />
-            </> : <div className="state-card empty-dashboard" role="status"><div><strong>No business unit matches the selected filters</strong><p>Choose a valid brand and market combination to view planning metrics.</p></div></div>}
-            {dashboard.scenario_comparison && <section className="panel scenario-panel"><div className="section-heading"><h2>Scenario comparison</h2><span className="unit-note">Selected FY Forecast vs Base FY Forecast</span></div><div className="scenario-grid">{(['revenue', 'gross_profit', 'operating_profit'] as const).map((metric) => { const item = dashboard.scenario_comparison![metric]; return <div key={metric}><span>{metric.replaceAll('_', ' ')}</span><strong>{item.selected_fy_forecast.toFixed(1)}</strong><em className={item.delta >= 0 ? 'positive' : 'negative'}>{item.delta >= 0 ? '+' : ''}{item.delta.toFixed(1)} vs base</em></div> })}</div></section>}
-            {dashboard.category_detail && <section className="panel table-panel category-detail-panel"><div className="section-heading"><div><h2>Product Category Detail</h2><span className="unit-note">Filtered synthetic allocation · selected {dashboard.selected_plan_variant || 'base'}</span></div></div><div className="synthetic-disclosure">Synthetic planning input — not reported category data</div><div className="table-scroll"><table><thead><tr><th>Period</th><th>Business unit</th><th>Category</th><th>Revenue</th><th>Revenue mix</th><th>Gross margin</th><th>Opex ratio</th><th>Operating margin</th><th>Provenance</th></tr></thead><tbody>{selectedCategoryDetail.map((row) => <tr key={`${row.plan_variant}-${row.period}-${row.business_unit}-${row.category_id}`}><td>{row.period}</td><td>{row.business_unit}</td><td className="table-primary">{row.category_name}</td><td>{row.revenue.toFixed(1)}</td><td>{(row.revenue_mix_pct * 100).toFixed(1)}%</td><td>{(row.gross_margin_pct * 100).toFixed(1)}%</td><td>{(row.opex_ratio_pct * 100).toFixed(1)}%</td><td>{(row.operating_margin_pct * 100).toFixed(1)}%</td><td>{row.provenance}</td></tr>)}</tbody></table></div></section>}
-            {operatingLoading && <div className="state-card" role="status"><div className="spinner" />Loading operating decision plan…</div>}
-            {!operatingLoading && operatingError && <div className="state-card error-state" role="alert"><div><strong>Operating decision plan unavailable</strong><p>{operatingError.message}</p></div><button className="button" type="button" onClick={() => setOperatingRetryCount((count) => count + 1)}>Retry</button></div>}
+            </> : <div className="state-card empty-dashboard" role="status"><div><strong>{t('emptyFilters')}</strong><p>{t('emptyFiltersHint')}</p></div></div>}
+            {dashboard.scenario_comparison && <section className="panel scenario-panel"><div className="section-heading"><h2>{t('scenarioComparison')}</h2><span className="unit-note">{t('selectedVsBase')}</span></div><div className="scenario-grid">{(['revenue', 'gross_profit', 'operating_profit'] as const).map((metric) => { const item = dashboard.scenario_comparison![metric]; return <div key={metric}><span>{apiLabel(metric, t)}</span><strong>{formatNumber(item.selected_fy_forecast)}</strong><em className={item.delta >= 0 ? 'positive' : 'negative'}>{item.delta >= 0 ? '+' : ''}{formatNumber(item.delta)} {t('vsBase')}</em></div> })}</div></section>}
+            {dashboard.category_detail && <section className="panel table-panel category-detail-panel"><div className="section-heading"><div><h2>{t('productCategoryDetail')}</h2><span className="unit-note">{t('filteredAllocation', { variant: apiLabel(dashboard.selected_plan_variant || 'base', t) })}</span></div></div><div className="synthetic-disclosure">{t('syntheticCategoryDisclosure')}</div><div className="table-scroll" role="region" tabIndex={0} aria-label={t('productCategoryDetail')}><table><thead><tr><th>{t('period')}</th><th>{t('businessUnit')}</th><th>{t('category')}</th><th>{t('revenueActual')}</th><th>{t('revenueMix')}</th><th>{t('grossMargin')}</th><th>{t('opexRatio')}</th><th>{t('operatingMargin')}</th><th>{t('provenance')}</th></tr></thead><tbody>{selectedCategoryDetail.map((row) => <tr key={`${row.plan_variant}-${row.period}-${row.business_unit}-${row.category_id}`}><td>{row.period}</td><td>{apiLabel(row.business_unit, t)}</td><td className="table-primary">{apiLabel(row.category_name, t)}</td><td>{formatNumber(row.revenue)}</td><td>{formatNumber(row.revenue_mix_pct * 100)}%</td><td>{formatNumber(row.gross_margin_pct * 100)}%</td><td>{formatNumber(row.opex_ratio_pct * 100)}%</td><td>{formatNumber(row.operating_margin_pct * 100)}%</td><td>{apiLabel(row.provenance, t)}</td></tr>)}</tbody></table></div></section>}
+            {operatingLoading && <div className="state-card" role="status"><div className="spinner" />{t('loadingOperating')}</div>}
+            {!operatingLoading && operatingError && <div className="state-card error-state" role="alert"><div><strong>{t('operatingPlanUnavailable')}</strong><p>{operatingError.message}</p></div><button className="button" type="button" onClick={() => setOperatingRetryCount((count) => count + 1)}>{t('retry')}</button></div>}
             {!operatingLoading && !operatingError && operatingPlan && <div className="dashboard-stack">
               <CashBridge workingCapital={operatingPlan.working_capital} cashBridge={operatingPlan.cash_bridge} reconciliation={operatingPlan.reconciliation} />
               {(operatingPlan.workforce_capacity || operatingPlan.headcount_capacity) && <HeadcountCapacity capacity={(operatingPlan.workforce_capacity || operatingPlan.headcount_capacity)!} />}
@@ -217,11 +225,11 @@ export default function App() {
             <ProvenancePanel dashboard={dashboard} operatingPlan={operatingPlan} />
             <DataProvenance dashboard={dashboard} />
             <DecisionLog rows={decisionLog} onChange={setDecisionLog} />
-            <div className="export-row"><div><strong>Take this view to your next review</strong><span>Exports the current filters and selected plan variant into an eight-sheet Excel management pack; Operating Decision includes workforce capacity.</span></div><button className="button button-primary" type="button" onClick={download} disabled={exporting || dashboard.business_unit_variances.length === 0}>{exporting ? 'Building workbook…' : 'Export Excel management pack'}</button></div>
+            <div className="export-row"><div><strong>{t('exportReview')}</strong><span>{t('exportDescription')}</span></div><button className="button button-primary" type="button" onClick={download} disabled={exporting || dashboard.business_unit_variances.length === 0}>{exporting ? t('buildingWorkbook') : t('exportExcel')}</button></div>
           </div>
         )}
       </div>
-      <footer className="app-footer"><span>PlanTerm v0.3</span><span>FP&amp;A Planning and Performance Management Workbench</span><span>Public case study · not internal company data</span></footer>
+      <footer className="app-footer"><span>{t('productVersion')}</span><span>{t('footerWorkbench')}</span><span>{t('publicCaseStudy')}</span></footer>
     </main>
   )
 }

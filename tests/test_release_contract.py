@@ -20,9 +20,28 @@ def test_openapi_freezes_the_v1_endpoint_surface():
         "/api/v1/cases/{case_id}/operating-plan",
         "/api/v1/cases/{case_id}/operating-plan/preview",
         "/api/v1/cases/{case_id}/forecast-accuracy",
+        "/api/v1/public-import/preview",
     } <= set(paths)
     assert "get" in paths["/api/v1/cases/{case_id}/operating-plan"]
     assert "post" in paths["/api/v1/cases/{case_id}/operating-plan/preview"]
+    assert "post" in paths["/api/v1/public-import/preview"]
+
+
+def test_public_import_contract_is_additive_and_stateless():
+    types = (ROOT / "web/src/types/planning.ts").read_text(encoding="utf-8")
+    api_client = (ROOT / "web/src/api/client.ts").read_text(encoding="utf-8")
+    service = (ROOT / "src/services/public_import/service.py").read_text(encoding="utf-8")
+    assert "PublicImportPreview" in types
+    assert "previewPublicImport" in api_client
+    assert "dashboard_ready=False" in service
+    assert "no FX conversion" in service
+    assert "miniso-2026" not in service
+
+
+def test_additive_release_identifier_preserves_legacy_version_contract():
+    health = client.get("/health").json()
+    assert health["version"] == "0.2.0"
+    assert health["release_id"] == "1.1.0-rc.1"
 
 
 def test_typescript_freezes_additive_governance_fields():

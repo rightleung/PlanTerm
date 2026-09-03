@@ -18,6 +18,9 @@ from src.services.planning_service import build_dashboard, build_operating_decis
 from src.services.csv_input_service import InputError, HEADERS, parse_csv, parse_json_rows
 from src.services.spreadsheet_neutralizer import sanitize_csv_row
 from src.services.committed_json import DuplicateJsonKeyError, loads_json
+from src.models.public_import import PublicImportRequest
+from src.services.public_import import preview_public_import
+from src.services.public_import.errors import PublicImportException
 
 
 logger = logging.getLogger(__name__)
@@ -59,7 +62,20 @@ async def handle_http_exception(_request: Request, exc: HTTPException):
 
 @app.exception_handler(RequestValidationError)
 async def handle_validation_exception(_request: Request, exc: RequestValidationError):
-    return JSONResponse(content=api_error("Validation failed", "validation_error", {"errors": [
+    messages = " ".join(str(item.get("msg", "")) for item in exc.errors()).lower()
+    error_type = "validation_error"
+    loc_fields = {str(part) for item in exc.errors() for part in item.get("loc", [])}
+    if "exchange" in loc_fields and "input should be" in messages:
+        error_type = "invalid_exchange"
+    elif "venue" in loc_fields and "input should be" in messages:
+        error_type = "invalid_venue"
+    elif "a-share ticker requires" in messages:
+        error_type = "ambiguous_ticker"
+    elif "venue is only valid" in messages:
+        error_type = "invalid_venue"
+    elif "ticker" in loc_fields:
+        error_type = "invalid_ticker"
+    return JSONResponse(content=api_error("Validation failed", error_type, {"errors": [
         {"loc": [str(part) for part in item.get("loc", [])], "msg": str(item.get("msg", "Validation error")), "type": str(item.get("type", "value_error"))}
         for item in exc.errors()
     ]}), status_code=422)
@@ -73,7 +89,29 @@ async def handle_unexpected_exception(request: Request, exc: Exception):
 
 @app.get("/health")
 def health() -> dict:
-    return {"status": "ok", "app": settings.app_name, "version": settings.version}
+    return {"status": "ok", "app": settings.app_name, "version": settings.version, "release_id": settings.release_id}
+
+
+@app.post(
+    "/api/v1/public-import/preview",
+    summary="Preview allowlisted public financial data",
+    description="Returns a stateless preview of public reported annual or quarterly data in its native currency and unit. It does not create or modify a case, write files, apply FX conversion, or claim internal company data.",
+)
+async def public_import_preview(request: PublicImportRequest):
+    if not settings.public_import_enabled:
+        raise HTTPException(status_code=503, detail={"error": "Public import preview is disabled", "error_type": "provider_unavailable"})
+    try:
+        return (await preview_public_import(request, rate_interval=settings.public_import_rate_limit_seconds)).model_dump(mode="json")
+    except PublicImportException as exc:
+        status = {
+            "rate_limited": 429,
+            "provider_timeout": 504,
+            "no_data": 404,
+            "provider_unavailable": 502,
+            "dependency_missing": 422,
+            "malformed_upstream": 422,
+        }.get(exc.error_type, 422)
+        raise HTTPException(status_code=status, detail={"error": exc.message, "error_type": exc.error_type, **exc.details})
 
 
 @app.get("/api/v1/cases")

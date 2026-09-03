@@ -124,6 +124,71 @@ function operatingPlanFixture(variant = 'base', reconciliation = { status: 'reco
   };
 }
 
+const responsiveViewports = [
+  { width: 1440, height: 900 },
+  { width: 1280, height: 800 },
+  { width: 1024, height: 768 },
+  { width: 768, height: 1024 },
+  { width: 390, height: 844 },
+  { width: 320, height: 568 },
+];
+
+async function assertResponsiveShell(page, viewport) {
+  const evidence = await page.evaluate(() => {
+    const allowedScrollOwners = ['.table-scroll', '.context-scroll', '.matrix-scroll'];
+    const isAllowedScrollOwner = (element) => allowedScrollOwners.some((selector) => element.matches(selector) || element.closest(selector));
+    const overflowElements = [...document.querySelectorAll('*')]
+      .filter((element) => !['HTML', 'BODY'].includes(element.tagName))
+      .filter((element) => {
+        const rect = element.getBoundingClientRect();
+        return !element.matches('.sr-only') && rect.width > 0 && rect.height > 0 && element.scrollWidth > element.clientWidth + 1;
+      })
+      .filter((element) => !isAllowedScrollOwner(element))
+      .map((element) => {
+        const rect = element.getBoundingClientRect();
+        const parent = element.parentElement;
+        const grandparent = parent?.parentElement;
+        const describe = (node) => node ? `${node.tagName.toLowerCase()}.${node.className || ''}(${node.clientWidth}x${node.clientHeight};${getComputedStyle(node).display};${getComputedStyle(node).minWidth})` : 'none';
+        return `${element.tagName.toLowerCase()}.${element.className || ''}#${element.id || ''} scroll=${element.scrollWidth} client=${element.clientWidth} rect=${Math.round(rect.x)},${Math.round(rect.y)},${Math.round(rect.width)},${Math.round(rect.height)} parent=${describe(parent)} grandparent=${describe(grandparent)}`;
+      });
+    const content = document.querySelector('.content')?.getBoundingClientRect();
+    const cards = [...document.querySelectorAll('.kpi-card, .dashboard-stack > .panel, .dashboard-stack > .two-column > .panel, .export-row')]
+      .filter((element) => getComputedStyle(element).display !== 'none')
+      .map((element) => {
+        const rect = element.getBoundingClientRect();
+        return { left: rect.left, right: rect.right, width: rect.width };
+      });
+    return {
+      documentWidth: document.documentElement.scrollWidth,
+      clientWidth: document.documentElement.clientWidth,
+      viewportWidth: window.innerWidth,
+      content: content ? { left: content.left, right: content.right, width: content.width } : null,
+      cards,
+      overflowElements,
+      tableScrollOwners: [...document.querySelectorAll('.table-scroll')].map((element) => ({
+        right: element.getBoundingClientRect().right,
+        width: element.getBoundingClientRect().width,
+        overflowX: getComputedStyle(element).overflowX,
+      })),
+    };
+  });
+
+  console.log(`RESPONSIVE_EVIDENCE ${viewport.width}x${viewport.height} ${JSON.stringify(evidence)}`);
+  expect(evidence.viewportWidth).toBe(viewport.width);
+  expect(evidence.documentWidth).toBe(evidence.clientWidth);
+  expect(evidence.overflowElements, `unowned horizontal overflow at ${viewport.width}x${viewport.height}`).toEqual([]);
+  expect(evidence.content?.left).toBeGreaterThanOrEqual(-1);
+  expect(evidence.content?.right).toBeLessThanOrEqual(viewport.width + 1);
+  for (const card of evidence.cards) {
+    expect(card.left, `card left edge at ${viewport.width}x${viewport.height}`).toBeGreaterThanOrEqual((evidence.content?.left || 0) - 1);
+    expect(card.right, `card right edge at ${viewport.width}x${viewport.height}`).toBeLessThanOrEqual((evidence.content?.right || viewport.width) + 1);
+  }
+  for (const owner of evidence.tableScrollOwners) {
+    expect(owner.right).toBeLessThanOrEqual(viewport.width + 1);
+    expect(owner.overflowX).toBe('auto');
+  }
+}
+
 async function mockOperatingPlan(page, onPreview, onOperatingPlan, fixture = operatingPlanFixture) {
   await page.route('**/api/v1/cases/miniso-2026/operating-plan/preview', async (route) => {
     const body = route.request().postDataJSON();
@@ -406,9 +471,9 @@ test('operating decision loads, previews selected variants, and exports safe ill
   await expect(page.getByText('not_eligible').first()).toBeVisible();
   await expect(page.getByText('Not available').first()).toBeVisible();
 
-  await page.getByLabel('action action 1').fill('Session-only action');
+  await page.getByLabel('Action 1', { exact: true }).fill('Session-only action');
   await page.reload();
-  await expect(page.getByLabel('action action 1')).toHaveValue('=Review purchase cadence');
+  await expect(page.getByLabel('Action 1', { exact: true })).toHaveValue('=Review purchase cadence');
 
   await openPlanningEditor(page);
   const template = await downloadTemplate(page);
@@ -562,5 +627,95 @@ test('an older committed dashboard response cannot replace an applied preview', 
   const preview = await (await previewResponse).json();
   releaseStaleResponse();
   const delta = preview.scenario_comparison.revenue.delta;
-  await expect(page.getByText(`${delta >= 0 ? '+' : ''}${delta.toFixed(1)} vs base`)).toBeVisible();
+  const formattedDelta = Math.abs(delta).toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  await expect(page.getByText(new RegExp(`^${delta >= 0 ? '\\+' : '-'}${formattedDelta.replace('.', '\\.') } vs base$`))).toBeVisible();
+});
+
+test('responsive shell has no page overflow and aligned card edges at the viewport matrix', async ({ page }) => {
+  test.setTimeout(60_000);
+  for (const viewport of responsiveViewports) {
+    await page.setViewportSize(viewport);
+    await page.goto('/');
+    await expect(page.getByRole('heading', { name: 'Monthly revenue trend' })).toBeVisible();
+    await assertResponsiveShell(page, viewport);
+  }
+});
+
+test('planning dialog fits narrow viewports and keeps scroll inside labeled surfaces', async ({ page }) => {
+  for (const viewport of [{ width: 1024, height: 768 }, { width: 768, height: 1024 }, { width: 390, height: 844 }]) {
+    await page.setViewportSize(viewport);
+    await page.addInitScript(() => localStorage.removeItem('planterm.locale'));
+    await page.goto('/');
+    await expect(page.getByRole('heading', { name: 'Monthly revenue trend' })).toBeVisible();
+    await openPlanningEditor(page);
+
+    const evidence = await page.evaluate(() => {
+      const dialog = document.querySelector('.planning-dialog');
+      const contentScroll = document.querySelector('.planning-content-scroll');
+      const matrixScrolls = [...document.querySelectorAll('.matrix-scroll')];
+      const contextScroll = document.querySelector('.context-scroll');
+      const rect = dialog?.getBoundingClientRect();
+      return {
+        bodyWidth: document.documentElement.scrollWidth,
+        clientWidth: document.documentElement.clientWidth,
+        dialog: rect ? { left: rect.left, right: rect.right, bottom: rect.bottom } : null,
+        contentOverflowY: contentScroll ? getComputedStyle(contentScroll).overflowY : null,
+        matrixOverflow: matrixScrolls.map((element) => ({ overflowX: getComputedStyle(element).overflowX, overflowY: getComputedStyle(element).overflowY, right: element.getBoundingClientRect().right })),
+        contextOverflow: contextScroll ? { overflowX: getComputedStyle(contextScroll).overflowX, right: contextScroll.getBoundingClientRect().right } : null,
+      };
+    });
+
+    expect(evidence.bodyWidth).toBe(evidence.clientWidth);
+    expect(evidence.dialog?.left).toBeGreaterThanOrEqual(-1);
+    expect(evidence.dialog?.right).toBeLessThanOrEqual(viewport.width + 1);
+    expect(evidence.dialog?.bottom).toBeLessThanOrEqual(viewport.height + 1);
+    expect(evidence.contentOverflowY).toBe('auto');
+    expect(evidence.matrixOverflow.length).toBeGreaterThanOrEqual(2);
+    for (const matrix of evidence.matrixOverflow) {
+      expect(matrix.overflowX).toBe('auto');
+      expect(matrix.overflowY).toBe('auto');
+      expect(matrix.right).toBeLessThanOrEqual(viewport.width + 1);
+    }
+    if (evidence.contextOverflow) {
+      expect(evidence.contextOverflow.overflowX).toBe('auto');
+      expect(evidence.contextOverflow.right).toBeLessThanOrEqual(viewport.width + 1);
+    }
+    await expect(page.getByRole('button', { name: 'Close' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Apply & preview' })).toBeVisible();
+
+    // B-owned JSX contract: preserve these classes while adding tabindex and
+    // accessible names to scroll wrappers, plus a real dialog focus trap.
+    await page.getByRole('button', { name: 'Close' }).focus();
+    expect(await page.evaluate(() => document.activeElement?.closest('.planning-dialog') !== null)).toBe(true);
+    await page.getByRole('button', { name: 'Close' }).click();
+  }
+});
+
+test('locale switcher translates, persists and safely falls back', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  const selector = page.locator('header select');
+  await expect(selector).toBeVisible();
+  await expect(selector).toHaveAttribute('aria-label', 'Language');
+  await selector.selectOption('zh-TW');
+  await expect(page.getByRole('heading', { name: '組合計畫與績效' })).toBeVisible();
+  await expect(selector).toHaveValue('zh-TW');
+  await page.reload();
+  await expect(selector).toHaveValue('zh-TW');
+  await expect(page.getByRole('heading', { name: '組合計畫與績效' })).toBeVisible();
+
+  await selector.selectOption('zh-CN');
+  await expect(page.getByRole('heading', { name: '组合计划与绩效' })).toBeVisible();
+  await expect(page.getByText('MINISO - 中国大陆', { exact: true }).first()).toBeVisible();
+  await expect(page.getByText('关注：MINISO - 海外 低于年初至今计划', { exact: true })).toBeVisible();
+  await expect(page.getByText('门店运营', { exact: true }).first()).toBeVisible();
+  await expect(page.getByText('2026 财年基准经营计划结论', { exact: true })).toBeVisible();
+  await expect(page.getByText('本次复核采用基准计划变体', { exact: true })).toBeVisible();
+  await expect(page.locator('section[aria-labelledby="decision-log-title"] td').filter({ hasText: '已批准' }).first()).toBeVisible();
+
+  await page.evaluate(() => localStorage.setItem('planterm.locale', 'fr-FR'));
+  await page.reload();
+  await expect(selector).toHaveValue('en');
+  await expect(page.getByRole('heading', { name: 'Portfolio planning & performance' })).toBeVisible();
+  expect(await page.evaluate(() => localStorage.getItem('planterm.locale'))).toBeNull();
 });

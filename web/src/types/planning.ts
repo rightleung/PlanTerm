@@ -1,5 +1,9 @@
 export type BrandFilter = 'all' | 'MINISO' | 'TOP_TOY'
 export type MarketFilter = 'all' | 'mainland' | 'overseas' | 'global'
+export type Locale = 'en' | 'zh-CN' | 'zh-TW'
+export type ApiErrorCode = 'invalid_exchange' | 'invalid_venue' | 'invalid_ticker' | 'ambiguous_ticker' | 'unsupported_exchange' | 'dependency_missing' | 'no_data' | 'malformed_upstream' | 'period_inconsistent' | 'currency_missing' | 'rate_limited' | 'provider_timeout' | 'provider_unavailable' | 'validation_error' | 'internal_server_error'
+export interface PublicImportRequest { exchange: 'LSE' | 'A_SHARE' | 'HKEX' | 'US'; ticker: string; venue?: 'SSE' | 'SZSE' | 'BSE'; periods?: 'annual' | 'quarterly' | 'both'; include_profile?: boolean }
+export interface PublicImportPreview { preview_id: string; request: { exchange: string; ticker: string; venue?: string | null; normalized_symbol: string; periods: string }; company: { name?: string | null; currency?: string | null; country?: string | null }; statements: Array<{ period_end: string; period_type: string; fiscal_year: number; fiscal_quarter?: number | null; is_flow: boolean; metric_semantics: Record<string, 'flow' | 'stock'>; currency: string; unit: string; unit_scale: string; values: Record<string, number | null>; source: { provider: string; url: string; retrieved_at: string; as_of?: string | null; filing_date?: string | null; normalization_version: string } }>; mapping: { dashboard_ready: boolean; reason: string }; disclosures: string[]; provenance: { provider: string; source_urls: string[]; retrieved_at: string; as_of?: string | null; normalization_version: string } }
 export type Status = 'Favorable' | 'Unfavorable' | 'Neutral'
 
 export type ProvenanceLabel = 'public_reported' | 'synthetic_allocation' | 'synthetic_plan' | 'calculated'
@@ -115,6 +119,8 @@ export interface ManagementInsight {
   business_unit: string
   severity: 'watch' | 'positive'
   message: string
+  revenue_variance?: number | null
+  revenue_variance_pct?: number | null
   driver: string
   driver_amount: number | null
   revenue_driver: string | null

@@ -1,27 +1,24 @@
 import type { KpiSnapshot } from '@/types/planning'
-
-function money(value: number | null) {
-  return value === null ? '—' : `RMB ${value.toLocaleString('en-US', { maximumFractionDigits: 1 })}m`
-}
-
-function percent(value: number | null) {
-  return value === null ? '—' : `${(value * 100).toFixed(1)}%`
-}
+import { useI18n } from '@/i18n'
+import { apiLabel } from '@/i18n/apiLabels'
 
 export function KpiGrid({ kpis }: { kpis: KpiSnapshot[] }) {
+  const { t, formatNumber, formatCurrency } = useI18n()
+  const money = (value: number | null) => formatCurrency(value, 'CNY', 'millions')
+  const percent = (value: number | null) => value === null ? t('notAvailable') : `${formatNumber(value * 100)}%`
   return (
-    <section className="kpi-grid" aria-label="Key performance indicators">
+    <section className="kpi-grid" aria-label={t('kpis')}>
       {kpis.map((kpi) => {
         const isMargin = kpi.metric === 'operating_margin'
         const display = isMargin ? percent(kpi.actual_ytd) : money(kpi.actual_ytd)
-        const variance = isMargin ? `${kpi.variance_amount === null ? '—' : `${kpi.variance_amount >= 0 ? '+' : ''}${(kpi.variance_amount * 100).toFixed(1)} pts`}` : money(kpi.variance_amount)
+        const variance = isMargin ? `${kpi.variance_amount === null ? t('notAvailable') : `${kpi.variance_amount >= 0 ? '+' : ''}${formatNumber(kpi.variance_amount * 100)} ${t('points')}`}` : money(kpi.variance_amount)
         return (
           <article className="kpi-card" key={kpi.metric}>
-            <div className="eyebrow">{kpi.label} <span>· H1 actual</span></div>
+            <div className="eyebrow">{apiLabel(kpi.metric, t)} <span>{t('h1Actual')}</span></div>
             <div className="kpi-value">{display}</div>
-            <div className={`kpi-status ${kpi.status?.toLowerCase() || ''}`}>{kpi.status || 'Not available'}</div>
-            <div className="kpi-detail">vs budget <strong>{variance}</strong></div>
-            <div className="kpi-detail">YoY <strong>{percent(kpi.yoy_pct)}</strong></div>
+            <div className={`kpi-status ${kpi.status?.toLowerCase() || ''}`}>{apiLabel(kpi.status?.toLowerCase(), t)}</div>
+            <div className="kpi-detail">{t('vsBudget')} <strong>{variance}</strong></div>
+            <div className="kpi-detail">{t('yoy')} <strong>{percent(kpi.yoy_pct)}</strong></div>
           </article>
         )
       })}

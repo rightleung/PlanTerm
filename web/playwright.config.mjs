@@ -1,4 +1,4 @@
-import { defineConfig } from 'playwright/test';
+import { defineConfig, devices } from 'playwright/test';
 
 // Keep Playwright's local web-server probe off corporate HTTP proxies. This
 // prevents a proxy-generated 400 response from being mistaken for an existing
@@ -22,6 +22,7 @@ export default defineConfig({
     baseURL: 'http://127.0.0.1:4173',
     headless: true,
   },
+  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: [
     {
       command: 'scripts/run_backend_for_e2e.sh',

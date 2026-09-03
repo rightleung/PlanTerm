@@ -1,12 +1,12 @@
 # PlanTerm
 
-PlanTerm is an FP&A planning and performance management workbench. The v0.3 workstream uses the `miniso-2026` public-data case, with an as-of date of `2026-06-30` and RMB millions throughout. It presents Actual, Budget, Forecast and Prior Year across:
+PlanTerm is an FP&A planning and performance management workbench. The current integrated workbench uses the `miniso-2026` public-data case, with an as-of date of `2026-06-30` and RMB millions throughout. It presents Actual, Budget, Forecast and Prior Year across:
 
 - MINISO — Chinese Mainland
 - MINISO — Overseas
 - TOP TOY — Global
 
-The dashboard is an English, local-first application with a deterministic API and an Excel management pack. It covers revenue, gross profit, operating profit, margin, variance analysis, Price / Volume / Mix and Operating Profit bridges. Public reported figures are separated from synthetic allocations and illustrative planning assumptions throughout the product.
+The dashboard is a local-first application with English (`en`), Simplified Chinese (`zh-CN`) and Traditional Chinese (`zh-TW`) UI locales, a deterministic API and an Excel management pack. The Excel labels remain English for compatibility. It covers revenue, gross profit, operating profit, margin, variance analysis, Price / Volume / Mix and Operating Profit bridges. Public reported figures are separated from synthetic allocations and illustrative planning assumptions throughout the product.
 
 ![PlanTerm dashboard showing the MINISO portfolio planning case](./docs/assets/planterm-dashboard.png)
 
@@ -34,6 +34,7 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000). The application reads the c
 | GET | `/api/v1/cases/{case_id}/operating-plan` | Working capital, illustrative cash, actions and decision data |
 | POST | `/api/v1/cases/{case_id}/operating-plan/preview` | Stateless operating-plan recalculation for a selected plan variant |
 | GET | `/api/v1/cases/{case_id}/forecast-accuracy` | Synthetic-snapshot forecast accuracy metrics |
+| POST | `/api/v1/public-import/preview` | Stateless allowlisted public-statement preview in native currency and units |
 
 The API uses a consistent error shape: `error`, `error_type` and `details`. Unknown cases return 404, invalid filters return 422, and internal errors do not expose stack traces.
 
@@ -58,6 +59,14 @@ The v0.3 operating-decision view extends the selected `base`, `upside` or `downs
 AR/AP/inventory days, opening cash, CAPEX proxy, other cash assumptions, actions and forecast snapshots are synthetic planning inputs. Balances, cash effects, NWC, CCC, headroom, accuracy metrics and reconciliations are calculated. The product does not report actual company cash, working-capital balances, internal forecasts or action records. Browser action edits are session-only and are never persisted.
 
 Governance evidence adds a session-only immutable decision log and conclusion-level provenance links. Each conclusion identifies its metric, formula, source label and reconciliation status; `public_reported`, `synthetic_allocation`, `synthetic_plan` and `calculated` remain explicit. Assumption version and git SHA are surfaced in the UI and workbook. See [v0.5 release evidence](./docs/release-evidence.md) for the deterministic review edit, clean-checkout CI evidence and remaining owner-controlled publication action.
+
+## v1.1 public preview and UI release candidate
+
+The additive v1.1 slice keeps the committed MINISO case and all existing FP&A/Excel behavior unchanged. The dashboard shell is tested at 1440×900, 1280×800, 1024×768, 768×1024, 390×844 and 320×568; only named table surfaces own horizontal scrolling. The language selector persists `en`, `zh-CN` or `zh-TW` in browser storage, falls back to English for missing keys, and uses `Intl` for numbers, currencies, dates and plural rules.
+
+`POST /api/v1/public-import/preview` is a stateless read-only preview. It supports LSE, US, HKEX and A-shares with explicit `SSE`, `SZSE` or `BSE` venue handling. The current deterministic fixture provider covers US, LSE, HKEX, SSE and SZSE; BSE returns `unsupported_exchange`. Live providers are disabled by default and optional dependencies are loaded lazily. The preview preserves native currency and unit scale, performs no FX conversion, does not create or overwrite `miniso-2026`, does not write case files or database records, and labels public data as not internal company data. No arbitrary URLs, credentials or unapproved scraping are used.
+
+The legacy package/API version remains `0.2.0` for compatibility. The additive `/health` field `release_id` exposes `1.1.0-rc.1` for this review candidate; changing package, footer or tag metadata is a release-owner decision. See [v1.1 methodology and evidence](./docs/release-evidence.md).
 
 ## Excel management pack
 
@@ -86,7 +95,7 @@ Operating Decision, workforce capacity and governance evidence are implemented a
 
 | Implemented in this case | Explicitly future / out of scope |
 |---|---|
-| Public-data anchored `miniso-2026`, H1 Actual / Budget / Prior Year, H2-only planning, P0–P3 API/UI/Excel workflows, governance provenance and stateless session previews | ERP, bank, HRIS, payroll, database/cloud persistence, PDF pack, peer benchmarks, LLM-generated conclusions, a second case, and bilingual UI |
+| Public-data anchored `miniso-2026`, H1 Actual / Budget / Prior Year, H2-only planning, responsive shell, three UI locales, governance provenance, stateless session previews and four-market public-data preview | ERP, bank, HRIS, payroll, database/cloud persistence, PDF pack, peer benchmarks, LLM-generated conclusions, a second case, and localized Excel labels |
 | Synthetic allocation, synthetic plan and calculated values are labelled separately from public reported anchors | Production deployment, account management, multi-user persistence and automated release publication |
 
 ## v0.1.1 hardening
@@ -101,9 +110,11 @@ This release adds data-derived valid filter combinations, incompatible-filter 42
 ./.venv/bin/python scripts/build_miniso_case.py --check
 cd web
 npm run lint
+npm run test:i18n
 npx tsc -p tsconfig.app.json --noEmit
 npm run build
 npm run e2e:preflight
+npx playwright test e2e/dashboard.spec.mjs --project=chromium
 ```
 
 ## Project history and license
