@@ -89,6 +89,8 @@ Governance conclusions are reviewed against `miniso-2026`, as of `2026-06-30`, w
 
 ## v1.1 public-import methodology
 
+The company profile lookup is a separate stateless boundary from the MINISO planning case. It infers common ticker formats (`US`, `HKEX`, `LSE`, and explicit-prefix A-shares), normalizes the provider symbol, and returns basic public information such as company name, sector, industry, country, website, employees and market capitalization when available. yfinance is used for US, Hong Kong and London listings, with an optional AKShare path for A-share company information. Missing profile fields remain `null`; the service never fills them with guessed values or creates a new case.
+
 The public-import endpoint is a separate, stateless preview boundary. It accepts one exchange/ticker request and never creates or overwrites `miniso-2026`, writes case files, stores a database record or merges public values into the planning case. Live access is disabled by default. The UI displays a separate preview panel and labels the result public reported data, not internal company data.
 
 The allowlisted exchange normalization is deterministic: US class shares such as `BRK.B` become `BRK-B`; HKEX codes are one to five digits padded to four digits with `.HK`; LSE symbols carry `.L`; A-shares require six digits and an explicit `SSE`, `SZSE` or `BSE` venue, mapping to `.SS`, `.SZ` or `.BSE` for the provider boundary. The current fixture provider and tests cover US, LSE, HKEX, SSE and SZSE. BSE is explicit but unsupported until a provider capability is approved.

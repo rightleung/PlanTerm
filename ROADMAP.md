@@ -1,10 +1,10 @@
 # Roadmap
 
-## v1.1 — Public release candidate
+## v1.2 — Public company lookup release
 
 Implemented in the current working tree as additive scope on `miniso-2026`: responsive dashboard shell and six-viewport evidence, English/`zh-CN`/`zh-TW` UI localization with persistence/fallback/Intl formatting, and a stateless public-statement preview for LSE, US, HKEX and explicit A-share venues. Deterministic fixtures cover US, LSE, HKEX, SSE and SZSE; BSE is explicitly unsupported until an approved provider capability exists. Live providers remain disabled by default.
 
-The legacy package/API version remains `0.2.0`; `/health.release_id` exposes `1.1.0-rc.1` as an additive compatibility contract. Local gates and release evidence are complete in the working tree. Provider terms/licensing, final version-label transition, tag and publication remain release-owner decisions. Localized Excel labels remain future scope.
+Implemented in the working tree: generic company profile lookup, exchange-aware symbol search, market selection, debounced keyboard autocomplete and LSE support. The endpoint returns public profile fields with provider provenance and never mutates the MINISO case. Localized Excel labels remain future scope.
 
 ## v0.1.1 — Credibility hardening
 

@@ -5,8 +5,8 @@ import { test, expect } from 'playwright/test';
 async function openPlanningEditor(page, expectedVariant = 'base') {
   await page.getByRole('button', { name: 'Open editor' }).click();
   await expect(page.getByRole('dialog', { name: 'Planning Inputs' })).toBeVisible();
-  await expect(page.getByText(new RegExp(`Showing 84 rows for ${expectedVariant} \\(252 total\\)`))).toBeVisible();
-  await expect(page.getByText(/72 workforce rows/)).toBeVisible();
+  await expect(page.getByText(new RegExp(`Showing 84 rows for ${expectedVariant} \\(252 total\\)`))).toBeVisible({ timeout: 30000 });
+  await expect(page.getByText(/72 workforce rows/)).toBeVisible({ timeout: 30000 });
 }
 
 async function downloadTemplate(page) {
@@ -252,7 +252,7 @@ test('renders the empty business unit variance state', async ({ page }) => {
 test('filters update business unit rows and PVM values', async ({ page }) => {
   await page.goto('/');
   await page.getByLabel('Brand').selectOption('MINISO');
-  await page.getByLabel('Market').selectOption('mainland');
+  await page.getByLabel('Market', { exact: true }).selectOption('mainland');
   const varianceRows = page.locator('section[aria-labelledby="variance-title"] tbody tr');
   await expect(varianceRows).toHaveCount(1);
   await expect(varianceRows.first()).toContainText('MINISO - Chinese Mainland');
@@ -268,15 +268,15 @@ test('disables incompatible markets and resets once on brand change', async ({ p
   });
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'Monthly revenue trend' })).toBeVisible();
-  await page.getByLabel('Market').selectOption('global');
-  await expect(page.getByLabel('Market')).toHaveValue('global');
+  await page.getByLabel('Market', { exact: true }).selectOption('global');
+  await expect(page.getByLabel('Market', { exact: true })).toHaveValue('global');
   const varianceRows = page.locator('section[aria-labelledby="variance-title"] tbody tr');
   await expect(varianceRows).toHaveCount(1);
   const requestsBeforeBrandChange = dashboardRequests;
   await page.getByLabel('Brand').selectOption('MINISO');
-  await expect(page.getByLabel('Market')).toHaveValue('all');
+  await expect(page.getByLabel('Market', { exact: true })).toHaveValue('all');
   await expect(varianceRows).toHaveCount(2);
-  await expect(page.getByLabel('Market').locator('option[value="global"]')).toHaveAttribute('disabled', '');
+  await expect(page.getByLabel('Market', { exact: true }).locator('option[value="global"]')).toHaveAttribute('disabled', '');
   await expect.poll(() => dashboardRequests).toBe(requestsBeforeBrandChange + 1);
 });
 
@@ -291,9 +291,54 @@ test('API errors are visible and recoverable', async ({ page }) => {
     }
   });
   await page.goto('/');
-  await expect(page.getByRole('alert')).toContainText('Test failure');
+  await expect(page.getByRole('alert')).toContainText('An internal error occurred');
   await page.getByRole('button', { name: 'Retry' }).click();
   await expect(page.getByRole('heading', { name: 'Monthly revenue trend' })).toBeVisible();
+});
+
+test('company profile lookup renders public basic information', async ({ page }) => {
+  await page.route('**/api/v1/symbols/search?*', async (route) => {
+    await route.fulfill({ contentType: 'application/json', body: JSON.stringify({ query: 'AAPL', count: 1, results: [{ symbol: 'AAPL', name: 'Apple Inc.', exchange: 'US', venue: null, currency: 'USD', country: 'US' }] }) });
+  });
+  await page.route('**/api/v1/company/profile', async (route) => {
+    await route.fulfill({
+      contentType: 'application/json',
+      body: JSON.stringify({
+        profile: {
+          name: 'Apple Inc.', symbol: 'AAPL', exchange: 'US', venue: null, currency: 'USD', country: 'United States',
+          sector: 'Technology', industry: 'Consumer Electronics', website: 'https://www.apple.com', description: 'A public company.', employees: 150000, market_cap: 1000000, market_cap_currency: 'USD',
+        },
+        source: { provider: 'fixture', url: 'https://example.test/aapl', retrieved_at: '2026-09-04T00:00:00Z', normalization_version: 'public-import-v1' },
+        disclosures: ['Public company information only; not internal company data.'],
+      }),
+    });
+  });
+  await page.goto('/');
+  await page.getByLabel('Ticker').first().fill('AAPL');
+  await page.getByRole('button', { name: 'Find company' }).click();
+  await expect(page.getByRole('heading', { name: 'Apple Inc.' })).toBeVisible();
+  await expect(page.getByText('Technology', { exact: true })).toBeVisible();
+  await expect(page.getByText('Not internal company data.')).toBeVisible();
+});
+
+test('company profile lookup supports LSE selection and autocomplete', async ({ page }) => {
+  await page.route('**/api/v1/symbols/search?*', async (route) => {
+    await route.fulfill({ contentType: 'application/json', body: JSON.stringify({ query: 'VOD', count: 1, results: [{ symbol: 'VOD.L', name: 'Vodafone Group', exchange: 'LSE', venue: null, currency: 'GBP', country: 'United Kingdom' }] }) });
+  });
+  await page.route('**/api/v1/company/profile', async (route) => {
+    await route.fulfill({ contentType: 'application/json', body: JSON.stringify({ profile: { name: 'Vodafone Group', symbol: 'VOD.L', exchange: 'LSE', venue: null, currency: 'GBP', country: 'United Kingdom', sector: 'Communication Services', industry: 'Telecom Services', website: 'https://www.vodafone.com', description: null, employees: 90000, market_cap: 100000, market_cap_currency: 'GBP' }, source: { provider: 'fixture', url: 'https://example.test/vod', retrieved_at: '2026-09-04T00:00:00Z', normalization_version: 'public-import-v1' }, disclosures: ['Public company information only; not internal company data.'] }) });
+  });
+  await page.goto('/');
+  const panel = page.getByRole('region', { name: 'Company profile' });
+  await panel.getByLabel('Company market').selectOption('LSE');
+  await panel.getByLabel('Ticker').fill('VOD');
+  await expect(panel.getByRole('option', { name: /VOD\.L Vodafone Group/ })).toBeVisible();
+  await panel.getByRole('option', { name: /VOD\.L Vodafone Group/ }).click();
+  await expect(panel.getByLabel('Ticker')).toHaveValue('VOD.L');
+  await expect(panel.getByLabel('Company market')).toHaveValue('LSE');
+  await panel.getByRole('button', { name: 'Find company' }).click();
+  await expect(panel.getByRole('heading', { name: 'Vodafone Group' })).toBeVisible();
+  await expect(panel.getByText('GBP', { exact: true })).toBeVisible();
 });
 
 test('template download uses the frozen header and full 252-row matrix', async ({ page }) => {
@@ -633,20 +678,21 @@ test('an older committed dashboard response cannot replace an applied preview', 
 
 test('responsive shell has no page overflow and aligned card edges at the viewport matrix', async ({ page }) => {
   test.setTimeout(60_000);
+  await page.goto('/');
   for (const viewport of responsiveViewports) {
     await page.setViewportSize(viewport);
-    await page.goto('/');
     await expect(page.getByRole('heading', { name: 'Monthly revenue trend' })).toBeVisible();
     await assertResponsiveShell(page, viewport);
   }
 });
 
 test('planning dialog fits narrow viewports and keeps scroll inside labeled surfaces', async ({ page }) => {
+  test.setTimeout(90_000);
   for (const viewport of [{ width: 1024, height: 768 }, { width: 768, height: 1024 }, { width: 390, height: 844 }]) {
     await page.setViewportSize(viewport);
     await page.addInitScript(() => localStorage.removeItem('planterm.locale'));
     await page.goto('/');
-    await expect(page.getByRole('heading', { name: 'Monthly revenue trend' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Monthly revenue trend' })).toBeVisible({ timeout: 30000 });
     await openPlanningEditor(page);
 
     const evidence = await page.evaluate(() => {

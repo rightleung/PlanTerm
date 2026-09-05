@@ -14,6 +14,7 @@ from src.services.public_import.fixtures import fixture_provider
 from src.services.public_import.normalization import normalize_symbol
 from src.services.public_import.providers import AkShareProvider, ProviderResult, YFinanceProvider, default_providers, select_provider
 from src.services.public_import.service import preview_public_import
+from src.services.symbol_search_service import _market_from_quote, search_symbols, set_symbol_search_provider
 
 
 def test_normalization_contract():
@@ -171,3 +172,30 @@ def test_provider_timeout_is_typed(monkeypatch):
 def test_unsupported_ticker_is_no_data_without_unrelated_fallback():
     with pytest.raises(NoDataError):
         fixture_provider().fetch(PublicImportRequest(exchange=Exchange.US, ticker="UNRELATED"))
+
+
+def test_symbol_search_returns_market_metadata_and_filters_lse():
+    class SearchProvider:
+        def search(self, _query):
+            return [
+                {"symbol": "VOD.L", "shortname": "Vodafone Group", "quoteType": "EQUITY", "exchange": "LSE", "currency": "GBP"},
+                {"symbol": "VOD", "shortname": "Vodafone US", "quoteType": "EQUITY", "exchange": "NMS", "currency": "USD"},
+                {"symbol": "VOD.L", "shortname": "Duplicate", "quoteType": "EQUITY", "exchange": "LSE"},
+                {"symbol": "VOD", "shortname": "Fund", "quoteType": "ETF", "exchange": "NMS"},
+            ]
+
+    set_symbol_search_provider(SearchProvider())
+    try:
+        result = asyncio.run(search_symbols("vod", exchange=Exchange.LSE, limit=10))
+        assert result.count == 1
+        assert result.results[0].symbol == "VOD.L"
+        assert result.results[0].exchange is Exchange.LSE
+        assert result.results[0].currency == "GBP"
+    finally:
+        set_symbol_search_provider(None)
+
+
+def test_symbol_search_recognizes_hk_and_a_share_venues():
+    assert _market_from_quote({"symbol": "0700.HK", "quoteType": "EQUITY"}) == (Exchange.HKEX, None)
+    assert _market_from_quote({"symbol": "600519.SS", "quoteType": "EQUITY"}) == (Exchange.A_SHARE, Venue.SSE)
+    assert _market_from_quote({"symbol": "000001.SZ", "quoteType": "EQUITY"}) == (Exchange.A_SHARE, Venue.SZSE)

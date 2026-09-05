@@ -11,6 +11,8 @@ ACTION_KEYS = {"case_id", "observation", "driver", "impact", "risk", "action", "
 def validate_actions(actions, case_id: str):
     if not isinstance(actions, list):
         raise InputError("validation_error", "actions must be a list")
+    if len(actions) > 100:
+        raise InputError("validation_error", "At most 100 action rows are allowed")
     validated = []
     for index, item in enumerate(actions, 1):
         if not isinstance(item, dict):
@@ -27,6 +29,8 @@ def validate_actions(actions, case_id: str):
             raise InputError("invalid_provenance", "Action input provenance must be synthetic_plan", {"row": index})
         if any(not isinstance(item[field], str) for field in ACTION_KEYS - {"case_id", "impact", "provenance"}):
             raise InputError("validation_error", "Action text fields must be strings", {"row": index})
+        if any(len(item[field]) > 2000 for field in ACTION_KEYS - {"case_id", "impact", "provenance"}):
+            raise InputError("validation_error", "Action text fields are too long", {"row": index})
         try:
             impact = dec(item["impact"])
         except ValueError as exc:

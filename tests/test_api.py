@@ -2,6 +2,8 @@ from fastapi.testclient import TestClient
 import pytest
 
 from src.api import app, repository
+from src.config import Settings
+from src.services.symbol_search_service import set_symbol_search_provider
 
 
 client = TestClient(app)
@@ -11,6 +13,50 @@ def test_health_and_case_list():
     assert client.get("/health").json()["status"] == "ok"
     payload = client.get("/api/v1/cases").json()
     assert payload["cases"][0]["case_id"] == "miniso-2026"
+
+
+def test_readiness_checks_committed_case_and_frontend_build():
+    response = client.get("/ready")
+    assert response.status_code in {200, 503}
+    if response.status_code == 200:
+        assert response.json()["status"] == "ready"
+
+
+def test_symbol_search_endpoint_filters_market_and_returns_lse_metadata():
+    class Provider:
+        def search(self, _query):
+            return [
+                {"symbol": "VOD.L", "shortname": "Vodafone", "quoteType": "EQUITY", "exchange": "LSE", "currency": "GBP"},
+                {"symbol": "VOD", "shortname": "Vodafone ADR", "quoteType": "EQUITY", "exchange": "NMS", "currency": "USD"},
+            ]
+
+    set_symbol_search_provider(Provider())
+    try:
+        response = client.get("/api/v1/symbols/search", params={"q": "vod", "exchange": "LSE"})
+        assert response.status_code == 200
+        assert response.json()["results"] == [{"symbol": "VOD.L", "name": "Vodafone", "exchange": "LSE", "venue": None, "currency": "GBP", "country": None}]
+    finally:
+        set_symbol_search_provider(None)
+
+
+def test_request_boundary_rejects_oversized_json_and_traversal_case():
+    oversized = client.post(
+        "/api/v1/cases/miniso-2026/dashboard/preview",
+        content=b"{" + b"a" * 2_100_000 + b"}",
+        headers={"Content-Type": "application/json"},
+    )
+    assert oversized.status_code == 413
+    assert oversized.json()["error_type"] == "request_too_large"
+    traversal = client.get("/api/v1/cases/../metadata.json/dashboard")
+    assert traversal.status_code in {404, 400}
+
+
+def test_settings_load_prefixed_environment_variables(monkeypatch):
+    monkeypatch.setenv("PLANTERM_ENVIRONMENT", "production")
+    monkeypatch.setenv("PLANTERM_COMPANY_PROFILE_ENABLED", "false")
+    configured = Settings()
+    assert configured.environment == "production"
+    assert configured.company_profile_enabled is False
 
 
 def test_dashboard_default_and_filters():

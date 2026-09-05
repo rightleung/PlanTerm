@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import csv
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -80,10 +81,14 @@ class CaseRepository:
         return cases
 
     def get_case(self, case_id: str) -> CaseData:
+        if not isinstance(case_id, str) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]{0,63}", case_id):
+            raise CaseNotFoundError(case_id)
         case_path = self.case_dir / case_id
         if not case_path.is_dir():
             raise CaseNotFoundError(case_id)
         metadata = load_committed_json(case_path / "metadata.json")
+        if metadata.get("case_id") != case_id:
+            raise CaseNotFoundError(case_id)
         assumptions = load_committed_json(case_path / "assumptions.json")
         records: list[PlanningRecord] = []
         with (case_path / "planning_records.csv").open(newline="", encoding="utf-8") as handle:

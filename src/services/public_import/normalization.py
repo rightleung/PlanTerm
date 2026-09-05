@@ -72,6 +72,11 @@ def normalize_symbol(exchange: Exchange, ticker: str, venue: Venue | None = None
     if exchange is Exchange.A_SHARE:
         if venue is None:
             raise AmbiguousTickerError("A-share ticker requires SSE, SZSE or BSE venue")
+        suffixes = {Venue.SSE: (".SS", ".SH"), Venue.SZSE: (".SZ",), Venue.BSE: (".BSE",)}
+        for suffix in suffixes[venue]:
+            if t.endswith(suffix):
+                t = t[:-len(suffix)]
+                break
         if not t.isdigit() or len(t) != 6:
             raise InvalidTickerError("A-share ticker must be six digits")
         if venue is Venue.SSE:

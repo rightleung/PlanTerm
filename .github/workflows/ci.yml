@@ -30,8 +30,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: "3.12"
           cache: pip
@@ -40,6 +40,7 @@ jobs:
       - run: python -m pip check
       - run: python -m pytest -q
       - run: python scripts/build_miniso_case.py --check
+      - run: git diff --check
 
   frontend:
     name: Frontend lint, build and browser tests
@@ -48,12 +49,12 @@ jobs:
     env:
       NO_PROXY: 127.0.0.1,localhost,::1
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: "3.12"
       - run: python -m pip install -e ".[dev]"
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: "24"
           cache: npm
@@ -62,8 +63,16 @@ jobs:
         working-directory: web
       - run: npm run lint
         working-directory: web
+      - run: npm run test:i18n
+        working-directory: web
+      - run: npx tsc -p tsconfig.node.json --noEmit
+        working-directory: web
       - run: npm run build
         working-directory: web
+      - run: python -m uvicorn src.api:app --host 127.0.0.1 --port 8000 > /tmp/planterm-ci.log 2>&1 & echo $! > /tmp/planterm-ci.pid
+      - run: python -c "exec('import time, urllib.request\ndeadline=time.time()+30\nwhile time.time() < deadline:\n    try:\n        urllib.request.urlopen(\'http://127.0.0.1:8000/ready\', timeout=2)\n        break\n    except Exception:\n        time.sleep(1)\nelse:\n    raise TimeoutError(\'readiness timeout\')')"
+      - run: python -c "import urllib.request; assert urllib.request.urlopen('http://127.0.0.1:8000/').status == 200"
+      - run: kill $(cat /tmp/planterm-ci.pid)
       - run: npx playwright install --with-deps chromium
         working-directory: web
       - run: npm run e2e:preflight
@@ -74,13 +83,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: "3.12"
       - run: python -m pip install --upgrade pip pip-audit
       - run: pip-audit -r requirements.txt
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: "24"
           cache: npm

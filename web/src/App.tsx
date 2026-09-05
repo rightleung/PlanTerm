@@ -18,9 +18,10 @@ import { ForecastAccuracy } from '@/features/operating-plan/ForecastAccuracy'
 import { ScenarioDecisionTable } from '@/features/operating-plan/ScenarioDecisionTable'
 import { HeadcountCapacity } from '@/features/operating-plan/HeadcountCapacity'
 import { PublicImportPanel } from '@/features/public-import/PublicImportPanel'
+import { CompanyProfilePanel } from '@/features/company-profile/CompanyProfilePanel'
 import type { ActionRegisterRow, BrandFilter, DashboardResponse, DecisionLogRow, MarketFilter, OperatingPlanResponse } from '@/types/planning'
 import { localeName, useI18n, type Locale } from '@/i18n'
-import { apiLabel } from '@/i18n/apiLabels'
+import { apiErrorLabel, apiLabel } from '@/i18n/apiLabels'
 
 const CASE_ID = 'miniso-2026'
 
@@ -197,12 +198,13 @@ export default function App() {
         </section>
 
         <div className="callout"><span className="callout-icon">i</span><span>{t('publicDisclosure')}</span></div>
+        <CompanyProfilePanel />
         {publicImportEnabled && <PublicImportPanel />}
         <FilterBar brand={brand} market={market} availableFilters={dashboard?.available_filters} onBrandChange={handleBrandChange} onMarketChange={setMarket} onReset={resetFilters} />
         <PlanningInputs dashboard={dashboard} brand={brand} market={market} session={planningSession} workforceCapacity={operatingPlan?.workforce_capacity || operatingPlan?.headcount_capacity} onPreview={applyPreview} onDiscardAll={discardAll} />
 
         {loading && <div className="state-card" role="status"><div className="spinner" />{t('loadingPlanning')}</div>}
-        {!loading && error && <div className="state-card error-state" role="alert"><div><strong>{t('dashboardUnavailable')}</strong><p>{error.message}</p></div><button className="button" type="button" onClick={() => setRetryCount((count) => count + 1)}>{t('retry')}</button></div>}
+        {!loading && error && <div className="state-card error-state" role="alert"><div><strong>{t('dashboardUnavailable')}</strong><p>{error instanceof ApiError ? apiErrorLabel(error.errorType, t) : t('dashboardErrorFallback')}</p></div><button className="button" type="button" onClick={() => setRetryCount((count) => count + 1)}>{t('retry')}</button></div>}
         {!loading && !error && dashboard && (
           <div className="dashboard-stack">
             {dashboard.business_unit_variances.length > 0 ? <>
@@ -215,7 +217,7 @@ export default function App() {
             {dashboard.scenario_comparison && <section className="panel scenario-panel"><div className="section-heading"><h2>{t('scenarioComparison')}</h2><span className="unit-note">{t('selectedVsBase')}</span></div><div className="scenario-grid">{(['revenue', 'gross_profit', 'operating_profit'] as const).map((metric) => { const item = dashboard.scenario_comparison![metric]; return <div key={metric}><span>{apiLabel(metric, t)}</span><strong>{formatNumber(item.selected_fy_forecast)}</strong><em className={item.delta >= 0 ? 'positive' : 'negative'}>{item.delta >= 0 ? '+' : ''}{formatNumber(item.delta)} {t('vsBase')}</em></div> })}</div></section>}
             {dashboard.category_detail && <section className="panel table-panel category-detail-panel"><div className="section-heading"><div><h2>{t('productCategoryDetail')}</h2><span className="unit-note">{t('filteredAllocation', { variant: apiLabel(dashboard.selected_plan_variant || 'base', t) })}</span></div></div><div className="synthetic-disclosure">{t('syntheticCategoryDisclosure')}</div><div className="table-scroll" role="region" tabIndex={0} aria-label={t('productCategoryDetail')}><table><thead><tr><th>{t('period')}</th><th>{t('businessUnit')}</th><th>{t('category')}</th><th>{t('revenueActual')}</th><th>{t('revenueMix')}</th><th>{t('grossMargin')}</th><th>{t('opexRatio')}</th><th>{t('operatingMargin')}</th><th>{t('provenance')}</th></tr></thead><tbody>{selectedCategoryDetail.map((row) => <tr key={`${row.plan_variant}-${row.period}-${row.business_unit}-${row.category_id}`}><td>{row.period}</td><td>{apiLabel(row.business_unit, t)}</td><td className="table-primary">{apiLabel(row.category_name, t)}</td><td>{formatNumber(row.revenue)}</td><td>{formatNumber(row.revenue_mix_pct * 100)}%</td><td>{formatNumber(row.gross_margin_pct * 100)}%</td><td>{formatNumber(row.opex_ratio_pct * 100)}%</td><td>{formatNumber(row.operating_margin_pct * 100)}%</td><td>{apiLabel(row.provenance, t)}</td></tr>)}</tbody></table></div></section>}
             {operatingLoading && <div className="state-card" role="status"><div className="spinner" />{t('loadingOperating')}</div>}
-            {!operatingLoading && operatingError && <div className="state-card error-state" role="alert"><div><strong>{t('operatingPlanUnavailable')}</strong><p>{operatingError.message}</p></div><button className="button" type="button" onClick={() => setOperatingRetryCount((count) => count + 1)}>{t('retry')}</button></div>}
+             {!operatingLoading && operatingError && <div className="state-card error-state" role="alert"><div><strong>{t('operatingPlanUnavailable')}</strong><p>{operatingError instanceof ApiError ? apiErrorLabel(operatingError.errorType, t) : t('operatingErrorFallback')}</p></div><button className="button" type="button" onClick={() => setOperatingRetryCount((count) => count + 1)}>{t('retry')}</button></div>}
             {!operatingLoading && !operatingError && operatingPlan && <div className="dashboard-stack">
               <CashBridge workingCapital={operatingPlan.working_capital} cashBridge={operatingPlan.cash_bridge} reconciliation={operatingPlan.reconciliation} />
               {(operatingPlan.workforce_capacity || operatingPlan.headcount_capacity) && <HeadcountCapacity capacity={(operatingPlan.workforce_capacity || operatingPlan.headcount_capacity)!} />}

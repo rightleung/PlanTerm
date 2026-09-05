@@ -65,6 +65,34 @@ class PublicImportRequest(BaseModel):
         return self
 
 
+class CompanyLookupRequest(BaseModel):
+    """Request for a read-only listed-company profile lookup."""
+
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    ticker: str = Field(min_length=1, max_length=24)
+    exchange: Exchange | None = None
+    venue: Venue | None = None
+    data_source: Literal["auto", "yfinance", "akshare"] = "auto"
+
+    @field_validator("ticker")
+    @classmethod
+    def validate_ticker(cls, value: str) -> str:
+        if not value or any(ord(ch) < 32 or ord(ch) == 127 for ch in value):
+            raise ValueError("Ticker is empty or contains control characters")
+        if "://" in value or value.lower().startswith(("http:", "https:", "ftp:")):
+            raise ValueError("Ticker must not be a URL")
+        return value
+
+    @model_validator(mode="after")
+    def validate_venue(self) -> "CompanyLookupRequest":
+        if self.venue is not None and self.exchange is not Exchange.A_SHARE:
+            raise ValueError("Venue is only valid for A_SHARE")
+        if self.exchange is Exchange.A_SHARE and self.venue is None:
+            raise ValueError("A-share lookup requires an explicit venue")
+        return self
+
+
 class StatementSource(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -109,6 +137,45 @@ class PublicImportCompany(BaseModel):
     name: str | None = None
     currency: str | None = None
     country: str | None = None
+
+
+class CompanyProfile(BaseModel):
+    name: str
+    symbol: str
+    exchange: Exchange
+    venue: Venue | None = None
+    currency: str | None = None
+    country: str | None = None
+    sector: str | None = None
+    industry: str | None = None
+    website: str | None = None
+    description: str | None = None
+    employees: int | None = None
+    market_cap: float | None = None
+    market_cap_currency: str | None = None
+
+
+class CompanyLookupResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    profile: CompanyProfile
+    source: StatementSource
+    disclosures: list[str]
+
+
+class SymbolSearchResult(BaseModel):
+    symbol: str
+    name: str
+    exchange: Exchange
+    venue: Venue | None = None
+    currency: str | None = None
+    country: str | None = None
+
+
+class SymbolSearchResponse(BaseModel):
+    query: str
+    count: int
+    results: list[SymbolSearchResult]
 
 
 class PublicImportRequestEcho(BaseModel):

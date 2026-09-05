@@ -1,10 +1,16 @@
 # v0.5 / v1.0 integration evidence
 
+## v1.2 company lookup evidence
+
+The current release metadata is `1.2.0`. `POST /api/v1/company/profile` and `GET /api/v1/symbols/search` are additive endpoints. Common US, HKEX, LSE, SSE and SZSE formats are covered by deterministic tests; live yfinance profile smoke was verified for `AAPL`, `600519`, `000001`, `0700.HK` and `VOD.L`. Results retain provider values and are disclosed as public data, not internal company data. The release uses a non-Docker virtualenv/Uvicorn deployment path, a readiness endpoint and production startup without `--reload` or runtime dependency installation.
+
+The final local review run for the current working tree passed `128` Python tests with one opt-in live test skipped, frontend lint, i18n tests, both TypeScript projects, production build, npm and Python dependency audits, and all `21` Chromium browser tests. A clean `planterm-1.2.0` wheel was built successfully. GitHub Actions must be rerun after committing this working tree; the historical CI run below does not cover these changes.
+
 This is an evidence pack for review, not a release declaration. The implemented scope is the `miniso-2026` case, as of `2026-06-30`, in RMB millions, with the `base` plan variant selected by default.
 
-## v1.1 public release candidate evidence
+## v1.1 historical release candidate evidence
 
-This section is the current v1.1 working-tree evidence. The base revision is `d7709e52798e8ec0c4ffea877452d19af28787a7` (`d7709e5`); no implementation commit, tag, push or publication was created for this change. The legacy package/API version remains `0.2.0`. The additive `/health` contract exposes `release_id: "1.1.0-rc.1"`; the package metadata, existing client version and footer label were not silently relabeled.
+This section records the historical v1.1 compatibility evidence. The current release metadata is recorded in the v1.2 section above.
 
 ### Acceptance gates
 

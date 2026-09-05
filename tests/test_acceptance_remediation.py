@@ -53,15 +53,15 @@ def test_csv_row_round_trip_keeps_typed_numeric_and_text_values():
     assert not parsed["volume_change_pct"].startswith("'")
 
 
-def test_version_declarations_and_health_are_exactly_020():
+def test_version_declarations_and_health_are_exactly_120():
     root = Path(__file__).parents[1]
     with (root / "pyproject.toml").open("rb") as handle:
         pyproject_version = tomllib.load(handle)["project"]["version"]
     config_text = (root / "src" / "config.py").read_text(encoding="utf-8")
     web_version = json.loads((root / "web" / "package.json").read_text(encoding="utf-8"))["version"]
-    assert pyproject_version == __version__ == src_version == web_version == "0.2.0"
-    assert 'version: str = "0.2.0"' in config_text
-    assert client.get("/health").json()["version"] == "0.2.0"
+    assert pyproject_version == __version__ == src_version == web_version == "1.2.0"
+    assert 'version: str = "1.2.0"' in config_text
+    assert client.get("/health").json()["version"] == "1.2.0"
 
 
 def test_planning_template_numeric_columns_are_not_neutralized():

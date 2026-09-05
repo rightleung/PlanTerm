@@ -21,10 +21,14 @@ def test_openapi_freezes_the_v1_endpoint_surface():
         "/api/v1/cases/{case_id}/operating-plan/preview",
         "/api/v1/cases/{case_id}/forecast-accuracy",
         "/api/v1/public-import/preview",
+        "/api/v1/company/profile",
+        "/api/v1/symbols/search",
     } <= set(paths)
     assert "get" in paths["/api/v1/cases/{case_id}/operating-plan"]
     assert "post" in paths["/api/v1/cases/{case_id}/operating-plan/preview"]
     assert "post" in paths["/api/v1/public-import/preview"]
+    assert "post" in paths["/api/v1/company/profile"]
+    assert "get" in paths["/api/v1/symbols/search"]
 
 
 def test_public_import_contract_is_additive_and_stateless():
@@ -40,8 +44,8 @@ def test_public_import_contract_is_additive_and_stateless():
 
 def test_additive_release_identifier_preserves_legacy_version_contract():
     health = client.get("/health").json()
-    assert health["version"] == "0.2.0"
-    assert health["release_id"] == "1.1.0-rc.1"
+    assert health["version"] == "1.2.0"
+    assert health["release_id"] == "1.2.0"
 
 
 def test_typescript_freezes_additive_governance_fields():

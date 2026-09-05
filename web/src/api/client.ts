@@ -1,4 +1,4 @@
-import type { BrandFilter, DashboardResponse, ForecastAccuracy, MarketFilter, OperatingPlanPreviewRequest, OperatingPlanResponse, PlanVariant, PlanningInputRow, PublicImportPreview, PublicImportRequest, ApiErrorCode } from '@/types/planning'
+import type { BrandFilter, CompanyLookupRequest, CompanyLookupResponse, DashboardResponse, ForecastAccuracy, MarketFilter, OperatingPlanPreviewRequest, OperatingPlanResponse, PlanVariant, PlanningInputRow, PublicImportPreview, PublicImportRequest, ApiErrorCode, SymbolSearchResponse } from '@/types/planning'
 
 export class ApiError extends Error {
   status: number
@@ -87,4 +87,17 @@ export async function fetchForecastAccuracy(caseId: string, signal?: AbortSignal
 export async function previewPublicImport(request: PublicImportRequest, signal?: AbortSignal): Promise<PublicImportPreview> {
   const response = await fetch('/api/v1/public-import/preview', { method: 'POST', body: JSON.stringify(request), signal, headers: { 'Content-Type': 'application/json', Accept: 'application/json' } })
   return parseApiResponse<PublicImportPreview>(response)
+}
+
+export async function lookupCompanyProfile(request: CompanyLookupRequest, signal?: AbortSignal): Promise<CompanyLookupResponse> {
+  const response = await fetch('/api/v1/company/profile', { method: 'POST', body: JSON.stringify(request), signal, headers: { 'Content-Type': 'application/json', Accept: 'application/json' } })
+  return parseApiResponse<CompanyLookupResponse>(response)
+}
+
+export async function searchCompanySymbols(query: string, exchange?: CompanyLookupRequest['exchange'], venue?: CompanyLookupRequest['venue'], signal?: AbortSignal): Promise<SymbolSearchResponse> {
+  const params = new URLSearchParams({ q: query, limit: '10' })
+  if (exchange) params.set('exchange', exchange)
+  if (venue) params.set('venue', venue)
+  const response = await fetch(`/api/v1/symbols/search?${params}`, { signal, headers: { Accept: 'application/json' } })
+  return parseApiResponse<SymbolSearchResponse>(response)
 }

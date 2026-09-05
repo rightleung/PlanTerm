@@ -14,8 +14,8 @@ if [ ! -d "$VENV_DIR" ]; then
   python3 -m venv "$VENV_DIR"
 fi
 
-echo "[Rebuild] Installing Python dependencies"
-"$VENV_DIR/bin/python" -m pip install -r requirements.txt
+echo "[Rebuild] Installing Python and development dependencies"
+"$VENV_DIR/bin/python" -m pip install -e ".[dev]"
 
 echo "[Rebuild] Generating deterministic MINISO case"
 "$VENV_DIR/bin/python" scripts/build_miniso_case.py

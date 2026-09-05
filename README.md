@@ -12,7 +12,7 @@ The dashboard is a local-first application with English (`en`), Simplified Chine
 
 ## Quick start
 
-Requirements: Python 3.12+ and Node.js 24+.
+Requirements: Python 3.12+ and Node.js 24+ for local development.
 
 ```bash
 ./scripts/rebuild_workspace.sh
@@ -20,6 +20,8 @@ Requirements: Python 3.12+ and Node.js 24+.
 ```
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000). The application reads the committed case files and does not need a database, user account or live data connection to display the case.
+
+For a production-style self-hosted process, create a Python virtual environment, run `./scripts/rebuild_workspace.sh`, and start with `PLANTERM_HOST=0.0.0.0 ./run_app.sh`. Put an authenticated TLS reverse proxy in front of it before exposing the service to a network; PlanTerm is single-user and does not provide account management. Use systemd, Supervisor or launchd to keep the process running.
 
 ## API
 
@@ -35,14 +37,17 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000). The application reads the c
 | POST | `/api/v1/cases/{case_id}/operating-plan/preview` | Stateless operating-plan recalculation for a selected plan variant |
 | GET | `/api/v1/cases/{case_id}/forecast-accuracy` | Synthetic-snapshot forecast accuracy metrics |
 | POST | `/api/v1/public-import/preview` | Stateless allowlisted public-statement preview in native currency and units |
+| POST | `/api/v1/company/profile` | Stateless company basic-information lookup from a ticker |
 
 The API uses a consistent error shape: `error`, `error_type` and `details`. Unknown cases return 404, invalid filters return 422, and internal errors do not expose stack traces.
+
+`/api/v1/company/profile` accepts a ticker such as `AAPL`, `0700.HK`, `VOD.L`, `600519` or `000001`. Common US, HKEX, LSE and A-share formats are inferred automatically; A-share codes are mapped to SSE, SZSE or BSE by their prefix, while `exchange` and `venue` can be supplied explicitly when needed. The response includes the company name, symbol, currency, country, sector, industry, website, employee count and market capitalization when the provider supplies them. This is public provider data only and is not merged into the committed `miniso-2026` case. Live profile lookups require network access and follow the selected provider's availability and terms.
 
 ## Data and provenance
 
 The committed public snapshot is anchored to MINISO's 2025 Form 20-F and official 2025 H1, 2026 Q1 and 2026 H1 investor-relations releases. The case uses RMB millions and IFRS-reported group metrics. Monthly values, three-business-unit allocations, budget, forecast, volume, ticket and profit allocations are deterministic and explicitly marked as synthetic or calculated. Business-unit gross profit and operating profit are normalized synthetic allocations using documented profit-allocation indices; they are not reported segment margins. See [data methodology](./docs/data-methodology.md) for the formulas and provenance rules.
 
-`scripts/refresh_public_actuals.py` is a dry-run-first refresh utility. It downloads the fixed official source, validates the expected HTML table fields and fails loudly when the page structure changes. Pass `--write` only after reviewing the displayed differences.
+`scripts/refresh_public_actuals.py` is a dry-run-first refresh utility. It downloads the fixed official source, validates the expected HTML table fields and fails loudly when the page structure changes. Pass `--write` only after reviewing the displayed differences. Keep a copy of the previous `data/` snapshot before any write and run the case generator check before restarting a deployed process.
 
 `scripts/build_miniso_case.py --check` verifies that the committed `planning_records.csv` is exactly reproducible from the snapshot and assumptions.
 
@@ -60,13 +65,13 @@ AR/AP/inventory days, opening cash, CAPEX proxy, other cash assumptions, actions
 
 Governance evidence adds a session-only immutable decision log and conclusion-level provenance links. Each conclusion identifies its metric, formula, source label and reconciliation status; `public_reported`, `synthetic_allocation`, `synthetic_plan` and `calculated` remain explicit. Assumption version and git SHA are surfaced in the UI and workbook. See [v0.5 release evidence](./docs/release-evidence.md) for the deterministic review edit, clean-checkout CI evidence and remaining owner-controlled publication action.
 
-## v1.1 public preview and UI release candidate
+## v1.2 public company lookup release
 
 The additive v1.1 slice keeps the committed MINISO case and all existing FP&A/Excel behavior unchanged. The dashboard shell is tested at 1440×900, 1280×800, 1024×768, 768×1024, 390×844 and 320×568; only named table surfaces own horizontal scrolling. The language selector persists `en`, `zh-CN` or `zh-TW` in browser storage, falls back to English for missing keys, and uses `Intl` for numbers, currencies, dates and plural rules.
 
 `POST /api/v1/public-import/preview` is a stateless read-only preview. It supports LSE, US, HKEX and A-shares with explicit `SSE`, `SZSE` or `BSE` venue handling. The current deterministic fixture provider covers US, LSE, HKEX, SSE and SZSE; BSE returns `unsupported_exchange`. Live providers are disabled by default and optional dependencies are loaded lazily. The preview preserves native currency and unit scale, performs no FX conversion, does not create or overwrite `miniso-2026`, does not write case files or database records, and labels public data as not internal company data. No arbitrary URLs, credentials or unapproved scraping are used.
 
-The legacy package/API version remains `0.2.0` for compatibility. The additive `/health` field `release_id` exposes `1.1.0-rc.1` for this review candidate; changing package, footer or tag metadata is a release-owner decision. See [v1.1 methodology and evidence](./docs/release-evidence.md).
+The `1.2.0` release adds a generic company profile lookup and exchange-aware symbol search while preserving the deterministic MINISO case and existing planning routes. Live company profile data uses yfinance by default; A-share profile lookup can use the optional AKShare adapter. See [data methodology](./docs/data-methodology.md) for provider and provenance boundaries.
 
 ## Excel management pack
 
@@ -96,7 +101,7 @@ Operating Decision, workforce capacity and governance evidence are implemented a
 | Implemented in this case | Explicitly future / out of scope |
 |---|---|
 | Public-data anchored `miniso-2026`, H1 Actual / Budget / Prior Year, H2-only planning, responsive shell, three UI locales, governance provenance, stateless session previews and four-market public-data preview | ERP, bank, HRIS, payroll, database/cloud persistence, PDF pack, peer benchmarks, LLM-generated conclusions, a second case, and localized Excel labels |
-| Synthetic allocation, synthetic plan and calculated values are labelled separately from public reported anchors | Production deployment, account management, multi-user persistence and automated release publication |
+ | Synthetic allocation, synthetic plan and calculated values are labelled separately from public reported anchors | Account management, multi-user persistence and automated release publication |
 
 ## v0.1.1 hardening
 
@@ -119,4 +124,4 @@ npx playwright test e2e/dashboard.spec.mjs --project=chromium
 
 ## Project history and license
 
-PlanTerm is an independent repository. Its FastAPI error handling, configuration patterns and selected React UI primitives were adapted from the author's earlier project; no historical Git history is copied into this repository. PlanTerm v0.2.0 is released under the [MIT License](./LICENSE).
+PlanTerm is an independent repository. Its FastAPI error handling, configuration patterns and selected React UI primitives were adapted from the author's earlier project; no historical Git history is copied into this repository. The v1.2.0 release candidate is distributed under the [MIT License](./LICENSE).

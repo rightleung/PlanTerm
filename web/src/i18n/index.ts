@@ -1,4 +1,4 @@
-import { createContext, createElement, useContext, useMemo, useState, type ReactNode } from 'react'
+import { createContext, createElement, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { en, type EnglishCatalog } from './locales/en'
 import { zhCN } from './locales/zh-CN'
 import { zhTW } from './locales/zh-TW'
@@ -33,7 +33,7 @@ export function formatDate(value: string | Date | null | undefined, locale: Loca
 export function formatPlural(value: number, locale: Locale, singular: string, plural: string) { return new Intl.PluralRules(locale).select(value) === 'one' ? singular : plural }
 type I18nContext = { locale: Locale; setLocale: (locale: Locale) => void; t: (key: TranslationKey, vars?: Record<string, string | number>) => string; formatNumber: (value: number | null | undefined, options?: Intl.NumberFormatOptions) => string; formatCurrency: (value: number | null | undefined, currency?: string, scale?: 'native' | 'thousands' | 'millions') => string; formatDate: (value: string | Date | null | undefined) => string; formatPlural: (value: number, singular: string, plural: string) => string }
 const Context = createContext<I18nContext | null>(null)
-export function I18nProvider({ children }: { children: ReactNode }) { const [locale, setLocaleState] = useState<Locale>(() => detectLocale()); const setLocale = (next: Locale) => { setLocaleState(next); if (typeof window !== 'undefined') window.localStorage.setItem(localeStorageKey, next) }; const value = useMemo<I18nContext>(() => ({ locale, setLocale, t: (key, vars) => translate(locale, key, vars), formatNumber: (v, o) => formatNumber(v, locale, o), formatCurrency: (v, c, s) => formatCurrency(v, locale, c, s), formatDate: (v) => formatDate(v, locale), formatPlural: (v, s, p) => formatPlural(v, locale, s, p) }), [locale]); return createElement(Context.Provider, { value }, children) }
+export function I18nProvider({ children }: { children: ReactNode }) { const [locale, setLocaleState] = useState<Locale>(() => detectLocale()); const setLocale = (next: Locale) => { setLocaleState(next); if (typeof window !== 'undefined') window.localStorage.setItem(localeStorageKey, next) }; useEffect(() => { if (typeof document !== 'undefined') document.documentElement.lang = locale }, [locale]); const value = useMemo<I18nContext>(() => ({ locale, setLocale, t: (key, vars) => translate(locale, key, vars), formatNumber: (v, o) => formatNumber(v, locale, o), formatCurrency: (v, c, s) => formatCurrency(v, locale, c, s), formatDate: (v) => formatDate(v, locale), formatPlural: (v, s, p) => formatPlural(v, locale, s, p) }), [locale]); return createElement(Context.Provider, { value }, children) }
 export function useI18n() { const value = useContext(Context); if (!value) throw new Error('useI18n must be used within I18nProvider'); return value }
 export function localeName(locale: Locale) { return languageNames[locale] }
 export const localeCatalogs = catalogs

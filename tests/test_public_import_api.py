@@ -5,6 +5,7 @@ from fastapi.testclient import TestClient
 from src.api import app
 from src.config import settings
 from src.services.public_import import set_providers
+from src.services.company_profile_service import set_profile_providers
 from src.services.public_import.fixtures import fixture_provider
 from src.services.public_import.providers import ProviderResult
 
@@ -13,6 +14,7 @@ def setup_module(_module):
     settings.public_import_enabled = True
     settings.public_import_rate_limit_seconds = 0
     set_providers([fixture_provider()])
+    set_profile_providers([fixture_provider()])
 
 
 def test_public_import_preview_is_stateless_and_provenance_backed(tmp_path):
@@ -98,6 +100,59 @@ def test_no_data_and_malformed_upstream_have_distinct_error_contracts():
         assert response.json()["error_type"] == "malformed_upstream"
     finally:
         set_providers([fixture_provider()])
+
+
+def test_company_profile_lookup_infers_market_and_returns_basic_information():
+    provider = fixture_provider()
+    original = provider.fetch_profile
+
+    def profile(request, symbol):
+        result = original(request, symbol)
+        result.company.update({
+            "sector": "Technology",
+            "industry": "Consumer Electronics",
+            "website": "https://example.test/company",
+            "employees": 1234,
+            "description": "A fixture company profile.",
+        })
+        result.market_cap = 123456.0
+        return result
+
+    provider.fetch_profile = profile
+    set_profile_providers([provider])
+    try:
+        response = TestClient(app).post("/api/v1/company/profile", json={"ticker": "AAPL"})
+        assert response.status_code == 200
+        body = response.json()
+        assert body["profile"] == {
+            "name": "Apple Inc.",
+            "symbol": "AAPL",
+            "exchange": "US",
+            "venue": None,
+            "currency": "USD",
+            "country": "US",
+            "sector": "Technology",
+            "industry": "Consumer Electronics",
+            "website": "https://example.test/company",
+            "description": "A fixture company profile.",
+            "employees": 1234,
+            "market_cap": 123456.0,
+            "market_cap_currency": "USD",
+        }
+        assert body["source"]["provider"] == "fixture"
+        assert any("not internal company data" in item for item in body["disclosures"])
+    finally:
+        set_profile_providers([fixture_provider()])
+
+
+def test_company_profile_lookup_infers_explicit_a_share_venues():
+    provider = fixture_provider()
+    set_profile_providers([provider])
+    for ticker, symbol, venue in [("600519", "600519.SS", "SSE"), ("000001", "000001.SZ", "SZSE")]:
+        response = TestClient(app).post("/api/v1/company/profile", json={"ticker": ticker})
+        assert response.status_code == 200
+        assert response.json()["profile"]["symbol"] == symbol
+        assert response.json()["profile"]["venue"] == venue
 
 
 def test_dependency_missing_uses_planned_validation_status():

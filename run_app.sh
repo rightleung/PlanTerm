@@ -11,8 +11,8 @@ if [ ! -x "$PYTHON_BIN" ]; then
 fi
 
 if ! "$PYTHON_BIN" -c "import fastapi, uvicorn" >/dev/null 2>&1; then
-  echo "[Setup] Installing Python dependencies..."
-  "$PYTHON_BIN" -m pip install -r requirements.txt
+  echo "[Error] Python dependencies are missing. Run ./scripts/rebuild_workspace.sh first." >&2
+  exit 1
 fi
 
 if [ ! -f "$SCRIPT_DIR/web/dist/index.html" ]; then
@@ -20,7 +20,7 @@ if [ ! -f "$SCRIPT_DIR/web/dist/index.html" ]; then
   exit 1
 fi
 
-echo "[Run] PlanTerm UI: http://127.0.0.1:8000/"
-echo "[Run] Health: http://127.0.0.1:8000/health"
-exec "$PYTHON_BIN" -m uvicorn src.api:app --host 127.0.0.1 --port "${PLANTERM_PORT:-8000}" --reload
-
+HOST="${PLANTERM_HOST:-127.0.0.1}"
+echo "[Run] PlanTerm UI: http://${HOST}:${PLANTERM_PORT:-8000}/"
+echo "[Run] Health: http://${HOST}:${PLANTERM_PORT:-8000}/health"
+exec "$PYTHON_BIN" -m uvicorn src.api:app --host "$HOST" --port "${PLANTERM_PORT:-8000}"
